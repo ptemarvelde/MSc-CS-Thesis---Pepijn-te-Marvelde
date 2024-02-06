@@ -40,14 +40,14 @@ The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent
 \subsubsection{Mapping Matrix}
 The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$, where a value of 1 in this matrix denotes that the corresponding (via row number) column in $S_k$ maps to the corresponding (via column number) column in $T$. The formal definition is:
 
-\begin{definition}[\textit{Mapping matrix}] 
-Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
-\begin{align*}
-    M_k[i,j] = \begin{cases}
-    1, & \text{if $j$-th column of $S_k$ is mapped to the $i$-th column of $T$}\\
-    0, & \text{otherwise}
-\end{cases}
-\end{align*}
+\begin{definition}[\textit{Mapping matrix}]
+    Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
+    \begin{align*}
+        M_k[i,j] = \begin{cases}
+                       1, & \text{if $j$-th column of $S_k$ is mapped to the $i$-th column of $T$} \\
+                       0, & \text{otherwise}
+                   \end{cases}
+    \end{align*}
 \end{definition}
 
 
@@ -56,13 +56,13 @@ Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $
 Now that we have defined how to map the columns from source tables to target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
 
 \begin{definition}[\textit{Indicator matrix}]
-Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape shape $r_T \times r_{S_k}$, where
-\begin{align*}
-    I_k[i,j] = \begin{cases}
-    1, & \text{if $i$-th row of $S_k$ is mapped to the $j$-th row of $T$}\\
-    0, & \text{otherwise}
-\end{cases}
-\end{align*}
+    Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape shape $r_T \times r_{S_k}$, where
+    \begin{align*}
+        I_k[i,j] = \begin{cases}
+                       1, & \text{if $i$-th row of $S_k$ is mapped to the $j$-th row of $T$} \\
+                       0, & \text{otherwise}
+                   \end{cases}
+    \end{align*}
 \end{definition}
 
 % \subsubsection{Redundancy Matrix}
@@ -72,17 +72,17 @@ Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape
 Using the normalized matrix we can now \textbf{materialize} the join to get the Target matrix $T$:
 
 \begin{definition}[\textit{Materializing the Normalized Matrix to obtain Target matrix $T$}]
-\begin{itemize}
-    \item[]
-    \item[] Given
-    \item[$k$] Table id $k \in [1,n]$
-    \item[$S_k$] Source tables
-    \item[$M_k$] Mapping matrices
-    \item[$I_k$] Indicator matrices
-\end{itemize}
-\[
-T = \sum_{k=1}^{n}  I_k \cdot S_k \cdot M^T_k
-\]
+    \begin{itemize}
+        \item[]
+        \item[] Given
+        \item[$k$] Table id $k \in [1,n]$
+        \item[$S_k$] Source tables
+        \item[$M_k$] Mapping matrices
+        \item[$I_k$] Indicator matrices
+    \end{itemize}
+    \[
+        T = \sum_{k=1}^{n}  I_k \cdot S_k \cdot M^T_k
+    \]
 
 \end{definition}
 
@@ -94,7 +94,7 @@ T = \sum_{k=1}^{n}  I_k \cdot S_k \cdot M^T_k
 \subsection{Factorized Machine Learning Example: Linear Regression}
 \label{subsec:2-fac-ml-example}
 \todo{
-\begin{itemize}
-    \item Go through full example with Linear Regression
-\end{itemize}
+    \begin{itemize}
+        \item Go through full example with Linear Regression
+    \end{itemize}
 }

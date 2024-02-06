@@ -1,15 +1,1 @@
-*.fdb_latexmk
-*.aux
-*.fls
-*.log
-*.pdf
-!**/figures/*.pdf
-*.synctex.gz
-*.bbl
-*.bcf
-*.blg
-*.lof
-*.lot
-*.out
-*.run.xml
-*.toc
+aux/

@@ -6,5 +6,7 @@
                 "cmd": "echo 'converting ${file}.'; drawio --export -r -f pdf --crop ${file}"
             }
         ]
-    }
+    },
+    "editor.formatOnSave": true,
+    "latex-workshop.latex.outDir": "%DIR%/aux",
 }
