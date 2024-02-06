@@ -1,0 +1,139 @@
+%!TEX root = ../../main.tex
+
+\chapter{Literature Review}
+\label{chapter:literature}
+
+Factorized machine learning is a novel technique that allows for learning over normalized data without materializing the join of multiple tables. This can potentially reduce the redundancy in I/O and compute and speed up the learning process. Several ways to achieve and implement this technique have been proposed. These works are discussed in \autoref{sec:2-factorized-ml}. However, since Factorization is not always the faster choice \cite{orion_learning_gen_lin_models, morpheus} thought must go into choosing the right data representation for ML workflows. Works that bring forward contributions towards answering this question are laid out in \autoref{sec:3-cost-estimation-for-factorized-ml}. Last, we draw inspiration from the SOTA (State Of The Art) Machine Learning Optimizers in \autoref{sec:3-ml-optimizers}.
+
+\section{Factorized Machine Learning}
+\label{sec:3-factorized-ml}
+The concept of Factorized Learning was proposed in \cite{orion_learning_gen_lin_models}. The paper demonstrates that learning over joins can avoid redundancy in I/O and computation. The authors show that their Factorized Learning framework, Orion, is faster in certain tested scenarios where materializing the join introduces significant redundancy. However, its focus on two table joins limits its applicability to real-world scenarios. The cost model proposed in this paper is based on hardware, data characteristics, and model parameters. Despite its contributions, the model's scope is limited as it only considers buffer memory as hardware, input table dimensions as data characteristics, and the number of iterations as the only model parameter.
+
+Santoku \cite{santoku_kumar_demonstration_2015}, a toolkit that implements factorized learning in R, extends Orion. The toolkit additionally supports ML models with categorical features, such as Naive Bayes, and extends the factorized approach to ML inference. However, Orion and Santoku have some limitations: 
+
+\begin{enumerate}
+ \item Only supports PK/FK joins.
+ \item Requires one-hot encoding of Categorical features. 
+ \item Requires manual effort to create a factorized implementation of an ML algorithm.
+\end{enumerate}
+
+F \cite{f_schleich} addresses this first limitation by extending Factorized Learning to any natural join. However, F only applies to least squares regression models. AC/DC, a system developed by the same authors, generalizes F to non-linear models and eliminates the need for one-hot encoding of categorical features. This is achieved by using sparse data representations for categorical features, which avoid the redundancy of one-hot encoding.
+
+Morpheus \cite{morpheus} proposes a solution to the third problem mentioned earlier. Morpheus uses generic rewrite rules for Linear Algebra (LA) operators to factorize a large ensemble of ML models, without manually rewriting the algorithms. This is achieved by using a specific representation of normalized data called the \textit{normalized matrix}. The rewrite rules apply this normalized matrix to generalize factorized computations. MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} extends this data abstraction to the \textit{interacted} normalized which can capture non-linear interactions between features, thus extending factorized learning to ML models with quadratic feature spaces. \cite{f_gmm_DBLP:conf/icde/ChengKZ021} Uses this as a basis to extend MorpheusFI to Gaussian Mixture Models and Neural Networks.
+
+While the previously mentioned works are mostly specialized pieces of software with limited applicability to real tasks, Trinity \cite{TrinityPolyglotFrameworkFactorized2021} aims to enable writing factorized learning workloads once and deploying them across multiple programming languages and linear algebra tools. This means that DB and ML optimizations can be implemented once and applied to many languages or LA runtimes. However, a significant drawback is that the user must specify whether to materialize the join or perform factorized ML. How other systems handle this is described next. 
+
+\section{Cost Estimation for Factorized Machine Learning}
+\label{sec:3-cost-estimation-for-factorized-ml}
+Several works propose frameworks and methods for deciding between factorization and materialization. However, their cost estimators have limitations as they rely on theoretical analysis, simple heuristics, or conservative assumptions. This section reviews these works and highlights their contributions and challenges.
+
+An analytical model that compares I/O and CPU cost between F and M is used in \cite{orion_learning_gen_lin_models}. The authors analyze the number of operations for each step of Batch Gradient Descent in relation to the input data sizes. This results in a prediction for CPU cost and I/O cost. In their experiments, the model accurately predicts the fastest approach 95\% of the time.
+
+
+Morpheus \cite{morpheus} argues that using specific cost models for LA operators is not feasible because it makes the cost model dependent on a single LA back-end. Thus, they advocate for a "system-agnostic approach that does not need cost models for operators". This approach uses a decision rule based on feature and tuple ratios to determine whether to factorize. The rule is as follows:
+
+\begin{definition}[\textit{Morpheus' Decision Rule}] 
+
+\begin{itemize}
+    \item[]
+    \item[$\tau$] Tuple ratio
+    \item[$\rho$] Feature ratio
+\end{itemize}
+\small{
+		\begin{align*}
+			\begin{split} 
+Optimize_{Morpheus}(\tau, \rho) =  \begin{cases}Factorize & \tau > 5 \wedge \rho > 1
+\\Materialize, & \text{otherwise}\end{cases}
+			\end{split}
+		\end{align*}
+	}
+\end{definition}
+The conservative choice of thresholds results in Morpheus predicting materialization in cases where it is slower than factorization, but the authors show that these speed-ups are often less than 1.5x.
+% Limitation, might be 'machine-specific' limitations that are not machine speicifc at all (some optimization might happen every time?)
+
+MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the performance trade-offs and crossovers between its factorized interaction framework and materialized execution for LA operations. The authors identify sparsity as another key factor, along with the already known tuple ratio, and feature ratio, that affects runtime. They propose a heuristic decision rule based on these factors to help users decide when to use their framework. The decision rule uses the cost ratio of the factorized and materialized approaches for left matrix multiplication. The decision rule considers the number of base tables, the number of sparse dimension tables, and the sparsity of each dimension table, the rule is:
+
+\begin{definition}[\textit{MorpheusFI's Decision Rule}] 
+
+\begin{itemize}
+    \item[]
+    \item[$q$]Number of base tables with sparsity $ < 5\% $
+    \item[$p$] Number of base tables
+    \item[$e_k$] Sparsity of $R_k$
+    \item[$n_S$] Number of samples in $S$
+    \item[$n_k$] Number of rows in $R_k$
+\end{itemize}
+
+\small{
+		\begin{align*}
+			\begin{split} 
+Optimize_{MorpheusFI}(q, p, e, n_S, n) =  \begin{cases}Factorize &q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in 1 \text{ to } q, e_k \frac{n_S}{n_k} > 1) \\Materialize & \text{otherwise}\end{cases}
+			\end{split}
+		\end{align*}
+	}
+\end{definition}
+This rule is not extensively evaluated.
+
+Amalur \cite{schijndel_cost_estimation} implements a combination between the two previously mentioned cost estimation approaches: analytical counting of operations and a heuristics decision rule. The decision rule is based on the complexity ratio between factorization and materialization. It computes the number of Floating Point Operations (FLOPs) for both approaches. This involves analyzing the training algorithms of various ML models and creating formulas to compute the number of FLOPs needed with regards to the input datasets. Which approach to take is chosen as follows:
+
+\begin{definition}[\textit{Amalur's Decision Rule}] 
+
+\begin{itemize}
+    \item[]
+    \item[$s$] Standard complexity
+    \item[$f$] Factorized complexity
+\end{itemize}
+
+\small{
+		\begin{align*}
+			\begin{split} 
+Optimize_{Amalur}(s, f) =  \begin{cases}Factorize&\frac{s}{f} > 1.5 \\Materialize & \text{otherwise}\end{cases}
+			\end{split}
+		\end{align*}
+	}
+\end{definition}
+
+The threshold value $t = 1.5 $ was chosen as the boundary to cater towards preferring false negatives over false positives. This approach shows comparable performance to that of Morpheus.
+
+A comparison of these approaches (see \autoref{tab:cost_model_overview}) shows that most cost models are simple heuristic decision rules. Even Orion's analytical cost model is primarily used to count operations. The final decision is also based on a decision rule. These rules are effective at predicting cases where the answer is obvious, such as when there is substantial redundancy. However, a cost model that can accurately predict difficult cases, which are likely to occur more often, is still needed. To achieve this, a decision rule will not suffice. Some explainability may have to be traded for the benefit of creating a more accurate cost model.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{p{0.15\linewidth}p{0.09\linewidth}p{0.25\linewidth}p{0.35\linewidth}}
+\toprule
+System     & Reference & Model & Relevant features                                                                                                                                        \\ \midrule \midrule
+Orion      & \cite{orion_learning_gen_lin_models}          & Analytical cost model (I/O and CPU cost) $\rightarrow$ Decision Rule      & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Buffer size \item Input table dimensions \item Model iterations  \end{itemize} \\ \midrule
+Morpheus   &  \cite{morpheus}         & Heuristic decision rule      & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Tuple ratio \item Feature ratio  \end{itemize}                                                        \\\midrule
+MorpheusFI &   \cite{MorpheusFIEnablingOptimizingNonlinear2019}        & Heuristic decision rule      & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Sparsity \item Input table dimensions \end{itemize}                                                                               \\\midrule
+Amalur     &   \cite{schijndel_cost_estimation}       & Analytical cost model (FLOPs) $\rightarrow$ Decision rule     & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=00.3cm] \item Complexity ratio \end{itemize}                                                                \\
+\bottomrule
+\end{tabular}
+\caption{Overview of cost estimators for factorized learning}
+\label{tab:cost_model_overview}
+\end{table}
+
+\section{Machine Learning Optimizers}
+\label{sec:3-ml-optimizers}
+Machine learning optimizers are algorithms or techniques that improve the performance of machine learning tasks by finding the optimal configuration or schedule for a given hardware back-end. Optimizers often rely on cost models to estimate runtime or resource consumption of different options and select the most efficient one. In this section, some of the existing machine learning optimizers and how they approach the cost estimation problem are reviewed. How their ideas can be applied or adapted to the factorized machine learning setting is also discussed.
+
+\cite{halide_cost_model} Presents a new algorithm for optimizing the schedule of machine learning tasks compiled with Halide \cite{halide}, a compiler that efficiently expresses and compiles array computations for image processing, computer vision, scientific computation, and machine learning. The algorithm uses a cost model to predict the fastest schedule and reduce runtime. The cost model, a neural network, takes two sets of features as input for each stage of the algorithm: the algorithm-specific features and schedule-dependent features. These features are embedded and fed into a fully connected layer that predicts coefficients for hand-crafted terms. These terms are non-linear combinations of input features that the authors expect to be related to runtime. Examples are the tasks per core, or the number of times storage is allocated. The computed coefficients are then used to predict the runtime of a given task.
+
+TVM \cite{tvm} is an automated end-to-end optimizing compiler for deep learning that achieves performance portability through graph-level and operator-level optimizations. It uses a statistical approach to the cost model by using an ML model to predict runtime on a given hardware back-end. The model considers features such as the number of float additions and integer comparisons to make its predictions. This approach enables TVM to generate efficient code for a wide range of hardware back-ends without requiring detailed hardware information or manual tuning.
+
+These optimizers are not directly applicable to the scenario we are creating a cost estimator for, as the models cannot currently be compiled with TVM or Halide and making them compatible is outside the scope of this thesis. However, insights from these optimizers can inform the cost estimation problem addressed in this research. \autoref{tab:optimizer_overview} presents factors that can help create an accurate model for predicting whether materialization or factorization is faster. 
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{p{0.15\linewidth}p{0.09\linewidth}p{0.25\linewidth}p{0.35\linewidth}}
+\toprule
+System     & Reference & Model & Relevant features                                                                                                                                        \\ \midrule \midrule
+
+TVM        & \cite{tvm}          & XGBoost     & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Memory access count \item Memory buffer reuse ratio \item Number of time kernel is called \item Touched memory size \end{itemize}   \\ \midrule
+Halide     &  \cite{halide_cost_model} & Vector of hand crafted features multiplied by coefficients computed by Neural Network      & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Number of allocations made \item Total number of bytes read \item Number of scalar instructions \end{itemize}                                                                               \\ \bottomrule
+\end{tabular}
+\caption{Overview of discussed Machine Learning Optimizers}
+\label{tab:optimizer_overview}
+\end{table}
+
+\section{Research Gap}
+A comprehensive performance analysis of factorized machine learning, conducted through profiling and experimentation, will inform the development of a cost model that can accurately determine when to factorize or materialize and thus optimize the training time. Comparing this analysis with an analysis of materialized machine learning will help fully understand the differences in computation and the factors that influence it. Although previous works have identified data, hardware, and model characteristics as factors that impact the decision to factorize or materialize, none have accurately predicted which approach to choose due to their limited optimization space resulting from choosing small ranges for cost model parameters. The authors also do not consider how hardware affects runtime and its relationship with the trade-off between factorization and materialization.

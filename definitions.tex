@@ -1,0 +1,51 @@
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
+
+\textbf{FK} & \textbf{P}rimary \textbf{K}ey\\
+\textbf{ML} & \textbf{M}achine \textbf{L}earning\\
+\textbf{PK} & \textbf{F}oreign \textbf{K}ey\\
+\textbf{(G)NMF} & (\textbf{G}aussian)-\textbf{N}onnegative \textbf{M}atrix \textbf{F}actorization\\
+\textbf{FLOP} & \textbf{FL}oating-point \textbf{OP}eration\\
+\textbf{DI} &  \textbf{D}ata \textbf{I}ntegration\\
+\textbf{LA} & \textbf{L}inear \textbf{A}lgebra\\
+
+
+
+\end{abbreviations}
+
+%----------------------------------------------------------------------------------------
+%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+% \begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
+
+% % The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
+
+% Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
+% %Constant Name & $Symbol$ & $Constant Value$ with units\\
+
+% \end{constants}
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+
+\begin{symbols}{lll} % Include a list of Symbols (a three column table)
+
+%Symbol & Name & Unit \\
+
+% \addlinespace % Gap to separate the Roman symbols from the Greek
+
+$S$          & Entity table                                             &\\
+$R_k$        & Attribute table $i$                                      &\\
+$T$            & Target table, result of joining tables (materialization) &\\
+$n_S$, $n_k$ & Number of rows (samples/tuples) in $S$, $R_k$            &\\
+$d_S$, $d_k$ & Number of columns (features) in $S$, $R_k$                &\\
+$e_S$, $e_k$ & Sparsity (fraction of 0 values) of $S$, $R_k$                                   &\\
+$p$          & Number of base tables                                    &\\
+$\tau$       & Tuple ratio ($\frac{\sum_{k=1}^p d_k}{d_S}$)                                             &\\
+$\rho$       & Feature ratio ($\frac{n_S}{\sum_{k=1}^p n_k} $)  
+\end{symbols}
