@@ -4,11 +4,16 @@
 
 \label{chapter:methodology}
 
-\todo{Explain general idea: Empirical study}
+This chapter details the methodology used to arrive at an accurate cost prediction for Factorized ML. First, we introduce the problem setting in \autoref{sec:4-problem-setting}, focussing on explaining the choices for independent variables. Then, we introduce the proposed cost estimation models in \autoref{sec:4-cost-estimation}.
 
 \section{Problem Setting}
+\label{sec:4-problem-setting}
 \todo{Detail dependent \& independent variables}
+
+As this is an empirical study the focus is on carried out experiments and their results.
+
 \subsection{Data}
+\todo{Literature has explored the effect of data characteristics on factorized learning. We extend this to include a larger range of data characteristics allowing for more insights into the relation of these data characteristics and the training cost.}
 
 \subsection{Hardware}
 
@@ -18,12 +23,19 @@
 
 
 \section{Cost Estimation}
+\label{sec:4-cost-estimation}
 \todo{Introduce different cost models (also include architecture figure, here or somewhere else)}
 
 \subsection{Analytical}
+The analytical model is a deterministic model constructed by examining the operations performed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. This formula consists of the crucial factors of the algorithm, e.g., the number of matrix multiplication. For instance, if an algorithm performs an addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model.
 
 \subsection{Statistical}
+The statistical model uses reasoning and analysis of performance-impacting factors to estimate the optimal approach. This model is based on empirical data and uses logistic regression to make predictions. The model considers various features known to impact performance, such as the size of the input data, the algorithm's complexity, and the hardware configuration. By analyzing the relationships between these features and the actual runtime of the algorithm, the statistical model can make accurate, and explainable, predictions about the cost of different approaches.
 
 \subsection{Deep Learning}
+This cost model uses a neural network, to make its predictions. This model is included to check whether the previous models, such as the analytical and statistical models, are too simplistic. If the black box model significantly outperforms the other models, it indicates that there are more complex feature interactions happening which the other models have failed to capture. This estimator can model these complex interactions from the data and make more accurate predictions about the cost of different approaches.
 
 \subsection{Hybrid}
+Finally, the knowledge gathered from the previous cost estimators is combined and applied in a hybrid model. Much like the optimization model from \cite{halide_cost_model} this model aims to create a highly accurate, but explainable, model. This is achieved by combining intricate knowledge of the most impactful features and their interactions with a neural network to estimate the weights of its (combined) features.
+
+\todo{show architecture of hybrid model}

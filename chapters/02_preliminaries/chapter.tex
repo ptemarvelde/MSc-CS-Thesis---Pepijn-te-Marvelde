@@ -24,7 +24,7 @@ However, while joining datasets to a single table is necessary for ML it can int
 Factorized Machine Learning aims to alleviate these problems by "learning over joins" \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
 
 \subsection{Schema Mappings}
-
+\todo{Explain TGDs and how they are used in DI}
 
 \section{Factorized Machine Learning}
 \label{sec:2-factorized-ml}
@@ -81,7 +81,7 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
         \item[$I_k$] Indicator matrices
     \end{itemize}
     \[
-        T = \sum_{k=1}^{n}  I_k \cdot S_k \cdot M^T_k
+        T = \sum_{k=1}^{n}  I_k S_k M^T_k
     \]
 
 \end{definition}
@@ -98,3 +98,14 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
         \item Go through full example with Linear Regression
     \end{itemize}
 }
+
+\begin{algorithm}[h]
+    \caption[Linear regression]{Linear regression using Gradient Descent
+        (\cite{morpheus})}\label{alg:linear-regression}
+    \begin{algorithmic}
+        \Require $T, y, w, \gamma$
+        \For{$i \in 1:n$}
+        \State $w = w - \gamma (T^T ((T w) - Y))$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
