@@ -38,7 +38,7 @@ parskip, % Uncomment to add space between paragraphs
 headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
-]{misc/MastersDoctoralThesis} % The class file specifying the document structure
+dvipsnames]{misc/MastersDoctoralThesis} % The class file specifying the document structure
 
 
 \usepackage[utf8]{inputenc} % Required for inputting international characters
@@ -62,6 +62,16 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{xcolor}
 \newcommand\todo[1]{\textcolor{red}{#1}}
 \usepackage{algorithm, algpseudocode}
+
+\usepackage{nicematrix}
+\NiceMatrixOptions{
+code-for-first-row = \color{BurntOrange} ,
+code-for-last-row = \color{RoyalBlue} ,
+code-for-first-col = \color{BurntOrange} ,
+code-for-last-col = \color{RoyalBlue}
+}
+\setcounter{MaxMatrixCols}{8}
+
 
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS

@@ -40,7 +40,7 @@ The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent
 \subsubsection{Mapping Matrix}
 The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$, where a value of 1 in this matrix denotes that the corresponding (via row number) column in $S_k$ maps to the corresponding (via column number) column in $T$. The formal definition is:
 
-\begin{definition}[\textit{Mapping matrix}]
+\begin{definition}[\textit{Mapping matrix} \cite{amalur}]
     Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
     \begin{align*}
         M_k[i,j] = \begin{cases}
@@ -55,7 +55,7 @@ The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$, w
 % TODO intro
 Now that we have defined how to map the columns from source tables to target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
 
-\begin{definition}[\textit{Indicator matrix}]
+\begin{definition}[\textit{Indicator matrix} \cite{morpheus}]
     Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape shape $r_T \times r_{S_k}$, where
     \begin{align*}
         I_k[i,j] = \begin{cases}
@@ -86,12 +86,98 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
 
 \end{definition}
 
+\subsubsection{Running Example: Normalized Matrix}
 \todo{transition to how these definitions are used in ML applications}
+
+\todo{Show flow with running example}
+
+
+\begin{alignat*}{6}
+                                            & S_0 &     & =
+    \begin{bNiceMatrix}[first-row,last-col]
+        0 & 1  & 2    &     \\
+        1 & 11 & 2024 & 0,1 \\
+        2 & 12 & 2024 & 2   \\
+        3 & 11 & 2024 & 3   \\
+    \end{bNiceMatrix}   \quad &     & S_1 &   & =
+    \begin{bNiceMatrix}[first-row,last-col]
+        3 & 4  & 5  &   \\
+        2 & 20 & 40 & 0 \\
+        1 & 25 & 25 & 1 \\
+        3 & 13 & 39 & 2 \\
+        1 & 10 & 10 & 3 \\
+    \end{bNiceMatrix}           \quad &     & S_2 &   & =
+    \begin{bNiceMatrix}[first-row,last-col]
+        6 &   \\
+        1 & 3 \\
+    \end{bNiceMatrix}                  \\
+                                            & I_0 &     & =
+    \begin{bNiceMatrix}[last-col]
+        1 & 0 & 0 & 0 \rightarrow 0 \\
+        1 & 0 & 0 & 0 \rightarrow 1 \\
+        0 & 1 & 0 & 1 \rightarrow 2 \\
+        0 & 0 & 1 & 2 \rightarrow 3 \\
+    \end{bNiceMatrix}   \quad          &     & I_1 &   & =
+    \begin{bNiceMatrix}[last-col]
+        1 & 0 & 0 & 0 & 0 \rightarrow 0 \\
+        0 & 1 & 0 & 0 & 1 \rightarrow 1 \\
+        0 & 0 & 1 & 0 & 2 \rightarrow 2 \\
+        0 & 0 & 0 & 1 & 3 \rightarrow 3 \\
+    \end{bNiceMatrix}     \quad      &     & I_2 &   & =
+    \begin{bNiceMatrix}[last-col]
+        0 & \rightarrow 0   \\
+        0 & \rightarrow 1   \\
+        0 & \rightarrow 2   \\
+        1 & 0 \rightarrow 3 \\
+    \end{bNiceMatrix}                            \\
+                                            & M_0 &     & =
+    \begin{bNiceMatrix}[last-col]
+        1. & 0. & 0. & 0 \rightarrow 0 \\
+        0. & 1. & 0. & 1 \rightarrow 1 \\
+        0. & 0. & 1. & 2 \rightarrow 2 \\
+        0. & 0. & 0. & \rightarrow 3   \\
+        0. & 0. & 0. & \rightarrow 4   \\
+        0. & 0. & 0. & \rightarrow 5   \\
+        0. & 0. & 0. & \rightarrow 6   \\
+    \end{bNiceMatrix}   \quad       &     & M_1 &   & =
+    \begin{bNiceMatrix}[last-col]
+        0. & 0. & 0. & \rightarrow 0   \\
+        0. & 0. & 0. & \rightarrow 1   \\
+        0. & 0. & 0. & \rightarrow 2   \\
+        1. & 0. & 0. & 0 \rightarrow 3 \\
+        0. & 1. & 0. & 1 \rightarrow 4 \\
+        0. & 0. & 1. & 2 \rightarrow 5 \\
+        0. & 0. & 0. & \rightarrow 6   \\
+    \end{bNiceMatrix} \quad       &     & M_2 &   & =
+    \begin{bNiceMatrix}[last-col]
+        0 & \rightarrow 0 \\
+        0 & \rightarrow 1 \\
+        0 & \rightarrow 2 \\
+        0 & \rightarrow 3 \\
+        0 & \rightarrow 4 \\
+        0 & \rightarrow 5 \\
+        1 & 0 \rightarrow \\
+    \end{bNiceMatrix}
+\end{alignat*}
+
+\begin{equation*}
+    T = \begin{bNiceMatrix}[first-row,last-col]
+        0 & 1  & 2    & 3 & 4  & 5  & 6     \\
+        1 & 11 & 2024 & 2 & 20 & 40 & 0 & 0 \\
+        1 & 11 & 2024 & 1 & 25 & 25 & 0 & 1 \\
+        2 & 12 & 2024 & 3 & 13 & 39 & 0 & 2 \\
+        3 & 11 & 2024 & 1 & 10 & 10 & 1 & 3 \\
+    \end{bNiceMatrix}
+\end{equation*}
 
 \subsection{Factorized Linear Algebra}
 \todo{LA operators, illustrate how essential operators work, and which operators are supported}
 
-\subsection{Factorized Machine Learning Example: Linear Regression}
+
+
+
+
+\subsection{Running Example: Factorized Linear Regression}
 \label{subsec:2-fac-ml-example}
 \todo{
     \begin{itemize}
