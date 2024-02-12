@@ -75,24 +75,24 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
     \begin{itemize}
         \item[]
         \item[] Given
-        \item[$k$] Table id $k \in [1,n]$
+        \item[$k$] Table id $k \in [0,n)$
         \item[$S_k$] Source tables
         \item[$M_k$] Mapping matrices
         \item[$I_k$] Indicator matrices
     \end{itemize}
     \[
-        T = \sum_{k=1}^{n}  I_k S_k M^T_k
+        T = \sum_{k=0}^{n-1}  I_k S_k M^T_k
     \]
 
 \end{definition}
 
 \subsubsection{Running Example: Normalized Matrix}
-\todo{transition to how these definitions are used in ML applications}
-
-\todo{Show flow with running example}
-
+To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join.
 
 \begin{alignat*}{6}
+    \intertext{
+        These are the corresponding Source matrices $S_{0..2}$ for the source tables. The \textcolor{BurntOrange}{orange} column numbers denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue }row numbers illustrate to which target table rows they are mapped.
+    }
                                             & S_0 &     & =
     \begin{bNiceMatrix}[first-row,last-col]
         0 & 1  & 2    &     \\
@@ -160,15 +160,37 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
     \end{bNiceMatrix}
 \end{alignat*}
 
-\begin{equation*}
-    T = \begin{bNiceMatrix}[first-row,last-col]
-        0 & 1  & 2    & 3 & 4  & 5  & 6     \\
-        1 & 11 & 2024 & 2 & 20 & 40 & 0 & 0 \\
-        1 & 11 & 2024 & 1 & 25 & 25 & 0 & 1 \\
-        2 & 12 & 2024 & 3 & 13 & 39 & 0 & 2 \\
-        3 & 11 & 2024 & 1 & 10 & 10 & 1 & 3 \\
-    \end{bNiceMatrix}
-\end{equation*}
+\begin{alignat*}{4}
+     & T_0                             = I_0 S_0 M_0^T &  & = \begin{bNiceMatrix}
+                                                                  \Block[fill=red!15,rounded-corners]{4-3}{}
+                                                                  1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
+                                                                  1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
+                                                                  2 & 12 & 2024 & 0 & 0 & 0 & 0 \\
+                                                                  3 & 11 & 2023 & 0 & 0 & 0 & 0 \\
+                                                              \end{bNiceMatrix}  T_1                             = I_1 S_1 M_1^T        &  & = \begin{bNiceMatrix}
+                                                                                                                                                   0 & 0 & 0 & \Block[fill=blue!15,rounded-corners]{4-3}{} 2 & 20 & 40 & 0 \\
+                                                                                                                                                   0 & 0 & 0 & 1                                             & 25 & 25 & 0 \\
+                                                                                                                                                   0 & 0 & 0 & 3                                             & 13 & 39 & 0 \\
+                                                                                                                                                   0 & 0 & 0 & 1                                             & 10 & 10 & 0 \\
+                                                                                                                                               \end{bNiceMatrix}
+    \\
+     & T_2                             = I_2 S_2 M_2^T &  & = \begin{bNiceMatrix}
+                                                                  0 & 0 & 0 & 0 & 0 & 0 & 0                                              \\
+                                                                  0 & 0 & 0 & 0 & 0 & 0 & 0                                              \\
+                                                                  0 & 0 & 0 & 0 & 0 & 0 & 0                                              \\
+                                                                  0 & 0 & 0 & 0 & 0 & 0 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 \\
+                                                              \end{bNiceMatrix}         T  = \sum_{k=0}^{2} I_k S_k M^T_k &  & =  \begin{bNiceMatrix}[first-row,last-col]
+                                                                                                                                      0 & 1  & 2    & 3                                           & 4  & 5  & 6                                                  \\
+                                                                                                                                      \Block[fill=red!15,rounded-corners]{4-3}{}
+                                                                                                                                      1 & 11 & 2024 & \Block[fill=blue!15,rounded-corners]{4-3}{}
+                                                                                                                                      2 & 20 & 40   & 0                                           & 0                                                            \\
+                                                                                                                                      1 & 11 & 2024 & 1                                           & 25 & 25 & 0                                              & 1 \\
+                                                                                                                                      2 & 12 & 2024 & 3                                           & 13 & 39 &
+                                                                                                                                      0 & 2                                                                                                                      \\
+                                                                                                                                      3 & 11 & 2024 & 1                                           & 10 & 10 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 & 3 \\
+                                                                                                                                  \end{bNiceMatrix}
+\end{alignat*}
+
 
 \subsection{Factorized Linear Algebra}
 \todo{LA operators, illustrate how essential operators work, and which operators are supported}
