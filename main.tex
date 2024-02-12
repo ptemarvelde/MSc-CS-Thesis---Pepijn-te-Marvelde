@@ -62,6 +62,8 @@ dvipsnames]{misc/MastersDoctoralThesis} % The class file specifying the document
 \usepackage{xcolor}
 \newcommand\todo[1]{\textcolor{red}{#1}}
 \usepackage{algorithm, algpseudocode}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
 
 \usepackage{nicematrix}
 \NiceMatrixOptions{
