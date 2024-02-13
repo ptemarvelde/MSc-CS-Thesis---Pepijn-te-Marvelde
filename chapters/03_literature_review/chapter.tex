@@ -69,7 +69,7 @@ MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the perform
 		\begin{split}
 			Optimize_{MorpheusFI}(q, p, e, n_S, n) =
 			\begin{cases}
-				Factorize   & \parbox[t]{.25\linewidth}{q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in [1,q], e_k \frac{n_S}{n_k} > 1)} \\
+				Factorize   & \parbox[t]{.18\linewidth}{$q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in [1,q], e_k \frac{n_S}{n_k} > 1)$} \\
 				Materialize & \text{otherwise}
 			\end{cases}
 		\end{split}
