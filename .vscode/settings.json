@@ -10,8 +10,15 @@
     "editor.formatOnSave": true,
     "latex-workshop.latex.outDir": "%DIR%/aux",
     "cSpell.words": [
+        "Amalur",
         "DAIC",
         "Generalizability",
+        "runtimes",
+        "Santoku",
+        "SOTA",
         "xlarge"
+    ],
+    "cSpell.ignoreWords": [
+        "midrule"
     ],
 }
