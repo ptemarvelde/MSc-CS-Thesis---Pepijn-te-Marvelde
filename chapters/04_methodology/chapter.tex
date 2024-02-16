@@ -10,18 +10,41 @@ This chapter details the methodology used to arrive at an accurate cost predicti
 \label{sec:4-problem-setting}
 \todo{Detail dependent \& independent variables}
 
-As this is an empirical study the focus is on carried out experiments and their results.
+As this is an empirical study the focus is on carried out experiments and their results. Therefore, it is extremely important to design these experiments well. This starts with a look back at the problem we are trying to solve, after which we can say precisely what is needed to solve this problem. The experiments are then designed to gather the necessary results to come to a fitting solution.
 
-\subsection{Data}
-\todo{Literature has explored the effect of data characteristics on factorized learning. We extend this to include a larger range of data characteristics allowing for more insights into the relation of these data characteristics and the training cost.}
+\subsection{Independent Variables}
+To reiterate, the goal of this thesis is to create an accurate, generalizable, cost estimator for choosing whether Factorized or Materialized ML is optimal for a given ML scenario. For this we need knowledge on which factors influence this decision. Previous works have already identified the three dimensions that impact the cost: \emph{data characteristics} \cite{morpheus, amalur,schijndel_cost_estimation}, \emph{hardware characteristics} \cite{orion_learning_gen_lin_models}, and \emph{model-type \& -hyperparameters} \cite{amalur,schijndel_cost_estimation}.
+
+\subsubsection{Data}
+Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M tradeoff. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{p{0.25\linewidth}p{0.45\linewidth}p{0.15\linewidth}}
+        \toprule
+        Independent Variable         & Explanation                                                      & Reason for choice                                                                     \\ \midrule \midrule
+        Sparsity $e$                 & Fraction of zero-valued elements                                 & \cite{MorpheusFIEnablingOptimizingNonlinear2019, morpheus, schijndel_cost_estimation} \\
+        Table Size                   & Dimensions of tables. Both Target and Source.                    &                                                                                       \\
+        Tuple \& feature ratio       & Ratio of rows/columns from $S_{1\cdots k}$ in $T$ $\tau$, $\rho$ & \cite{morpheus}                                                                       \\
+        \todo{Detail all data chars} &                                                                  &                                                                                       \\\bottomrule
+    \end{tabular}
+    \caption{Overview of data related features varied in this study. A reference in the 'Reason for choice' column denotes this feature is either used in the cost estimation rule in that publication, or the publication has a thorough analysis showing the impact of this feature on runtime.}
+    \label{tab:4-data_chars}
+\end{table}
 
 
-\subsection{Hardware}
-\subsubsection{GPU Architectures}
+\subsubsection{Hardware}
+\paragraph{GPU Architectures}
 
-\subsection{Model}
+\subsubsection{Model}
 
 \subsection{Dependent Variables}
+
+\subsubsection{Training Cost}
+\todo{Training time}
+
+\subsubsection{Micro Benchmarking Hardware Metrics}
+\todo{Gpu profiling}
 
 
 \section{Cost Estimation}
