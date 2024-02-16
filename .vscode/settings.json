@@ -3,7 +3,7 @@
         "commands": [
             {
                 "match": "\\.drawio$",
-                "cmd": "echo 'converting ${file}.'; drawio --export -r -f pdf --crop ${file}"
+                "cmd": "echo 'converting ${file}'; filepath=$(echo '${file}' | sed 's|c:|/c|g' | sed 's|\\\\\\\\|/|g'); drawio --export -r -f pdf --crop $filepath;"
             }
         ]
     },
