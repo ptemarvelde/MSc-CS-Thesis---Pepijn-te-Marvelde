@@ -16,7 +16,7 @@ As this is an empirical study the focus is on carried out experiments and their 
 To reiterate, the goal of this thesis is to create an accurate, generalizable, cost estimator for choosing whether Factorized or Materialized ML is optimal for a given ML scenario. For this we need knowledge on which factors influence this decision. Previous works have already identified the three dimensions that impact the cost: \emph{data characteristics} \cite{morpheus, amalur,schijndel_cost_estimation}, \emph{hardware characteristics} \cite{orion_learning_gen_lin_models}, and \emph{model-type \& -hyperparameters} \cite{amalur,schijndel_cost_estimation}.
 
 \subsubsection{Data}
-Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M tradeoff. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
+Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M trade off. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
 
 % LTeX: enabled: false
 \begingroup
@@ -58,36 +58,41 @@ Literature has identified the effect of some data characteristics on factorized 
 \todo{Training time}
 
 \subsubsection{Micro Benchmarking Hardware Metrics}
-\todo{GPU profiling}
-
-
+\todo{\begin{itemize}
+        \item Why do we need to capture metrics?
+        \item Why these metrics, how are they used in the cost estimation.
+              \begin{itemize}
+                  \item Calculate arithmetic complexity and ops:byte ratio. \cite{nvidia-gpu-performance:online}
+              \end{itemize}
+    \end{itemize}
+}
 
 \begin{table}[ht]
-    \begin{tabular}{@{}p{0.2\linewidth}lp{0.50\linewidth}@{}}
+    \begin{tabular}{lll}
         \toprule
-        Metric group (unit)                                      & Metric name               & Explanation                                                                                                                                                                                                   \\ \midrule\midrule
-        Frequency (cycle/second)                                 & \underline{DRAM}          & Used to calculate realized speed of DRAM.                                                                                                                                                                     \\
-                                                                 & \textbf{SM}               & Gives insight into the number of operations each SM does.                                                                                                                                                     \\
-        \rule{0pt}{3ex}\multirow{5}{\linewidth}{Throughput (\%)} & \underline{Memory}        & \rule{0pt}{3ex}\multirow{6}{\linewidth}{Comparing throughput between F/M tells us something about which is using resources more efficiently.}                                                                 \\
-                                                                 & \underline{DRAM}          &                                                                                                                                                                                                               \\
-                                                                 & \underline{L1 Cache}      &                                                                                                                                                                                                               \\
-                                                                 & \underline{L2 Cache}      &                                                                                                                                                                                                               \\
-                                                                 & \textbf{Compute (SM)}     &                                                                                                                                                                                                               \\
-        Throughput (byte/second)                                 & \underline{Memory}        &                                                                                                                                                                                                               \\                                                                                                                 \\
-        \multirow{2}{\linewidth}{Cycles (cycle)}                 & \textbf{SM active}        & \multirow{2}{\linewidth}{The active and elapsed cycles can be extrapolated to show how different hardware (with different clock speed) would perform for the same task.}                                      \\
-                                                                 & \textbf{Elapsed}          &                                                                                                                                                                                                               \\
-        \rule{0pt}{3ex}\multirow{2}{\linewidth}{Hit Rate (\%)}   & \underline{L1 Cache}      & \multirow{2}{\linewidth}{Hit rate plays a large factor in the effiency of a program. A low hitrate means retrieving data from higher level memory, thus incurring large costs.}                               \\
-                                                                 & \underline{L2 Cache}      &                                                                                                                                                                                                               \\
-        \rule{0pt}{3ex}\multirow{2}{\linewidth}{Busy (\%)}       & \underline{Memory}        &                                                                                                                                                                                                               \\
-                                                                 & \underline{Memory Pipes}  &                                                                                                                                                                                                               \\
-        \rule{0pt}{3ex}Memory read/written (byte)                & \underline{DRAM read}     & \multirow{2}{\linewidth}{Data passing operations are expensive, especially in higher level RAM (dram). How much data is written to and read from this dram will heavily influence how fast a computation is.} \\
-                                                                 & \underline{DRAM written}  &                                                                                                                                                                                                               \\
-        \rule{0pt}{3ex}Duration (nsecond)                        & Duration                  &                                                                                                                                                                                                               \\
-        \rule{0pt}{3ex}Bandwidth (\%)                            & \underline{Max Bandwidth} &                                                                                                                                                                                                               \\ \bottomrule
+        Section Name                  & Metric Name                          & Metric Unit  \\
+        \midrule\midrule
+        Command line profiler metrics & \underline{dram\_\_bytes\_read.sum}  & byte         \\
+                                      & \underline{dram\_\_bytes\_write.sum} & byte         \\
+        GPU Speed Of Light Throughput & \underline{DRAM Frequency}           & cycle/second \\
+                                      & \textbf{SM Frequency}                & cycle/second \\
+                                      & \textbf{Elapsed Cycles}              & cycle        \\
+                                      & \underline{Memory Throughput}        & \%           \\
+                                      & \underline{DRAM Throughput}          & \%           \\
+                                      & Duration                             & nsecond      \\
+                                      & \underline{L1 Cache Throughput}      & \%           \\
+                                      & \underline{L2 Cache Throughput}      & \%           \\
+                                      & \textbf{SM Active Cycles}            & cycle        \\
+                                      & \textbf{Compute (SM) Throughput}     & \%           \\
+        Memory Workload Analysis      & \underline{Memory Throughput}        & byte/second  \\
+                                      & \underline{Mem Busy}                 & \%           \\
+                                      & \underline{Max Bandwidth}            & \%           \\
+                                      & \underline{L1 Hit Rate}              & \%           \\
+                                      & \underline{L2 Hit Rate}              & \%           \\
+                                      & \underline{Mem Pipes Busy}           & \%           \\
+        \bottomrule
     \end{tabular}
-
-    \caption{Table showing the collected profiling metrics and their explanation. Metrics related to compute cost are \textbf{bold}, those related to memory cost are \underline{underlined}.
-    \todo{Move the explanation out of this table and into a paragraph?}}
+    \caption{Table showing the collected profiling metrics and their explanation. Metrics related to compute cost are \textbf{bold}, those related to memory cost are \underline{underlined}.}
     \label{tab:4-profiling-metrics}
 \end{table}
 
