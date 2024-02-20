@@ -18,25 +18,39 @@ To reiterate, the goal of this thesis is to create an accurate, generalizable, c
 \subsubsection{Data}
 Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M tradeoff. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
 
-\begin{table}[t]
+% LTeX: enabled: false
+\begingroup
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[ht]
     \centering
-    \begin{tabular}{p{0.25\linewidth}p{0.45\linewidth}p{0.15\linewidth}}
+    \begin{tabular}{p{0.15\linewidth}p{0.07\linewidth}p{0.23\linewidth}p{0.4\linewidth}}
         \toprule
-        Independent Variable         & Explanation                                                      & Reason for choice                                                                     \\ \midrule \midrule
-        Sparsity $e$                 & Fraction of zero-valued elements                                 & \cite{MorpheusFIEnablingOptimizingNonlinear2019, morpheus, schijndel_cost_estimation} \\
-        Table Size                   & Dimensions of tables. Both Target and Source.                    &                                                                                       \\
-        Tuple \& feature ratio       & Ratio of rows/columns from $S_{1\cdots k}$ in $T$ $\tau$, $\rho$ & \cite{morpheus}                                                                       \\
-        \todo{Detail all data chars} &                                                                  &                                                                                       \\\bottomrule
+        Independent Variable       & Symbol   & Explanation                                                        & Reason for choice                                                                                                                                          \\ \midrule \midrule
+        Sparsity                   & $e$      & Fraction of zero-valued elements                                   & Impacts the number of computation needed for sparse implementations. \cite{MorpheusFIEnablingOptimizingNonlinear2019, morpheus, schijndel_cost_estimation} \\
+        Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & \cite{morpheus}                                                                                                                                            \\
+        Tuple ratio                & $\rho$   & Ratio of rows/columns from $S_{2\cdots k}$ in $S_1$                & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
+        Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
+        Join Type                  & $j_T$    & The join type used to join the source tables to the target table   & \cite{schijndel_cost_estimation}                                                                                                                           \\
+        Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M \cite{MorpheusFIEnablingOptimizingNonlinear2019}                                          \\
+        \bottomrule
     \end{tabular}
     \caption{Overview of data related features varied in this study. A reference in the 'Reason for choice' column denotes this feature is either used in the cost estimation rule in that publication, or the publication has a thorough analysis showing the impact of this feature on runtime.}
     \label{tab:4-data_chars}
 \end{table}
-
+\endgroup
+% LTeX: enabled: true
 
 \subsubsection{Hardware}
 \paragraph{GPU Architectures}
 
 \subsubsection{Model}
+\todo{
+    \begin{enumerate}
+        \item Model type
+        \item Model hyperparameters (not varied so leave out?)
+        \item complexity (ratio)
+    \end{enumerate}
+}
 
 \subsection{Dependent Variables}
 
@@ -44,7 +58,38 @@ Literature has identified the effect of some data characteristics on factorized 
 \todo{Training time}
 
 \subsubsection{Micro Benchmarking Hardware Metrics}
-\todo{Gpu profiling}
+\todo{GPU profiling}
+
+
+
+\begin{table}[ht]
+    \begin{tabular}{@{}p{0.2\linewidth}lp{0.50\linewidth}@{}}
+        \toprule
+        Metric group (unit)                                      & Metric name               & Explanation                                                                                                                                                                                                   \\ \midrule\midrule
+        Frequency (cycle/second)                                 & \underline{DRAM}          & Used to calculate realized speed of DRAM.                                                                                                                                                                     \\
+                                                                 & \textbf{SM}               & Gives insight into the number of operations each SM does.                                                                                                                                                     \\
+        \rule{0pt}{3ex}\multirow{5}{\linewidth}{Throughput (\%)} & \underline{Memory}        & \rule{0pt}{3ex}\multirow{6}{\linewidth}{Comparing throughput between F/M tells us something about which is using resources more efficiently.}                                                                 \\
+                                                                 & \underline{DRAM}          &                                                                                                                                                                                                               \\
+                                                                 & \underline{L1 Cache}      &                                                                                                                                                                                                               \\
+                                                                 & \underline{L2 Cache}      &                                                                                                                                                                                                               \\
+                                                                 & \textbf{Compute (SM)}     &                                                                                                                                                                                                               \\
+        Throughput (byte/second)                                 & \underline{Memory}        &                                                                                                                                                                                                               \\                                                                                                                 \\
+        \multirow{2}{\linewidth}{Cycles (cycle)}                 & \textbf{SM active}        & \multirow{2}{\linewidth}{The active and elapsed cycles can be extrapolated to show how different hardware (with different clock speed) would perform for the same task.}                                      \\
+                                                                 & \textbf{Elapsed}          &                                                                                                                                                                                                               \\
+        \rule{0pt}{3ex}\multirow{2}{\linewidth}{Hit Rate (\%)}   & \underline{L1 Cache}      & \multirow{2}{\linewidth}{Hit rate plays a large factor in the effiency of a program. A low hitrate means retrieving data from higher level memory, thus incurring large costs.}                               \\
+                                                                 & \underline{L2 Cache}      &                                                                                                                                                                                                               \\
+        \rule{0pt}{3ex}\multirow{2}{\linewidth}{Busy (\%)}       & \underline{Memory}        &                                                                                                                                                                                                               \\
+                                                                 & \underline{Memory Pipes}  &                                                                                                                                                                                                               \\
+        \rule{0pt}{3ex}Memory read/written (byte)                & \underline{DRAM read}     & \multirow{2}{\linewidth}{Data passing operations are expensive, especially in higher level RAM (dram). How much data is written to and read from this dram will heavily influence how fast a computation is.} \\
+                                                                 & \underline{DRAM written}  &                                                                                                                                                                                                               \\
+        \rule{0pt}{3ex}Duration (nsecond)                        & Duration                  &                                                                                                                                                                                                               \\
+        \rule{0pt}{3ex}Bandwidth (\%)                            & \underline{Max Bandwidth} &                                                                                                                                                                                                               \\ \bottomrule
+    \end{tabular}
+
+    \caption{Table showing the collected profiling metrics and their explanation. Metrics related to compute cost are \textbf{bold}, those related to memory cost are \underline{underlined}.
+    \todo{Move the explanation out of this table and into a paragraph?}}
+    \label{tab:4-profiling-metrics}
+\end{table}
 
 
 \section{Cost Estimation}
@@ -64,3 +109,13 @@ This cost model uses a neural network, to make its predictions. This model is in
 Finally, the knowledge gathered from the previous cost estimators is combined and applied in a hybrid model. Much like the optimization model from \cite{halide_cost_model} this model aims to create a highly accurate, but explainable, model. This is achieved by combining intricate knowledge of the most impactful features and their interactions with a neural network to estimate the weights of its (combined) features.
 
 \todo{Show architecture of hybrid model.}
+
+\subsection{? Cost Estimation at Training Time?}
+\todo{
+    This is a section I am not sure about. I think it would be interesting to see if we can estimate the cost of training a model at training time. This would allow for a more dynamic approach to the cost estimation. This would entail capturing some metrics (e.g., time taken for row sum/LMM) of the dataset at runtime and comparing cost between F/M.
+    Either fine-tuning a pre-trained model, or without a pretrained model.
+    Caveats:
+    \begin{itemize}
+        \item Needs to be fast, can't diminish the time won by choosing F over M
+    \end{itemize}
+}

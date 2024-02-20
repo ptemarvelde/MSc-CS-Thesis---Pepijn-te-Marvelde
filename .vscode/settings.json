@@ -9,4 +9,7 @@
     },
     "editor.formatOnSave": true,
     "latex-workshop.latex.outDir": "%DIR%/out",
+    "ltex.latex.environments": {
+        "table": "ignore",
+    }
 }

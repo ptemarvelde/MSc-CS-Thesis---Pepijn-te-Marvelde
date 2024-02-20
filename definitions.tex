@@ -4,14 +4,15 @@
 %----------------------------------------------------------------------------------------
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
+    \textbf{(G)NMF} & (\textbf{G}aussian)-\textbf{N}on-negative \textbf{M}atrix \textbf{F}actorization\\
+    \textbf{DI} &  \textbf{D}ata \textbf{I}ntegration\\
+    \textbf{F/M} & \textbf{F}actorized/\textbf{M}aterialized\\
     \textbf{FK} & \textbf{P}rimary \textbf{K}ey\\
+    \textbf{FLOP} & \textbf{FL}oating-point \textbf{OP}eration\\
+    \textbf{LA} & \textbf{L}inear \textbf{A}lgebra\\
     \textbf{ML} & \textbf{M}achine \textbf{L}earning\\
     \textbf{PK} & \textbf{F}oreign \textbf{K}ey\\
-    \textbf{(G)NMF} & (\textbf{G}aussian)-\textbf{N}on-negative \textbf{M}atrix \textbf{F}actorization\\
-    \textbf{FLOP} & \textbf{FL}oating-point \textbf{OP}eration\\
-    \textbf{DI} &  \textbf{D}ata \textbf{I}ntegration\\
-    \textbf{LA} & \textbf{L}inear \textbf{A}lgebra\\
-
+    \textbf{SM} & \textbf{S}treaming \textbf{M}ultiprocessor\\
 
 
 \end{abbreviations}
@@ -39,13 +40,17 @@
 
     % \addlinespace % Gap to separate the Roman symbols from the Greek
 
-    $S$          & Entity table                                             &\\
-    $R_k$        & Attribute table $i$                                      &\\
-    $T$            & Target table, result of joining tables (materialization) &\\
-    $n_S$, $n_k$ & Number of rows (samples/tuples) in $S$, $R_k$            &\\
-    $d_S$, $d_k$ & Number of columns (features) in $S$, $R_k$                &\\
-    $e_S$, $e_k$ & Sparsity (fraction of 0 values) of $S$, $R_k$                                   &\\
-    $p$          & Number of base tables                                    &\\
+    $\rho$       & Feature ratio ($\frac{n_S}{\sum_{k=1}^p n_k} $)\\
+    $\sigma$     & Selectivity                                              &\\
     $\tau$       & Tuple ratio ($\frac{\sum_{k=1}^p d_k}{d_S}$)                                             &\\
-    $\rho$       & Feature ratio ($\frac{n_S}{\sum_{k=1}^p n_k} $)
+    $c_t$     & Number of columns in table $t$               &\\
+    $d_t$ & Number of columns (features) in table $t$                &\\
+    $e_t$ & Sparsity (fraction of $0$ values) of table $t$                                   &\\
+    $j_t$        & Join type of table $t$                                           &\\
+    $n_t$ & Number of rows (samples/tuples) in table $t$            &\\
+    $p$          & Number of base tables                                    &\\
+    $R_k$        & Attribute table $i$                                      &\\
+    $r_t$     & Number of rows in table $t$                  &\\
+    $S$          & Entity table                                             &\\
+    $T$            & Target table, result of joining tables (materialization) &\\
 \end{symbols}
