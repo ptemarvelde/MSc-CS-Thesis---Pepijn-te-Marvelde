@@ -263,7 +263,57 @@ In the previous section we have shown the properties of the Normalized matrix. T
 
 \subsubsection{Running Example: Right Matrix Multiplication}
 
-
+\begingroup
+\setlength{\arraycolsep}{3.0pt}
+\begin{alignat*}{1}
+    \intertext{We right matrix multiplication (RMM) by multiplying with $X$. First for the materialized Target table $T$:}
+    X T & = \begin{bNiceMatrix}
+                1 & 1 & 2 & 3 \\
+            \end{bNiceMatrix}
+    \begin{bNiceMatrix}
+        1 & 11 & 2024 & 2 & 20 & 40 & 0 \\
+        1 & 11 & 2024 & 1 & 25 & 25 & 0 \\
+        2 & 12 & 2024 & 3 & 13 & 39 & 0 \\
+        3 & 11 & 2023 & 1 & 10 & 10 & 1 \\
+    \end{bNiceMatrix}                                                         \\
+        & =\begin{bNiceMatrix}
+               15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
+           \end{bNiceMatrix}                                             \\
+    \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
+    X T & = \sum_{k=0}^{n-1} X I_k S_k M^T_k
+    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the subcalculations for $T_{1,2}$.}
+        & = X T_0 + X T_1 + X T_2                                                           \\
+        & = \begin{bNiceMatrix}
+                1 & 1 & 2 & 3 \\
+            \end{bNiceMatrix} \begin{bNiceMatrix}
+                                  1 & 11 & 2024 & 0 & \cdots & 0 \\
+                                  1 & 11 & 2024 & 0 & \cdots & 0 \\
+                                  2 & 12 & 2024 & 0 & \cdots & 0 \\
+                                  3 & 11 & 2023 & 0 & \cdots & 0 \\
+                              \end{bNiceMatrix} + X \begin{bNiceMatrix}
+                                                        0 & 0 & 0 & 2 & 20 & 40 & 0 \\
+                                                        0 & 0 & 0 & 1 & 25 & 25 & 0 \\
+                                                        0 & 0 & 0 & 3 & 13 & 39 & 0 \\
+                                                        0 & 0 & 0 & 1 & 10 & 10 & 0 \\
+                                                    \end{bNiceMatrix} + X\begin{bNiceMatrix}
+                                                                             0 & \cdots & 0 & 0 \\
+                                                                             0 & \cdots & 0 & 0 \\
+                                                                             0 & \cdots & 0 & 0 \\
+                                                                             0 & \cdots & 0 & 1 \\
+                                                                         \end{bNiceMatrix} \\
+        & =\begin{bNiceMatrix}
+               15 & 79 & 14165 & 0 & 0 & 0 & 0 \\
+           \end{bNiceMatrix} +
+    \begin{bNiceMatrix}
+        0 & 0 & 0 & 12 & 101 & 173 & 0 \\
+    \end{bNiceMatrix}+
+    \begin{bNiceMatrix}
+        0 & 0 & 0 & 0 & 0 & 0 & 3 \\
+    \end{bNiceMatrix}                                                               \\& =\begin{bNiceMatrix}
+        15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
+    \end{bNiceMatrix}
+\end{alignat*}
+\endgroup
 
 \subsection{Running Example: Factorized Linear Regression}
 \label{subsec:2-fac-ml-example}
