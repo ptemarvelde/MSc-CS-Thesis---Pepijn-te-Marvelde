@@ -12,9 +12,9 @@ The concept of Factorized Learning was proposed in \cite{orion_learning_gen_lin_
 Santoku \cite{santoku_kumar_demonstration_2015}, a toolkit that implements factorized learning in R, extends Orion. The toolkit additionally supports ML models with categorical features, such as Naive Bayes, and extends the factorized approach to ML inference. However, Orion and Santoku have some limitations:
 
 \begin{enumerate}
-	\item Only supports PK/FK joins.
-	\item Requires one-hot encoding of Categorical features.
-	\item Requires manual effort to create a factorized implementation of an ML algorithm.
+    \item Only supports PK/FK joins.
+    \item Requires one-hot encoding of Categorical features.
+    \item Requires manual effort to create a factorized implementation of an ML algorithm.
 \end{enumerate}
 
 F \cite{f_schleich} addresses this first limitation by extending Factorized Learning to any natural join. However, F only applies to least squares regression models. AC/DC, a system developed by the same authors, generalizes F to non-linear models and eliminates the need for one-hot encoding of categorical features. This is achieved by using sparse data representations for categorical features, which avoid the redundancy of one-hot encoding.
@@ -33,21 +33,21 @@ An analytical model that compares I/O and CPU cost between F and M is used in \c
 Morpheus \cite{morpheus} argues that using specific cost models for LA operators is not feasible because it makes the cost model dependent on a single LA back-end. Thus, they advocate for a “system-agnostic approach that does not need cost models for operators”. This approach uses a decision rule based on feature and tuple ratios to determine whether to factorize. The rule is as follows:
 
 \begin{definition}[\textit{Morpheus' Decision Rule}]
-	\begin{itemize}
-		\item[]
-		\item[$\tau$] Tuple ratio
-		\item[$\rho$] Feature ratio
-	\end{itemize}
+    \begin{itemize}
+        \item[]
+        \item[$\tau$] Tuple ratio
+        \item[$\rho$] Feature ratio
+    \end{itemize}
 
-	\begin{align*}
-		\begin{split}
-			Optimize_{Morpheus}(\tau, \rho) =
-			\begin{cases}
-				Factorize    & \tau > 5 \wedge \rho > 1 \\
-				Materialize, & \text{otherwise}
-			\end{cases}
-		\end{split}
-	\end{align*}
+    \begin{align*}
+        \begin{split}
+            Optimize_{Morpheus}(\tau, \rho) =
+            \begin{cases}
+                Factorize    & \tau > 5 \wedge \rho > 1 \\
+                Materialize, & \text{otherwise}
+            \end{cases}
+        \end{split}
+    \end{align*}
 \end{definition}
 
 The conservative choice of thresholds results in Morpheus predicting materialization in cases where it is slower than factorization, but the authors show that these speed-ups are often less than 1.5x.
@@ -56,24 +56,24 @@ The conservative choice of thresholds results in Morpheus predicting materializa
 MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the performance trade-offs and crossovers between its factorized interaction framework and materialized execution for LA operations. The authors identify sparsity as another key factor, along with the already known tuple ratio, and feature ratio, that affects runtime. They propose a heuristic decision rule based on these factors to help users decide when to use their framework. The decision rule uses the cost ratio of the factorized and materialized approaches for left matrix multiplication. The decision rule considers the number of base tables, the number of sparse dimension tables, and the sparsity of each dimension table, the rule is:
 
 \begin{definition}[\textit{MorpheusFI's Decision Rule}]
-	\begin{itemize}
-		\item[]
-			\item[$q$]Number of base tables with sparsity $ < 5\% $
-		\item[$p$] Number of base tables
-		\item[$e_k$] Sparsity of $R_k$
-		\item[$n_S$] Number of samples in $S$
-		\item[$n_k$] Number of rows in $R_k$
-	\end{itemize}
+    \begin{itemize}
+        \item[]
+            \item[$q$]Number of base tables with sparsity $ < 5\% $
+        \item[$p$] Number of base tables
+        \item[$e_k$] Sparsity of $R_k$
+        \item[$n_S$] Number of samples in $S$
+        \item[$n_k$] Number of rows in $R_k$
+    \end{itemize}
 
-	\begin{align*}
-		\begin{split}
-			Optimize_{MorpheusFI}(q, p, e, n_S, n) =
-			\begin{cases}
-				Factorize   & \parbox[t]{.18\linewidth}{$q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in [1,q], e_k \frac{n_S}{n_k} > 1)$} \\
-				Materialize & \text{otherwise}
-			\end{cases}
-		\end{split}
-	\end{align*}
+    \begin{align*}
+        \begin{split}
+            Optimize_{MorpheusFI}(q, p, e, n_S, n) =
+            \begin{cases}
+                Factorize   & \parbox[t]{.18\linewidth}{$q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in [1,q], e_k \frac{n_S}{n_k} > 1)$} \\
+                Materialize & \text{otherwise}
+            \end{cases}
+        \end{split}
+    \end{align*}
 \end{definition}
 
 This rule is not extensively evaluated.
@@ -82,21 +82,21 @@ Amalur \cite{schijndel_cost_estimation} implements a combination between the two
 
 \begin{definition}[\textit{Amalur's Decision Rule}]
 
-	\begin{itemize}
-		\item[]
-		\item[$s$] Standard complexity
-		\item[$f$] Factorized complexity
-	\end{itemize}
+    \begin{itemize}
+        \item[]
+        \item[$s$] Standard complexity
+        \item[$f$] Factorized complexity
+    \end{itemize}
 
-	\begin{align*}
-		\begin{split}
-			Optimize_{Amalur}(s, f) =
-			\begin{cases}
-				Factorize   & \frac{s}{f} > 1.5 \\
-				Materialize & \text{otherwise}
-			\end{cases}
-		\end{split}
-	\end{align*}
+    \begin{align*}
+        \begin{split}
+            Optimize_{Amalur}(s, f) =
+            \begin{cases}
+                Factorize   & \frac{s}{f} > 1.5 \\
+                Materialize & \text{otherwise}
+            \end{cases}
+        \end{split}
+    \end{align*}
 \end{definition}
 
 The threshold value $t = 1.5 $ was chosen as the boundary to cater towards preferring false negatives to false positives. This approach shows comparable performance to that of Morpheus.
@@ -104,18 +104,18 @@ The threshold value $t = 1.5 $ was chosen as the boundary to cater towards prefe
 A comparison of these approaches (see \autoref{tab:cost_model_overview}) shows that most cost models are simple heuristic decision rules. Even Orion's analytical cost model is primarily used to count operations. The final decision is also based on a decision rule. These rules are effective at predicting cases where the answer is obvious, such as when there is substantial redundancy. However, a cost model that can accurately predict difficult cases, which are likely to occur more often, is still needed. To achieve this, a decision rule will not suffice. Some explainability may have to be traded for the benefit of creating a more accurate cost model.
 
 \begin{table}[ht]
-	\centering
-	\begin{tabular}{lp{0.25\linewidth}p{0.32\linewidth}}
-		\toprule
-		System                                                       & Model                                                                & Relevant features                                                                                                                           \\ \midrule \midrule
-		Orion      \cite{orion_learning_gen_lin_models}              & Analytical cost model (I/O and CPU cost) $\rightarrow$ Decision Rule & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Buffer size \item Input table dimensions \item Model iterations  \end{itemize} \\ \midrule
-		Morpheus    \cite{morpheus}                                  & Heuristic decision rule                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Tuple ratio \item Feature ratio  \end{itemize}                                 \\\midrule
-		MorpheusFI  \cite{MorpheusFIEnablingOptimizingNonlinear2019} & Heuristic decision rule                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Sparsity \item Input table dimensions \end{itemize}                            \\\midrule
-		Amalur     \cite{schijndel_cost_estimation}                  & Analytical cost model (FLOPs) $\rightarrow$ Decision rule            & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=00.3cm] \item Complexity ratio \end{itemize}                                                \\
-		\bottomrule
-	\end{tabular}
-	\caption{Overview of cost estimators for factorized learning}
-	\label{tab:cost_model_overview}
+    \centering
+    \begin{tabular}{lp{0.30\linewidth}p{0.32\linewidth}}
+        \toprule
+        System                                                       & Model                                                                & Relevant features                                                                                                                           \\ \midrule \midrule
+        Orion      \cite{orion_learning_gen_lin_models}              & Analytical cost model (I/O and CPU cost) $\rightarrow$ Decision Rule & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Buffer size \item Input table dimensions \item Model iterations  \end{itemize} \\ \midrule
+        Morpheus    \cite{morpheus}                                  & Heuristic decision rule                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Tuple ratio \item Feature ratio  \end{itemize}                                 \\\midrule
+        MorpheusFI  \cite{MorpheusFIEnablingOptimizingNonlinear2019} & Heuristic decision rule                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Sparsity \item Input table dimensions \end{itemize}                            \\\midrule
+        Amalur     \cite{schijndel_cost_estimation}                  & Analytical cost model (FLOPs) $\rightarrow$ Decision rule            & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=00.3cm] \item Complexity ratio \end{itemize}                                                \\
+        \bottomrule
+    \end{tabular}
+    \caption{Overview of cost estimators for factorized learning}
+    \label{tab:cost_model_overview}
 \end{table}
 
 \section{Machine Learning Optimizers}
@@ -129,21 +129,24 @@ TVM \cite{tvm} is an automated end-to-end optimizing compiler for deep learning 
 These optimizers are not directly applicable to the scenario we are creating a cost estimator for, as the models cannot currently be compiled with TVM or Halide and making them compatible is outside the scope of this thesis. However, insights from these optimizers can inform the cost estimation problem addressed in this research. \autoref{tab:optimizer_overview} presents factors that can help create an accurate model for predicting whether materialization or factorization is faster.
 
 \begin{table}[ht]
-	\centering
-	\begin{tabular}{p{0.15\linewidth}p{0.09\linewidth}p{0.25\linewidth}p{0.35\linewidth}}
-		\toprule
-		System & Reference                & Model                                                                                & Relevant features                                                                                                                                                                              \\ \midrule \midrule
+    \centering
+    \begin{tabular}{p{0.15\linewidth}p{0.09\linewidth}p{0.25\linewidth}p{0.35\linewidth}}
+        \toprule
+        System & Reference                & Model                                                                                & Relevant features                                                                                                                                                                              \\ \midrule \midrule
 
-		TVM    & \cite{tvm}               & XGBoost                                                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Memory access count \item Memory buffer reuse ratio \item Number of time kernel is called \item Touched memory size \end{itemize} \\ \midrule
-		Halide & \cite{halide_cost_model} & Vector of handcrafted features multiplied by coefficients computed by Neural Network & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Total number of allocations made \item Total number of bytes read \item Total number of scalar instructions \end{itemize}         \\ \bottomrule
-	\end{tabular}
-	\caption{Overview of discussed Machine Learning Optimizers}
-	\label{tab:optimizer_overview}
+        TVM    & \cite{tvm}               & XGBoost                                                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Memory access count \item Memory buffer reuse ratio \item Number of time kernel is called \item Touched memory size \end{itemize} \\ \midrule
+        Halide & \cite{halide_cost_model} & Vector of handcrafted features multiplied by coefficients computed by Neural Network & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Total number of allocations made \item Total number of bytes read \item Total number of scalar instructions \end{itemize}         \\ \bottomrule
+    \end{tabular}
+    \caption{Overview of discussed Machine Learning Optimizers}
+    \label{tab:optimizer_overview}
 \end{table}
 
 \section{Research Gap}
-A comprehensive performance analysis of factorized machine learning, conducted through profiling and experimentation, will provide valuable insights for developing an accurate cost model. This cost model aims to determine the optimal approach, either factorization or materialization, to optimize the training time. By comparing this analysis with an analysis of materialized machine learning, we can gain a deeper understanding of the computational differences and the factors that influence them. Previous works have identified data, hardware, and model characteristics as factors that impact the decision to factorize or materialize. However, these works have not been able to accurately predict the optimal approach due to their limited optimization space and narrow ranges for cost model parameters. Additionally, the influence of hardware on runtime and its relationship with the trade-off between factorization and materialization have not been fully considered by the authors. Therefore, the main research gaps in this area can be summarized as follows:
-\begin{enumerate}
-	\item Limited optimization space and narrow ranges for cost model parameters.
-	\item Insufficient attention to the trade-off between factorization and materialization in relation to hardware characteristics.
+A comprehensive performance analysis of factorized machine learning, conducted through profiling and experimentation, will provide valuable insights for developing an accurate cost model. This cost model aims to determine the optimal approach, either factorization or materialization, to optimize for training time. By comparing this analysis with an analysis of materialized machine learning, we can gain a deeper understanding of the computational differences and the factors that influence them.
+
+Previous works have identified data, hardware, and model characteristics as factors that impact the decision to factorize or materialize. However, these works have not been able to accurately predict the optimal approach due to their limited optimization space and narrow ranges for cost model parameters. Additionally, the influence of hardware on runtime and its relationship with the trade-off between factorization and materialization have not been fully considered by the authors. Therefore, the main research gaps in this area can be summarized as follows:
+\begin{enumerate}[leftmargin=1.5cm, label=\emph{RG.\arabic*}]
+    \item Limited optimization space and narrow ranges for cost model parameters.
+    \item Insufficient attention to the trade-off between factorization and materialization in relation to hardware characteristics.
 \end{enumerate}
+\emph{RG.1} is addressed in \autoref{sec:experiment-setup}, \emph{RG.2} in \autoref{subsubsec:4-hardware}.

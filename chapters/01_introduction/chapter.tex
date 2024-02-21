@@ -33,15 +33,16 @@ This thesis focuses on facilitating the adoption of factorized machine learning 
 
 \subsection{Research Questions}
 The research questions answered in this thesis are:
-\begin{itemize}
-    \item[RQ.1] How can we optimize and implement Factorized Machine Learning for GPUs?
-    \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
-\end{itemize}
+\begin{enumerate}[leftmargin=1.5cm, label=\emph{RQ.\arabic*}]
+    \item How can we optimize and implement Factorized Machine Learning for GPUs?
+    \item How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
+\end{enumerate}
 
 \subsection{Contributions}
-\begin{enumerate}
-    \item[C.1] A GPU optimized implementation of Amalur's Factorized Machine Learning framework.
-    \item[C.2] A cost model that predicts whether factorized or materialized learning is faster, capable of accurate predictions regardless of dataset, model hyperparameters, or hardware used. This cost model is the result of a detailed study comparing multiple cost calculation strategies.
+The Research Questions are answered by providing the following contributions:
+\begin{enumerate}[leftmargin=1.5cm, label=\emph{C.\arabic*}]
+    \item A GPU optimized implementation of Amalur's Factorized Machine Learning framework.
+    \item A cost model that predicts whether factorized or materialized learning is faster, capable of accurate predictions regardless of dataset, model hyperparameters, or hardware used. This cost model is the result of a detailed study comparing multiple cost calculation strategies.
 \end{enumerate}
 
 \section{Running Example}
