@@ -3,16 +3,16 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-% General intro
-Training a Machine Learning (ML) model can be costly, both in time and in computational resources. This is the reason a lot of effort is spent ensuring models are trained in the most optimal way. A novel approach called factorized learning \cite{orion_learning_gen_lin_models}, has been proposed to allow training models on normalized data, opening new possibilities for more efficient model training. It is applicable to a large set of data realistic ML workflow scenarios and joinable data sources.
+The field of Machine Learning (ML) has gained massive traction over the last few decades, with both industry and academia investing substantial efforts to enhance data availability and the performance of ML algorithms. This performance factor encompasses both the accuracy of a model, and the computational and time costs associated with training it.  To optimize this process, researchers have proposed a novel approach called factorized learning \cite{orion_learning_gen_lin_models}. This approach enables training models on normalized data, opening up new possibilities for more efficient model training. Factorized learning is applicable to a wide range of realistic ML workflow scenarios and joinable data sources.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\linewidth]{chapters/01_introduction/figures/running-example-intro.pdf}
-    \caption{Illustration of input data used for Factorized Learning vs. Learning over Materialized data, schema from TPCx-AI \cite{tpcx_ai} Use Case 1 (unused columns not shown). Target redundancy avoided by factorization shown in orange.}
+    \caption{\textbf{Running Example: Source datasets and the joined table} Illustration of input data used for Factorized Learning vs. Learning over Materialized data, schema from TPCx-AI \cite{tpcx_ai} Use case 1 (unused columns not shown). Target redundancy avoided by factorization shown in orange.}
     \label{fig:running-example-fac-vs-mat}
 \end{figure}
 
-When a data scientist wants to train an ML model, they first need to join disparate sources to create a single dataset (Materialization \cite{rel_db_glossary}) to use as input for an ML model. Factorized Learning eliminates this step in the training process by learning directly from the source datasets, without first joining them. \autoref{fig:running-example-fac-vs-mat} illustrates the difference between factorized learning and learning over materialized data. The reason that factorized learning can be more efficient is that values in the materialized data (orange cells in $T$ in the figure) do not lead to redundant computations during training. However, the source datasets can also have redundant values, and this redundancy is not the only factor that affects the efficiency of factorized learning. Apart from the data-characteristics (which include redundancy), model parameters and hardware characteristics can also influence the choice between factorized learning and materialization.
+A generic ML scenario is as follows. When a data scientist wants to train an ML model, the first step is collecting the data needed for training. Often this data comes from disparate sources. Therefore, they first need to join these sources to create a single dataset to use as input for an ML model. This is achieved through a process called Data Integration (DI), the act of executing the join between these tables is called Materialization \cite{rel_db_glossary}. Factorized Learning eliminates this step in the training process by learning directly from the source datasets, without first joining them. \autoref{fig:running-example-fac-vs-mat} illustrates the difference between factorized learning and learning over materialized data. The reason that factorized learning can be more efficient is that values in the materialized data (orange cells in $T$ in the figure) do not lead to redundant computations during training. However, the source datasets can also have redundant values, and this redundancy is not the only factor that affects the efficiency of factorized learning. Apart from the data-characteristics (which include redundancy), model parameters and hardware characteristics can also influence the choice between factorized learning and materialization.
 
 Deciding between factorization and materialization is a multidimensional cost optimization problem. This is an interesting and important problem because factorized learning is a very novel approach to the fundamentals of machine learning. It has the potential to reduce the cost of model training without affecting performance. It could also be easily extensible to federated learning in a scenario where computation involving a source dataset is executed in the silo that dataset resides in.
 
@@ -46,19 +46,17 @@ The Research Questions are answered by providing the following contributions:
 \end{enumerate}
 
 \section{Running Example}
-\todo{Formalization of the running example
-    \begin{itemize}
-        \item Use case
-        \item schema
-        \item more details
-    \end{itemize}
-}
+Throughout this thesis we use a running example based on TPCx-AI\cite{tpcx_ai} use case 1 to explain various concepts. The scenario is that of a Data Scientist in an ecommerce firm who is tasked with creating a data science pipeline to perform Customer Segmentation. Three tables are joined to create a single table, which is then used as input in a K-Means clustering model. The schema of the tables and the joined table are shown in \autoref{fig:running-example-fac-vs-mat}.
+
+The three tables that need to be joined are the \textbf{Orders} table ($S_1$), the \textbf{Lineitem} table ($S_2$), and the \textbf{Order returns} table ($S_3$). The \textbf{Orders} table contains information about the orders made by customers, the schema of this table is $S_1(order\_id$, $customer\_sk$, $\ date)$. The \textbf{Lineitem} table contains information about the items in each order, its schema is $S2(order\_id$, $product\_id$, $quantity$,  $price)$. The \textbf{Order returns} table, having schema $S_3(order\_id$, $product\_id$, $return\_quantity)$ contains information about the returns made by customers.
+
+The joined table contains all the columns from the three source tables, and is used as input for the K-Means clustering model. It is created by first left joining $S2$ with $S1$ on shared columns $order\_id$ and $product\_id$, then joining the result of this with $S1$ on $order_id$. After this we have $T(order\_id$, $customer\_sk$, $date$, $product\_id$, $quantity$, $price$, $return\_quantity)$.
 
 \section{Cost Estimation for Factorized Machine Learning}
 To develop a cost estimator that can accurately predict whether Factorized or materialized learning is faster for a given ML task we conduct experiments on synthetic data allowing for full control of the relevant data, model, and hardware factors. These empirical where then used results to train several models. We compare these models with each other, as well as with multiple baselines from related works. This was done not only to show which models perform best, but to also create thorough understanding on why these models perform the way they do.
 
 Evaluation on real-world datasets show that our models outperform the state-of-the-art, specifically the \todo{\textbf{???}} model performs well. It performs \todo{\textbf{???}} as well as state-of-the-art Amalur \cite{schijndel_cost_estimation} on Hamlet datasets \cite{2016hamletsigmod}. It also performed well on the TPC-AI use cases, saving \todo{\textbf{???}\%} of training time over a system without factorized ML and a cost estimator to decide whether to do materialized or factorized computation. The goal of creating a generalizable model, one that still has accurate prediction capabilities even if the scenario under evaluation is not similar to one the model was trained on, was also achieved. The final estimator only loses \todo{\textbf{???}} of its predictive power on use cases with hardware, and data characteristics not in its training set.
-% Something more about why this model performs the best
+% Something more about why this model performs the best..
 
 
 \section{Outline}
