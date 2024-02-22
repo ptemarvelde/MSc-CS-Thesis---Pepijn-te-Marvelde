@@ -28,7 +28,7 @@ Factorized Machine Learning aims to alleviate these problems by “learning over
 
 \section{Factorized Machine Learning}
 \label{sec:2-factorized-ml}
-As stated previously in this thesis, Factorized ML is the process of training Machine Learning models on multiple tables without the need to materialize the join between these tables. This section will go in-depth on how this can be achieved, continuing the running example from \autoref{fig:running-example-fac-vs-mat}.  We start with the definitions (\autoref{subsec:2-normalized-matrix}) followed by an in-depth example of the involved linear algebra (\autoref{subsec:2-fac-ml-example}).
+As stated previously in this thesis, Factorized ML is the process of training Machine Learning models on multiple tables without the need to materialize the join between these tables. This section will go in-depth on how this can be achieved, continuing the running example from \autoref{fig:running-example-fac-vs-mat}.  We start with the definitions (\autoref{subsec:2-normalized-matrix}) followed by an in-depth example of the involved linear algebra (\autoref{subsubsec:2-fac-ml-example}).
 
 \subsection{Normalized Matrix}
 \label{subsec:2-normalized-matrix}
@@ -95,11 +95,13 @@ Intuitively this process can be seen as:
 \end{algorithmic}
 
 \subsubsection{Running Example: Normalized Matrix}
+\label{subsubsec:2-fac-ml-example}
 To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join.
 
+\vspace{-1cm}
 \begin{alignat*}{6}
     \intertext{
-        These are the corresponding Source matrices $S_{0..2}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} column numbers denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} row numbers illustrate to which target table rows they are mapped.
+        These are the corresponding Source matrices $S_{0..2}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
     }
                                                             & S_0 &     & =
     \begin{bNiceMatrix}[first-row,last-col]
@@ -281,7 +283,7 @@ In the previous section we have shown the properties of the Normalized matrix. T
            \end{bNiceMatrix}                                             \\
     \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
     X T & = \sum_{k=0}^{n-1} X I_k S_k M^T_k
-    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the subcalculations for $T_{1,2}$.}
+    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the sub calculations for $T_{1,2}$.}
         & = X T_0 + X T_1 + X T_2                                                           \\
         & = \begin{bNiceMatrix}
                 1 & 1 & 2 & 3 \\
@@ -314,25 +316,6 @@ In the previous section we have shown the properties of the Normalized matrix. T
     \end{bNiceMatrix}
 \end{alignat*}
 \endgroup
-
-\subsection{Running Example: Factorized Linear Regression}
-\label{subsec:2-fac-ml-example}
-\todo{
-    \begin{itemize}
-        \item Go through full example with Linear Regression
-    \end{itemize}
-}
-
-\begin{algorithm}[h]
-    \caption[Linear regression]{Linear regression using Gradient Descent
-        (\cite{morpheus})}\label{alg:linear-regression}
-    \begin{algorithmic}
-        \Require $T, y, w, \gamma$
-        \For{$i \in 1:n$}
-        \State $w = w - \gamma (T^T ((T w) - Y))$
-        \EndFor
-    \end{algorithmic}
-\end{algorithm}
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
