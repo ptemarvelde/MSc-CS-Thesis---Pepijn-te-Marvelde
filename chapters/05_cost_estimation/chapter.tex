@@ -3,13 +3,24 @@
 \chapter{Cost Estimation}
 
 \label{chapter:cost-estimation}
-\todo{This chapter details the results of the experiments}
+In this chapter, we share the results of our experiments and explain how we used these results to build four different cost models. The \hyperref[sec:5-motivation]{first section} shows the results of the experiments, motivating why a cost model is necessary. In \autoref{sec:5-cost-models}, we talk about how we used these results to create the cost models. Each model is made for a specific purpose and offers different ways to solve the problem. This chapter aims to give a clear picture of how we ran the experiments and built the cost models from the results.
 
 \section{Motivation}
+\label{sec:5-motivation}
 \todo{Simple visualisation to show why cost estimation is needed, and obvious correlations between dependent/independent vars.}
+To show the major impact our chosen independent variables have on the trade-off between Materialization and Factorization we first the performance ratio against a range of independent variables. We group the Data and Model characteristics as they both influence the actual computations being executed, whereas the hardware characteristics only influence how these computations are carried out on the hardware.
+
+\subsection{Data \& Model Characteristics}
+
+
+\subsection{Hardware Characteristics}
+
+
+\todo{Thus, all factors are very important, and we need complex models to estimate.}
 
 \section{Cost Models}
-\todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?}
+\label{sec:5-cost-models}
+\todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters}
 
 \subsection{Feature Engineering}
 \todo{Data Preprocessing steps}
