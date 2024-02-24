@@ -1,0 +1,13 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Toggle draft mode",
+            "type": "shell",
+            "command": "grep -q '^%.*draft,' main.tex && sed -i 's/^%\\(.*draft,\\)/\\1/' main.tex || sed -i 's/^\\(.*draft,\\)/%\\1/' main.tex",
+            "problemMatcher": []
+        }
+    ]
+}

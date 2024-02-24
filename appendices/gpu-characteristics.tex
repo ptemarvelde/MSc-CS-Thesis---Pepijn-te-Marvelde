@@ -1,11 +1,12 @@
 \chapter{GPU Characteristics}
 \label{appendix:gpu-characteristics}
-
 \begingroup
 \renewcommand{\arraystretch}{1.5}
-\begin{table}
-    \input{appendices/auto-generated/gpu-characteristics.tex}
-    \caption{Hardware Characteristics of the GPUs used in the experiments.}
+\begin{table}[ht]
+    \small
+    \resizebox{\textwidth}{!}{%
+        \input{appendices/auto-generated/gpu-characteristics.tex}}
+    \caption{Hardware Characteristics of the GPUs used in the experiments. Architecture abbrevations: Pas. = Pascal, Vol. = Volta, Tur. = Turing, Amp. = Ampere.}
     \label{tab:gpu-characteristics}
 \end{table}
 \endgroup
