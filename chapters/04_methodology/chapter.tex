@@ -8,7 +8,6 @@ This chapter details the methodology used to arrive at an accurate cost predicti
 
 \section{Problem Setting}
 \label{sec:4-problem-setting}
-\todo{Detail dependent \& independent variables}
 
 As this is an empirical study the focus is on carried out experiments and their results. Therefore, it is extremely important to design these experiments well. This starts with a look back at the problem we are trying to solve, after which we can say precisely what is needed to solve this problem. The experiments are then designed to gather the necessary results to come to a fitting solution.
 
@@ -20,7 +19,7 @@ Literature has identified the effect of some data characteristics on factorized 
 
 \begingroup
 \renewcommand{\arraystretch}{1.5}
-\begin{table}[ht]
+\begin{table}[t]
     \centering
     \begin{tabular}{p{0.16\linewidth}p{0.09\linewidth}p{0.23\linewidth}p{0.4\linewidth}}
         \toprule
@@ -54,10 +53,10 @@ Literature has identified the effect of some data characteristics on factorized 
 
 \subsection{Dependent Variables}
 
-\subsubsection{Training Cost}
-\todo{Training time}
+The dependent variable in this study is the cost of training a model, expressed as \textbf{training time}. The goal of the cost estimators is to pick the fastest method for training a model. This is why we use training time as the dependent variable.
 
-\subsubsection{Micro Benchmarking Hardware Metrics}
+Various \textbf{profiling metrics} are also collected to capture the cost of training a model. These metrics are used to calculate the cost of each operation in the training process. Through micro-benchmarks, run with a representative (sub)range of our independent variables, we find how these variables affect how computations are carried out on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}.
+
 \todo{\begin{itemize}
         \item Why do we need to capture metrics?
         \item Why these metrics, how are they used in the cost estimation.
@@ -67,7 +66,7 @@ Literature has identified the effect of some data characteristics on factorized 
     \end{itemize}
 }
 
-\begin{table}[ht]
+\begin{table}[t]
     \begin{tabular}{lll}
         \toprule
         Section Name                  & Metric Name                          & Metric Unit  \\

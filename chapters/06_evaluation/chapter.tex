@@ -5,24 +5,29 @@
 This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur's factorized ML framework, and a comparison with the state-of-the-art in \autoref{sec:eval-model-evaluation}. Before that, we show how results were collected in \autoref{sec:experiment-setup}. The \hyperref[sec:eval-discussion]{third section} of this chapter provides an in-depth interpretation of the results as well as a critical view on the implications and limitations of this work.
 
 \section{Experiment Setup}
-
 \label{sec:experiment-setup}
 
 \todo{Intro experimental environment, also serves as a guide on how to replicate the results}
+This section goes into detail about anything needed to replicate the results. This includes the experimental environment (\hyperref[subsec:6-software]{Software}, \hyperref[subsec:6-datasets]{Datasets} \& \hyperref[subsec:6-hardware]{Hardware} ),  and how the data was treated to ensure sound results for the cost estimators (\hyperref[subsec:6-validation-strategy]{validation strategy}). For more info and code please refer to the GitHub repository\footnote{\todo{TODO}}.
+
+\subsection{Software}
+\label{subsec:6-software}
+\todo{Detail software packages and such}
+\todo{Answer RQ.1 by showing contribution C.1 “GPU optimized implementation of Amalur’s Factorized Machine Learning framework”}
+
+The factorized ML framework (Amalur \cite{amalur}) is implemented in Python (3.10.4) and uses SciPy (1.8.0), NumPy (1.22.4) and CuPy (12.1.1). All experiments where ran in a Docker container with an image based on Nvidia's base image with CUDA 12.1.1 and Ubuntu 20.04\footnote{\href{https://hub.docker.com/layers/nvidia/cuda/12.1.1-devel-ubuntu20.04/images/sha256-5bd13c67a4479a1c13238b470d89a92937ce68ba5f21b930d50c463e3314f657?context=explore}{nvidia/cuda:12.1.1-devel-ubuntu20.04}}.
+
+The choice to use CuPy as the backend for the factorized ML framework was made to ensure that the experiments could be run on both CPU and GPU. CuPy is a GPU-accelerated library for numerical computations that is compatible with NumPy and SciPy \cite{cupy_learningsys2017}. This allows for minimal changes to the codebase whether you are using GPU or CPU. To allow for exploitation of multiple cores for sparse matrix multiplication\footnote{\url{https://github.com/flatironinstitute/sparse_dot}} we use MKL (Intel Math Kernel Library) \cite{intel-mkl} as NumPy's backend for the CPU experiments.
 
 \subsection{Datasets}
-
+\label{subsec:6-datasets}
 \subsubsection{Synthetic Datasets}
 
 \subsubsection{Real-world Datasets}
 
-\subsection{Software}
-
-\todo{Detail software packages and such}
-\todo{Answer RQ.1 by showing contribution C.1 “GPU optimized implementation of Amalur’s Factorized Machine Learning framework”}
-
 
 \subsection{Hardware}
+\label{subsec:6-hardware}
 \todo{Table showing different machines tested on}
 
 \begin{table}[ht]
@@ -49,7 +54,11 @@ This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur
     \label{tab:my_label}
 \end{table}
 
+\subsection{Experiment Setting}
+\todo{Number of iterations etc./}
+
 \subsection{Validation Strategy}
+\label{subsec:6-validation-strategy}
 \todo{Explain how the collected metrics are divided into separate train \& test set to test generalizability}
 
 \begin{figure}[ht]
