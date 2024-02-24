@@ -254,14 +254,16 @@ To make the translation to how the normalized matrix is used in ML algorithms we
 
 
 \subsection{Factorized Linear Algebra}
-In the previous section we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten \cite{morpheus} for the Normalized matrix for the purpose of performing factorized ML.
+In the previous section we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
 
 
 \subsubsection{Element-wise Scalar Operations}
+This group of operators all perform an operation on every element of a matrix, independently of one another. The operations are:
+\todo{ops}
 
-\subsubsection{Aggregation}
+\subsubsection{Aggregation Operations}
 
-\subsubsection{Multiplication}
+\subsubsection{Multiplication Operations}
 
 \subsubsection{Running Example: Right Matrix Multiplication}
 
@@ -319,4 +321,4 @@ In the previous section we have shown the properties of the Normalized matrix. T
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
-\todo{Introduce the relevant parts of GPUs \& Linear Algebra}
+\todo{Introduce the relevant parts of GPUs \& Linear Algebra. Such a diagram is nice: \href{https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html}{link}.}
