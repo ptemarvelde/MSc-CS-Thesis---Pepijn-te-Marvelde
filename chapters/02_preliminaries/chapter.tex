@@ -101,22 +101,22 @@ To make the translation to how the normalized matrix is used in ML algorithms we
 \vspace{-1cm}
 \begin{alignat*}{6}
     \intertext{
-        These are the corresponding Source matrices $S_{0..2}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
+        These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
     }
-                                                            & S_0 &     & =
+                                                            & S_1 &     & =
     \begin{bNiceMatrix}[first-row,last-col]
         0 & 1  & 2    &     \\
         1 & 11 & 2024 & 0,1 \\
         2 & 12 & 2024 & 2   \\
         3 & 11 & 2024 & 3   \\
-    \end{bNiceMatrix}   \quad                 &     & S_1 &   & =
+    \end{bNiceMatrix}   \quad                 &     & S_2 &   & =
     \begin{bNiceMatrix}[first-row,last-col]
         3 & 4  & 5  &   \\
         2 & 20 & 40 & 0 \\
         1 & 25 & 25 & 1 \\
         3 & 13 & 39 & 2 \\
         1 & 10 & 10 & 3 \\
-    \end{bNiceMatrix}           \quad                 &     & S_2 &   & =
+    \end{bNiceMatrix}           \quad                 &     & S_3 &   & =
     \begin{bNiceMatrix}[first-row,last-col]
         6 &   \\
         1 & 3 \\
@@ -124,19 +124,19 @@ To make the translation to how the normalized matrix is used in ML algorithms we
     \intertext{
         The Indicator matrices denote how rows from $S$ map to rows in $T$. The column number denotes the row in $S$, the row number denotes the row in $T$. The \textcolor{RoyalBlue}{blue} annotations show more clearly how this works in the form \textcolor{RoyalBlue}{row number in $S_k \rightarrow$ row number in $T$}.
     }
-                                                            & I_0 &     & =
+                                                            & I_1 &     & =
     \begin{bNiceMatrix}[last-col]
         1 & 0 & 0 & 0 \rightarrow 0 \\
         1 & 0 & 0 & 0 \rightarrow 1 \\
         0 & 1 & 0 & 1 \rightarrow 2 \\
         0 & 0 & 1 & 2 \rightarrow 3 \\
-    \end{bNiceMatrix}   \quad                          &     & I_1 &   & =
+    \end{bNiceMatrix}   \quad                          &     & I_2 &   & =
     \begin{bNiceMatrix}[last-col]
         1 & 0 & 0 & 0 & 0 \rightarrow 0 \\
         0 & 1 & 0 & 0 & 1 \rightarrow 1 \\
         0 & 0 & 1 & 0 & 2 \rightarrow 2 \\
         0 & 0 & 0 & 1 & 3 \rightarrow 3 \\
-    \end{bNiceMatrix}     \quad                      &     & I_2 &   & =
+    \end{bNiceMatrix}     \quad                      &     & I_3 &   & =
     \begin{bNiceMatrix}[last-col]
         0 & \rightarrow 0   \\
         0 & \rightarrow 1   \\
@@ -146,7 +146,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
     \intertext{
         The Mapping matrices denote how columns from $S$ map to columns in $T$. The row number denotes the column in $T$, the column number denotes the column in $S$. The \textcolor{BurntOrange}{orange} annotations show this in the form: \textcolor{BurntOrange}{column number in $S_k \rightarrow$ column number in $T$}.
     }
-                                                            & M_0 &     & =
+                                                            & M_1 &     & =
     \begin{bNiceMatrix}[last-col]
         1 & 0 & 0 & \textcolor{BurntOrange}{0 \rightarrow 0} \\
         0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 1} \\
@@ -155,7 +155,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 4}   \\
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 5}   \\
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
-    \end{bNiceMatrix}   \quad &     & M_1 &   & =
+    \end{bNiceMatrix}   \quad &     & M_2 &   & =
     \begin{bNiceMatrix}[last-col]
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
@@ -164,7 +164,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
         0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 4} \\
         0 & 0 & 1 & \textcolor{BurntOrange}{2 \rightarrow 5} \\
         0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
-    \end{bNiceMatrix} \quad &     & M_2 &   & =
+    \end{bNiceMatrix} \quad &     & M_3 &   & =
     \begin{bNiceMatrix}[last-col]
         0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
         0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
@@ -177,9 +177,9 @@ To make the translation to how the normalized matrix is used in ML algorithms we
 \end{alignat*}
 \begin{gather*}
     \begin{alignat*}{4}
-        \intertext{For conciseness we show the calculation of one of the sub-target tables $T_0$.}
-                            & T_0 &       & = I_0                 &  & S_0 &  & M_0^T                   \\
-                            & T_0 &       & = \begin{bNiceMatrix}
+        \intertext{For conciseness we show the calculation of one of the sub-target tables $T_1$.}
+                            & T_1 &       & = I_1                 &  & S_1 &  & M_1^T                   \\
+                            & T_1 &       & = \begin{bNiceMatrix}
                                                   1 & 0 & 0 \\
                                                   1 & 0 & 0 \\
                                                   0 & 1 & 0 \\
@@ -189,8 +189,8 @@ To make the translation to how the normalized matrix is used in ML algorithms we
             1 & 11 & 2024 \\
             2 & 12 & 2024 \\
             3 & 11 & 2024 \\
-        \end{bNiceMatrix} &     & M_0^T                                                                 \\
-                            & T_0 &       & = \begin{bNiceMatrix}
+        \end{bNiceMatrix} &     & M_1^T                                                                 \\
+                            & T_1 &       & = \begin{bNiceMatrix}
                                                   1 & 11 & 2024 \\
                                                   1 & 11 & 2024 \\
                                                   2 & 12 & 2024 \\
@@ -202,7 +202,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
                                                                               \end{bNiceMatrix} \\
     \end{alignat*}\\
     \hspace{-4cm}
-    T_0  = \begin{bNiceMatrix}
+    T_1  = \begin{bNiceMatrix}
         \Block[fill=red!15,rounded-corners]{4-3}{}
         1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
         1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
@@ -217,7 +217,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
     \intertext{
         The materialized Target table $T$ is the element wise sum of the dot product of each tuple of Indicator, Source, and Mapping matrices. For each source table $S_k$ the intermittent result is shown as $T_k$. For clarity the cells from each source table are colored in the same color in the intermittent result and in Target table $T$.
     }
-     & T_0= I_0 S_0 M_0^T &  & = \begin{bNiceMatrix}[first-row]
+     & T_1= I_1 S_1 M_1^T &  & = \begin{bNiceMatrix}[first-row]
                                      0 & 1  & 2    & 3 & \cdots & 6 \\
                                      \Block[fill=red!15,rounded-corners]{4-3}{}
                                      1 & 11 & 2024 & 0 & \cdots & 0 \\
@@ -225,7 +225,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
                                      2 & 12 & 2024 & 0 & \cdots & 0 \\
                                      3 & 11 & 2023 & 0 & \cdots & 0 \\
                                  \end{bNiceMatrix}
-    T_1= I_1 S_1 M_1^T= \begin{bNiceMatrix}[first-row]
+    T_2= I_2 S_2 M_2^T= \begin{bNiceMatrix}[first-row]
                             0 & 1 & 2 & 3                                             & 4  & 5  & 6 \\
                             0 & 0 & 0 & \Block[fill=blue!15,rounded-corners]{4-3}{} 2 & 20 & 40 & 0 \\
                             0 & 0 & 0 & 1                                             & 25 & 25 & 0 \\
@@ -233,7 +233,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
                             0 & 0 & 0 & 1                                             & 10 & 10 & 0 \\
                         \end{bNiceMatrix}
     \\
-     & T_2= I_2 S_2 M_2^T &  & = \begin{bNiceMatrix}[first-row]
+     & T_3= I_3 S_3 M_3^T &  & = \begin{bNiceMatrix}[first-row]
                                      0 & \cdots & 5 & 6                                              \\
                                      0 & \cdots & 0 & 0                                              \\
                                      0 & \cdots & 0 & 0                                              \\
