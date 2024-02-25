@@ -61,21 +61,21 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \todo{Right align numbers in table}
 \begin{table}[ht]
   \centering
-  \begin{tabular}{*{8}{>{$}l<{$}}}
+  \begin{tabular}{Lrrrrrrr}
     \toprule
-    \text{Dataset} & \text{Book} & \text{Expedia} & \text{Flight} & \text{Lastfm} & \text{Movie} & \text{Walmart} & \text{Yelp} \\
-    \midrule \midurle
-    r_T            & 253120      & 942142         & 66548         & 343747        & 1000209      & 421570         & 215879      \\
-    c_T            & 81663       & 52282          & 13669         & 55252         & 13348        & 2441           & 55606       \\
-    n              & 2           & 3              & 4             & 2             & 2            & 3              & 2           \\
-    r_S            & 27876       & 942142         & 66548         & 4999          & 6040         & 421570         & 11535       \\
-                   & 49972       & 11939          & 540           & 50000         & 3706         & 2340           & 43873       \\
-                   &             & 37021          & 3167          &               &              & 45             &             \\
-                   &             &                & 3170          &               &              &                &             \\
-    c_S            & 28022       & 27             & 20            & 5019          & 9509         & 1              & 11706       \\
-                   & 53641       & 12013          & 718           & 50233         & 3839         & 2387           & 43900       \\
-                   &             & 40242          & 6464          &               &              & 53             &             \\
-                   &             &                & 6467          &               &              &                &             \\
+    \text{Dataset}\rightarrow & \text{Book} & \text{Expedia} & \text{Flight} & \text{Lastfm} & \text{Movie} & \text{Walmart} & \text{Yelp} \\
+    \midrule \midrule
+    r_T                       & 253120      & 942142         & 66548         & 343747        & 1000209      & 421570         & 215879      \\
+    c_T                       & 81663       & 52282          & 13669         & 55252         & 13348        & 2441           & 55606       \\
+    n                         & 2           & 3              & 4             & 2             & 2            & 3              & 2           \\
+    r_{S_1}                   & 27876       & 942142         & 66548         & 4999          & 6040         & 421570         & 11535       \\
+    r_{S_2}                   & 49972       & 11939          & 540           & 50000         & 3706         & 2340           & 43873       \\
+    r_{S_3}                   &             & 37021          & 3167          &               &              & 45             &             \\
+    r_{S_4}                   &             &                & 3170          &               &              &                &             \\
+    c_{S_1}                   & 28022       & 27             & 20            & 5019          & 9509         & 1              & 11706       \\
+    c_{S_2}                   & 53641       & 12013          & 718           & 50233         & 3839         & 2387           & 43900       \\
+    c_{S_3}                   &             & 40242          & 6464          &               &              & 53             &             \\
+    c_{S_4}                   &             &                & 6467          &               &              &                &             \\
     \bottomrule
   \end{tabular}
   \caption{}
@@ -83,7 +83,16 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \end{table}
 
 
-\paragraph{TPCx-AI \cite{tpcx-ai}}
+\paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different \emph{Scale Factors} from \todo{lowest scale factor to highest scale factor} we generated \todo{How many datasets}. The data characteristics of the resulting datasets can be found in \autoref{tab:6-tpcx-ai-characteristics}.
+\begin{table}[ht]
+  \centering
+  \caption{}
+  \label{tab:6-tpcx-ai-characteristics}
+\end{table}
+
+\todo{Explain usecases.}
+
+
 
 \subsection{Hardware}
 \label{subsec:6-hardware}
