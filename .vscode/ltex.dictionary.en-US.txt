@@ -19,3 +19,4 @@ RQ
 TODO
 CuPy
 CUDA
+ncu
