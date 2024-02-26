@@ -83,7 +83,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \end{table}
 
 
-\paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different \emph{Scale Factors} from \todo{lowest scale factor to the highest scale factor} we generated\todo{ How many datasets}. The data characteristics of the resulting datasets can be found in \autoref{tab:6-tpcx-ai-characteristics}.
+\paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different \emph{Scale Factors} from \todo{lowest scale factor to the highest scale factor} we generated \todo{???} datasets. The data characteristics of the resulting datasets can be found in \autoref{tab:6-tpcx-ai-characteristics}.
 \begin{table}[ht]
   \centering
   \begin{tabular}{lrr}
@@ -117,6 +117,8 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \label{subsec:6-hardware}
 \todo{Table showing different machines tested on}
 
+The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://doc.daic.tudelft.nl/}} which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
+
 \begin{table}[ht]
   \centering
   \begin{tabular}{llllp{0.19\linewidth}}
@@ -137,26 +139,24 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
     CPU-T-3    & WIS ST4        & CPU 32 cores & —            & runtime         \\
     \bottomrule
   \end{tabular}
-  \caption{Overview of machines experiments will be run on.}
-  \label{tab:my_label}
+  \caption{Experiment - machine mapping. The experiment type is either profiling or runtime. Profiling experiments are used to collect the hardware specific metrics for our training data. Runtime experiments are used to gather data on the runtime of the factorized ML framework compared to materialized learning.}
+  \label{tab:6-hardware-overview}
 \end{table}
 
 \subsection{Experiment Setting}
-\todo{Number of iterations etc. (30 for experiments, e for profiling as it's included in ncu)}
+To ensure reliable training data all runtime experiments were run with a repetition count of $30$. The profiling experiments were not repeated, as NCU ensures actionable and deterministic results through e.g., replaying kernel launches \cite{nsight_compute}. All experiments were run in a containerized environment to ensure reproducibility. The profiling experiments were run with the same image as the runtime experiments, to ensure that the same environment was used for both. Docker\footnote{\url{https://www.docker.com/}} was used as the container runtime, except on the DAIC cluster which enforces the use of Apptainer\footnote{\url{https://apptainer.org/}} image.
 
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
 \todo{Explain how the collected metrics are divided into separate train \& test set to test generalizability}
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.8\linewidth]{chapters/06_evaluation/figures/experiment-pipeline.pdf}
-  \caption{\todo{update} Overview of the planned experiments: combinations of datasets and machines we run the experiments
-    on. }
-  \label{fig:enter-label}
-\end{figure}
-
-
+% \begin{figure}[ht]
+%   \centering
+%   \includegraphics[width=0.8\linewidth]{chapters/06_evaluation/figures/experiment-pipeline.pdf}
+%   \caption{\todo{update} Overview of the planned experiments: combinations of datasets and machines we run the experiments
+%     on. }
+%   \label{fig:enter-label}
+% \end{figure}
 
 \section{Cost Model Performance and Comparative Analysis}
 \label{sec:eval-model-evaluation}

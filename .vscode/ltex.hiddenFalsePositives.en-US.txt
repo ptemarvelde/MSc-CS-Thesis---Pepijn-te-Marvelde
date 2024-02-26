@@ -59,3 +59,5 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q(G)NMF (Gaussian)-Non-negative Matrix Factorization DI Data Integration F/M Factorized/Materialized FK Primary Key FLOP FLoating-point OPeration LA Linear Algebra ML Machine Learning PK Foreign Key\\E$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe Orders table contains information about the orders made by customers, the schema of this table is \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe Orders table contains information about the orders made by customers, the schema of this table is \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"AGREEMENT_SENT_START","sentence":"^\\QThe exact overview of which experiment was run on which machines is shown in \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QWhen possible Docker containers were used, for the experiments on the DAIC cluster this container was converted to an Apptainer image.\\E$"}
