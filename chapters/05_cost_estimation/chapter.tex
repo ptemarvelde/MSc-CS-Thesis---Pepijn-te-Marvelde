@@ -8,13 +8,14 @@ In this chapter, we share the results of our experiments and explain how we used
 \section{Motivation}
 \label{sec:5-motivation}
 \todo{Simple visualisation to show why cost estimation is needed, and obvious correlations between dependent/independent vars.}
-To show the major impact our chosen independent variables have on the trade-off between Materialization and Factorization we first the performance ratio against a range of independent variables. We group the Data and Model characteristics as they both influence the actual computations being executed, whereas the hardware characteristics only influence how these computations are carried out on the hardware.
+To show the major impact our chosen independent variables have on the trade-off between Materialization and Factorization we first show the performance ratio ($\frac{\text{Time}_M}{\text{Time}_F}$) against a range of independent variables.
+We group the Data and Model characteristics as they both influence the actual computations being executed. The hardware characteristics influence how these computations are carried out on the hardware and are discussed separately. All figures and values in this section are computed from the experiments with synthetics datasets, unless specified otherwise.
 
 \subsection{Data \& Model Characteristics}
 
 
 \subsection{Hardware Characteristics}
-
+The hardware used for computation impacts the runtime of a program, but here we show it also impacts the F/M trade off. Different compute unites (i.e., CPU or GPU type) have a different decision boundary for when to use Factorization over Materialization. This is shown in \autoref{fig:5-gpu-characteristics}. Differing hardware impacts the performance ratio differently per operator. For example, the (mean$\pm$std.) performance ratio of transposed Left Matrix Multiplication on the P100 is $3.03\pm2.69$, while on the V100 it is slightly lower with $2.32\pm2.21$. But, For Left (scalar) multiplication the V100 has the higher performance ratio of $0.21\pm0.93$, against the P100's lower $0.17\pm0.65$.
 
 \begin{figure}[ht]
     \centering
@@ -23,15 +24,16 @@ To show the major impact our chosen independent variables have on the trade-off 
     \label{fig:5-gpu-characteristics}
 \end{figure}
 
-
-\begin{table}
+\begin{table}[ht]
     \centering
     \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
     \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose F/M. \todo{Add CPU}}
     \label{tab:5-speedup-per-gpu}
 \end{table}
 
-\todo{Thus, all factors are very important, and we need complex models to estimate.}
+If we investigate these differences between GPUs further we see that, for cases where Factorization is preferred over Materialization ($\text{Time}_F < \text{Time}_M$), there are large differences between the GPUs. Both the mean performance ratio, and the count of cases where F is faster than M varies greatly, as shown in \autoref{tab:5-speedup-per-gpu}. This shows that the choice of hardware is a large factor in when to choose Factorization over Materialization.
+
+
 
 \section{Cost Models}
 \label{sec:5-cost-models}
