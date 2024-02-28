@@ -15,21 +15,21 @@ To show the major impact our chosen independent variables have on the trade-off 
 
 \subsection{Hardware Characteristics}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[draft, width=0.5\linewidth]{example-image}
-    \caption{\todo{Performance ratio against CPU parallelism.}}
-    \label{fig:5-cpu-parallelism}
-\end{figure}
-
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_per_operator_per_gpu.pdf}
-    \caption{Performance ratio is shown to dependent on hardware.}
+    \caption[Performance ratio against hardware]{Performance ratio against hardware. The performance ratio is shown to be affected by hardware choice. \todo{Add CPU}}
     \label{fig:5-gpu-characteristics}
 \end{figure}
 
+
+\begin{table}
+    \centering
+    \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
+    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose F/M. \todo{Add CPU}}
+    \label{tab:5-speedup-per-gpu}
+\end{table}
 
 \todo{Thus, all factors are very important, and we need complex models to estimate.}
 
