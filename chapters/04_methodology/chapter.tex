@@ -107,9 +107,9 @@ The analytical model is a deterministic model constructed by examining the opera
 
 \vspace{-0.5cm}
 \begin{align*}
-  \text{{Operator cost}} = & \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                            \\
-                           & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
-                           & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
+  \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
+                         & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
+                         & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
 \end{align*}
 
 By profiling through a large range of the chosen independent variables we can estimate the effect of those variables on the factors in this formula, like the hit rate. By incorporating this in the analytical model we can create a highly explainable model that can be used to estimate the cost of different approaches.

@@ -1,0 +1,29 @@
+% LTeX: enabled=false
+\begin{tabular}{p{0.15\linewidth}p{0.19\linewidth}p{0.10\linewidth}p{0.20\linewidth}l}
+\toprule
+Experiment type & Machine & \hspace{0pt}Architecture & Compute Unit & Experiment \\
+\midrule\midrule
+\multirow[t]{3}{*}{\parbox{1\linewidth}{\vspace{1.5cm}profile}} & WIS ST4 & Ampere & GPU A40 & \texttt{GPU-P-1} \\
+\cline{2-5} 
+ & AWS P3.2xlarge & Volta & GPU V100 & \texttt{GPU-P-2} \\
+\cline{2-5} 
+ & Personal Workstation & Turing & GPU 1660Ti & \texttt{GPU-P-3} \\
+\cline{1-5}
+\multirow[t]{8}{*}{\parbox{1\linewidth}{\vspace{4cm}runtime}} & \multirow[t]{5}{*}{\parbox{1\linewidth}{\vspace{2cm}DAIC}} & Ampere & GPU A40 & \texttt{GPU-T-1} \\
+
+ &  & Volta & GPU V100 & \texttt{GPU-T-2} \\
+
+ &  & Pascal & GPU P100 & \texttt{GPU-T-3} \\
+
+ &  & Turing & GPU 2080Ti & \texttt{GPU-T-4} \\
+
+ &  & Pascal & GPU 1080Ti & \texttt{GPU-T-5} \\
+\cline{2-5} 
+ & \multirow[t]{3}{*}{\parbox{1\linewidth}{\vspace{2.3cm}WIS ST4}} & \multirow[t]{3}{*}{\parbox{1\linewidth}{\vspace{2.3cm}—}} & EPYC 7H12 CPU 8 cores & \texttt{CPU-T-1} \\
+
+ &  &  & EPYC 7H12 CPU 16 cores & \texttt{CPU-T-2} \\
+
+ &  &  & EPYC 7H12 CPU 32 cores & \texttt{CPU-T-3} \\
+\cline{1-5}
+\bottomrule
+\end{tabular}
