@@ -7,8 +7,7 @@ This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur
 \section{Experiment Setup}
 \label{sec:experiment-setup}
 
-\todo{Intro experimental environment, also serves as a guide on how to replicate the results}
-This section goes into detail about anything needed to replicate the results. This includes the experimental environment (\hyperref[subsec:6-software]{Software}, \hyperref[subsec:6-datasets]{Datasets} \& \hyperref[subsec:6-hardware]{Hardware}),  and how the data was treated to ensure sound results for the cost estimators (\hyperref[subsec:6-validation-strategy]{validation strategy}). For more info and code please refer to the GitHub repository\footnote{\todo{TODO}}.
+This section goes into detail about anything needed to replicate the results. This includes the experimental environment (\hyperref[subsec:6-software]{Software}, \hyperref[subsec:6-datasets]{Datasets} \& \hyperref[subsec:6-hardware]{Hardware}),  and how the data was treated to ensure sound results for the cost estimators (\hyperref[subsec:6-validation-strategy]{validation strategy}). For further details and implementations please refer to the GitHub repository\footnote{\todo{TODO}}.
 
 \subsection{Software}
 \label{subsec:6-software}
@@ -58,7 +57,7 @@ The synthetic datasets are convenient for testing and training purposes. However
 \paragraph{Project Hamlet \cite{2016-hamlet-sigmod}}
 The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigmod, amalur, morpheus,orion_learning_gen_lin_models}. The Hamlet datasets are a set 7 datasets specifically designed to mimic data integration scenarios is an ML workflow. The original datasets where created to evaluate inner join scenario's. As we are also interested in other join types, some rows were removed from different source tables for these join types. The data characteristics of these datasets are shown in \autoref{tab:6-hamlet-characteristics}.
 
-\todo{Right align numbers in table}
+
 \begin{table}[ht]
   \centering
   \begin{tabular}{p{0.12\linewidth}rrrrrrr}
@@ -78,36 +77,18 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
     $c_{S_4}$                                        &        &         & 6467   &        &         &         &        \\
     \bottomrule
   \end{tabular}
-  \caption[Hamlet dataset characteristics]{Hamlet dataset characteristics. $r$ is the number of rows, $c$ is the number of columns, and $n$ is the number of tables. The subscripts denote which table the characteristic belongs to.}
+  \caption[Hamlet dataset characteristics]{Hamlet dataset characteristics. $r$ is the number of rows, $c$ is the number of columns, and $n$ is the number of tables. The subscripts denote which table the characteristic belongs to. }
   \label{tab:6-hamlet-characteristics}
 \end{table}
 
 
-\paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different \emph{Scale Factors} from \todo{lowest scale factor to the highest scale factor} we generated \todo{???} datasets. The data characteristics of the resulting datasets can be found in \autoref{tab:6-tpcx-ai-characteristics}.
-\begin{table}[ht]
+\paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different scale factors from $0.01-0.5$ we generated $18$ datasets for each use case. The data characteristics of the resulting datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
+\begin{figure}
   \centering
-  \begin{tabular}{lrr}
-    \toprule
-    {}                  & $r_T$ usecase1 & $r_S$ usecase1 \\
-    dataset             &                &                \\
-    \midrule
-    scale\_factor\_0.01 & 3912340        & 519999         \\
-                        &                & 3265601        \\
-                        &                & 189263         \\
-    scale\_factor\_0.5  & 23548828       & 3676955        \\
-                        &                & 23036913       \\
-                        &                & 1335985        \\
-    scale\_factor\_1.0  & 33077704       & 5200000        \\
-                        &                & 32577459       \\
-                        &                & 1892589        \\
-    scale\_factor\_3.0  & 56904679       & 9006664        \\
-                        &                & 56419753       \\
-                        &                & 3271336        \\
-    \bottomrule
-  \end{tabular}
-  \caption{\todo{Finalize and add usecase2}}
-  \label{tab:6-tpcx-ai-characteristics}
-\end{table}
+  \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/tpcx-ai-data-chars.pdf}
+  \caption[TPCx-AI dataset sizes for different scale factors.]{TPCx-AI dataset sizes for different scale factors. \todo{Update legend and use different colors for Use case 10, and add more chars?}}
+  \label{fig:tpcx-ai-data-chars}
+\end{figure}
 
 \todo{Explain use cases.}
 
@@ -115,7 +96,6 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 
 \subsection{Hardware}
 \label{subsec:6-hardware}
-\todo{Table showing different machines tested on}
 
 The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://doc.daic.tudelft.nl/}} which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
 

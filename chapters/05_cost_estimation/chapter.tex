@@ -20,14 +20,14 @@ The hardware used for computation impacts the runtime of a program, but here we 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_per_operator_per_gpu.pdf}
-    \caption[Performance ratio plotted against hardware]{Performance ratio, of various operators on synthetic data, against hardware. The performance ratio is shown to be affected by hardware choice. \todo{Add CPU}}
+    \caption[Performance ratio plotted against hardware]{Performance ratio, of various operators on synthetic data, against hardware. The performance ratio is shown to be affected by hardware choice.}
     \label{fig:5-gpu-characteristics}
 \end{figure}
 
 \begin{table}[ht]
     \centering
     \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
-    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose F/M. \todo{Add CPU}}
+    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose Factorization over Materialization. \todo{Make this into a plot?}}
     \label{tab:5-speedup-per-gpu}
 \end{table}
 
