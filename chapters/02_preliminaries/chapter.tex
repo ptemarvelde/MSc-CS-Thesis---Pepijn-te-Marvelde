@@ -23,8 +23,25 @@ However, while joining datasets to a single table is necessary for ML it can int
 
 Factorized Machine Learning aims to alleviate these problems by “learning over joins” \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
 
-\subsection{Schema Mappings}
-\todo{Explain TGDs and how they are used in DI}
+\subsection{Schema Mapping}
+Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. They specify how source datasets map to target tables. Having a formal way of specifying how these datasets relate is especially important for Factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix.
+
+The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are formulas in first-order logic form that specify, through atomic formulas over schemas $S$ and target schema $T$, how tuples from the source tables map to the target table. Here we show the TGD for the running example.\begin{alignat*}{2}
+    \intertext{Given source datasets, with abbreviated column names:}
+     & o=order\_id, c=customer\_id, d=date,                                                                                                                      \\
+     & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity                                                                                              \\
+     & S_1(o, c, d)                                                                                                                                              \\
+     & S_2(o, p_{id} , q,  p)                                                                                                                                    \\
+     & S_3(o, p_{id}, rq)                                                                                                                                      & \\
+    \intertext{the mapping to target table $T$ can be specified as follows. First we left join $S_2$ with $S_3$:}
+     & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
+    \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
+                                                                                                                      & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow                                                          \\
+                                                                                                                      & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
+                                                                                                                  \end{split}
+\end{alignat*}
+
+Now that we have the schema mapping we can translate this to the normalized matrix, which we will do in the next section.
 
 \section{Factorized Machine Learning}
 \label{sec:2-factorized-ml}
@@ -97,8 +114,6 @@ Intuitively this process can be seen as:
 \subsubsection{Running Example: Normalized Matrix}
 \label{subsubsec:2-fac-ml-example}
 To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join.
-
-\vspace{-1cm}
 \begin{alignat*}{6}
     \intertext{
         These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.

@@ -26,7 +26,7 @@ To create the synthetic datasets with a wide variety of data characteristics the
 
 In total, we generated $2415$ datasets, each being a two-table join. All other parameters were varied, the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
 
-\todo{Explain star schema (and show example)?}
+\todo{Expand this! Explain star schema (and show example)?}
 
 \begin{table}[ht]
   \centering
@@ -62,19 +62,19 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
   \centering
   \begin{tabular}{p{0.12\linewidth}rrrrrrr}
     \toprule
-    Dataset$\rightarrow$ Characteristic $\downarrow$ & Book   & Expedia & Flight & Lastfm & Movie   & Walmart & Yelp   \\
+    Dataset$\rightarrow$ Characteristic $\downarrow$ & Book  & Expedia & Flight & Lastfm & Movie & Walmart & Yelp  \\
     \midrule \midrule
-    $r_T$                                            & 253120 & 942142  & 66548  & 343747 & 1000209 & 421570  & 215879 \\
-    $c_T$                                            & 81663  & 52282   & 13669  & 55252  & 13348   & 2441    & 55606  \\
-    $n$                                              & 2      & 3       & 4      & 2      & 2       & 3       & 2      \\
-    $r_{S_1}$                                        & 27876  & 942142  & 66548  & 4999   & 6040    & 421570  & 11535  \\
-    $r_{S_2}$                                        & 49972  & 11939   & 540    & 50000  & 3706    & 2340    & 43873  \\
-    $r_{S_3}$                                        &        & 37021   & 3167   &        &         & 45      &        \\
-    $r_{S_4}$                                        &        &         & 3170   &        &         &         &        \\
-    $c_{S_1}$                                        & 28022  & 27      & 20     & 5019   & 9509    & 1       & 11706  \\
-    $c_{S_2}$                                        & 53641  & 12013   & 718    & 50233  & 3839    & 2387    & 43900  \\
-    $c_{S_3}$                                        &        & 40242   & 6464   &        &         & 53      &        \\
-    $c_{S_4}$                                        &        &         & 6467   &        &         &         &        \\
+    $r_T$                                            & 253K  & 942K    & 66.5K  & 344K   & 1M    & 422K    & 216K  \\
+    $c_T$                                            & 81.7K & 52.3K   & 13.7K  & 55.3K  & 13.3K & 2.44K   & 55.6K \\
+    $n$                                              & 2     & 3       & 4      & 2      & 2     & 3       & 2     \\
+    $r_{S_1}$                                        & 27.9K & 942K    & 66.5K  & 5K     & 6.04K & 422K    & 11.5K \\
+    $r_{S_2}$                                        & 50K   & 11.9K   & 540    & 50K    & 3.71K & 2.34K   & 43.9K \\
+    $r_{S_3}$                                        &       & 37K     & 3.17K  &        &       & 45      &       \\
+    $r_{S_4}$                                        &       &         & 3.17K  &        &       &         &       \\
+    $c_{S_1}$                                        & 28K   & 27      & 20     & 5.02K  & 9.51K & 1       & 11.7K \\
+    $c_{S_2}$                                        & 53.6K & 12K     & 718    & 50.2K  & 3.84K & 2.39K   & 43.9K \\
+    $c_{S_3}$                                        &       & 40.2K   & 6.46K  &        &       & 53      &       \\
+    $c_{S_4}$                                        &       &         & 6.47K  &        &       &         &       \\
     \bottomrule
   \end{tabular}
   \caption[Hamlet dataset characteristics]{Hamlet dataset characteristics. $r$ is the number of rows, $c$ is the number of columns, and $n$ is the number of tables. The subscripts denote which table the characteristic belongs to. }
@@ -86,7 +86,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/tpcx-ai-data-chars.pdf}
-  \caption[TPCx-AI dataset sizes for different scale factors.]{TPCx-AI dataset sizes for different scale factors. \todo{Update legend and use different colors for Use case 10, and add more chars?}}
+  \caption[TPCx-AI dataset sizes for used scale factors.]{TPCx-AI dataset sizes for used scale factors. The number of columns is independent of the scale factors. For use case 1: $c_1=3, c_2=4, c_3=3, c_T=7$. For use case 10: $c_1=2, c_2=7, c_T=5$.}
   \label{fig:tpcx-ai-data-chars}
 \end{figure}
 
@@ -97,7 +97,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \subsection{Hardware}
 \label{subsec:6-hardware}
 
-The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://doc.daic.tudelft.nl/}} which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
+The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}} which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
 
 \begin{table}[ht]
   \centering
