@@ -3,7 +3,7 @@
 \chapter{Preliminaries: Factorized Machine Learning}
 \label{chapter:preliminary}
 
-This chapter details the necessary theoretical concepts for this thesis. First we explain \hyperref[sec:2-data-integration]{Data Integration}: the process of combining data from different sources, which is crucial to any ML workflow. With these concepts in mind we explore \hyperref[sec:2-factorized-ml]{Factorized Machine Learning} in detail. Last, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial to the ML industry. With these concepts we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
+This chapter details the preliminary theoretical concepts for this thesis. First we explain \hyperref[sec:2-data-integration]{Data Integration}: the process of combining data from different sources, which is crucial to any ML workflow. With these concepts in mind we explore \hyperref[sec:2-factorized-ml]{Factorized Machine Learning} in detail. Last, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial to the ML industry. With these concepts we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
 
 
 \section{Data Integration}
@@ -21,10 +21,10 @@ However, while joining datasets to a single table is necessary for ML it can int
     \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-Factorized Machine Learning aims to alleviate these problems by “learning over joins” \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
+Factorized Machine Learning aims to alleviate problems one to three by “learning over joins” \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
 
 \subsection{Schema Mapping}
-Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. They specify how source datasets map to target tables. Having a formal way of specifying how these datasets relate is especially important for Factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix.
+Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. These mappings specify how source datasets map to target tables. Having a formal way of specifying how these datasets relate is especially important for Factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
 
 The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are formulas in first-order logic form that specify, through atomic formulas over schemas $S$ and target schema $T$, how tuples from the source tables map to the target table. Here we show the TGD for the running example.\begin{alignat*}{2}
     \intertext{Given source datasets, with abbreviated column names:}
@@ -269,7 +269,7 @@ To make the translation to how the normalized matrix is used in ML algorithms we
 
 
 \subsection{Factorized Linear Algebra}
-In the previous section we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
+In the previous section we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how (most of) these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
 
 
 \subsubsection{Element-wise Scalar Operations}
