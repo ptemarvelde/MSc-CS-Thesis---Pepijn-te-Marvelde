@@ -273,22 +273,55 @@ In the previous section we have shown the properties of the Normalized matrix. T
 
 
 \subsubsection{Element-wise Scalar Operations}
-This group of operators all perform an operation on every element of a matrix, independently of one another. The operations are:
-\todo{TODO}
+This group of operators all perform an operation on every element of a matrix, independently of one another. The arithmetic operations are: $+$, $-$, $\times$, $\div$ and $ ^\wedge $ (these operators are denoted by $\oslash$). This can be seen as a scalar function $f$ applied to each element of a matrix $T$. The rewrite rule therefore is very simple for these arithmetic operators, as well as for any other scalar function (e.g., $log$, $round$) $f$:
+\begin{alignat*}{2}
+    x \oslash T & \rightarrow [x \oslash S, I, M] \\
+    T \oslash x & \rightarrow [S \oslash x, I, M]
+    \intertext{or more generally:}
+    f(T)        & \rightarrow [f(S), I, M]
+\end{alignat*}
 
-\subsubsection{Aggregation Operations}
-\todo{TODO}
+These operations all return a normalized matrix, and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then for any downstream operators the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
+\begin{alignat*}{2}
+    f(T^T) & \rightarrow [f(S), I, M]^T
+\end{alignat*}
 
-\subsubsection{Multiplication Operations}
+\subsubsection{Aggregation}
+The supported aggregation operators are row-wise summation (rowSums) and column-wise summation (colSums). For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant this operation produces a single (column) vector of size $r_T \times 1$. For the transposed case it is equal to a column summation. These rewrite rules are:
+\begin{alignat*}{2}
+    \text{rowSums}(T)   & \rightarrow \sum_1^k I_k \text{rowSums}(S_k) \\
+    \text{rowSums}(T^T) & \rightarrow \text{colSums}(T)
+\end{alignat*}
 
-\todo{TODO}
+Summing column wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column=wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
+\begin{alignat*}{2}
+    \text{colSums}(T)   & \rightarrow \sum_1^k \text{colSums}(I_k) S_k M_k^T \\
+    \text{colSums}(T^T) & \rightarrow \text{rowSums}(T)
+\end{alignat*}
+As these operations do not create normalized matrices, and in fact materialize (part of) the join the benefit of factorized computation is smaller.
+
+\subsubsection{Multiplication}
+As matrix multiplication is not commutative there are different rewrite rules for left- and right-matrix multiplication. The rewrite rule for left matrix multiplication (LMM) with another matrix $X$ is:
+\begin{alignat*}{2}
+    TX   & \rightarrow \sum_1^k I_k S_k M_k^T X \\
+    T^TX & \rightarrow (X^TT)^T
+\end{alignat*}
+
+For right matrix multiplication (RMM) the rule is the same, we still essentially materialize the join, but with $X$ on the left-hand side:
+\begin{alignat*}{2}
+    TX   & \rightarrow \sum_1^k X I_k S_k M_k^T \\
+    XT^T & \rightarrow (TX^T)^T
+\end{alignat*}
+
+
+% \todo{Overview table like in Morpheus?}
 
 \subsubsection{Running Example: Right Matrix Multiplication}
 
 \begingroup
 \setlength{\arraycolsep}{3.0pt}
 \begin{alignat*}{1}
-    \intertext{We showcase right matrix multiplication (RMM) and its rewrite rule by multiplying with $X$. First for the materialized Target table $T$:}
+    \intertext{We showcase right RMM and its rewrite rule by multiplying with $X$. First for the materialized Target table $T$:}
     X T & = \begin{bNiceMatrix}
                 1 & 1 & 2 & 3 \\
             \end{bNiceMatrix}

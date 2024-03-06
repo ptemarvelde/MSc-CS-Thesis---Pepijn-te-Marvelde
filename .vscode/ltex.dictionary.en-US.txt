@@ -22,3 +22,5 @@ CUDA
 ncu
 Apptainer
 tgd
+rowSums
+colSums
