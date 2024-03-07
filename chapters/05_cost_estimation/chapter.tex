@@ -15,7 +15,7 @@ We group the Data and Model characteristics as they both influence the actual co
 
 
 \subsection{Hardware Characteristics}
-The hardware used for computation impacts the runtime of a program, but here we show it also impacts the F/M trade off. Different compute unites (i.e., CPU or GPU type) have a different decision boundary for when to use Factorization over Materialization. This is shown in \autoref{fig:5-gpu-characteristics}. Differing hardware impacts the performance ratio differently per operator. For example, the (mean$\pm$std.) performance ratio of transposed Left Matrix Multiplication on the P100 is $3.03\pm2.69$, while on the V100 it is slightly lower with $2.32\pm2.21$. But, For Left (scalar) multiplication the V100 has the higher performance ratio of $0.21\pm0.93$, against the P100's lower $0.17\pm0.65$.
+The hardware used for computation impacts the runtime of a program, but here we show it also impacts the F/M trade off. Different compute unites (i.e., CPU or GPU type) have a different decision boundary for when to use Factorization over Materialization. This is shown in \autoref{fig:5-gpu-characteristics}. Differing hardware impacts the performance ratio differently per operator. For example, the (mean$\pm$std.) performance ratio of transposed Left Matrix Multiplication on the P100 is $3.03\pm2.70$, while on the V100 it is slightly lower with $2.32\pm2.21$. But, for Left (scalar) multiplication the V100 has the higher performance ratio of $0.21\pm0.04$, against the P100's lower $0.19\pm0.05$.
 
 \begin{figure}[ht]
     \centering

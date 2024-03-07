@@ -67,6 +67,8 @@ The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ th
     \end{align*}
 \end{definition}
 
+Note that in the case that there is no column overlap between source tables this Mapping Matrix is redundant. This does impact how materializing works, as is shown in \autoref{def:materialization}.
+
 
 \subsubsection{Indicator Matrix}
 % TODO intro
@@ -92,19 +94,28 @@ Using the normalized matrix we can now \textbf{materialize} the join to get the 
     \begin{itemize}
         \item[]
         \item[] Given
-        \item[$k$] Table id $k \in [0,n)$
+        \item[$k$] Table id $k \in [1,n]$
         \item[$S_k$] Source tables
         \item[$M_k$] Mapping matrices
         \item[$I_k$] Indicator matrices
     \end{itemize}
     \[
-        T = \sum_{k=0}^{n-1}  I_k S_k M^T_k
+        T = \begin{cases}
+            \sum_{k=1}^n  I_k S_k M^T_k,  & \text{if there is column overlap between source tables} \\
+            \begin{bNiceMatrix}
+                \vdots  & \vdots & \vdots  \\
+                I_1 S_1 & \cdots & I_n S_n \\
+                \vdots  & \vdots & \vdots  \\
+            \end{bNiceMatrix}, & \text{otherwise}
+        \end{cases}
     \]
+    \label{def:materialization}
+
 \end{definition}
 
-Intuitively this process can be seen as:
+The materialization case when there is no column overlap is a horizontal concatenation of each source matrix $S_k$ multiplied by $I_k$: $I_k S_k, k \in [1,n]$. Intuitively the materialization process can be seen as:
 \begin{algorithmic}
-    \ForEach {$k \in [0,n)$} \Comment{For each source table}
+    \ForEach {$k \in [1,n]$} \Comment{For each source table}
     \State $rows_k \gets I_k S_k$ \Comment{Map the source table rows to the target table}
     \State $T_k \gets rows_k M^T_k$ \Comment{Map the source table columns to the target table}
     \EndFor
@@ -113,7 +124,7 @@ Intuitively this process can be seen as:
 
 \subsubsection{Running Example: Normalized Matrix}
 \label{subsubsec:2-fac-ml-example}
-To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join.
+To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join. For completeness, we show the calculations with the Mapping matrices $M_k$ included, but as highlighted before this is not needed due to this scenario having no column overlap. However, it is insightful to show as it gives an idea of how this process looks when there is column overlap.
 \begin{alignat*}{6}
     \intertext{
         These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
@@ -370,6 +381,38 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 \end{alignat*}
 \endgroup
 
+\subsection{Machine Learning Model Rewrites}
+\todo{Rewrite of 4 ML models, include all or just one?}
+
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
 \todo{Introduce the relevant parts of GPUs \& Linear Algebra. Such a diagram is nice: \href{https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html}{link}.}
+
+Graphics Processing Units (GPUs) have become the processing unit of choice in the field of Machine Learning, as they offer substantial advantages over Central Processing Units (CPUs) for ML. As CPUs are designed for general-purpose needs, this is to be expected. Whereas CPUs excel in sequential tasks like running an operating system, GPUs are designed for parallel tasks. This choice makes them excellent at performing the same operation on many pieces of data at once, exactly what is needed for the prevalent linear algebra operations in ML.
+
+Because GPUs have the upper hand in ML tasks this thesis focuses on the trade-off between materialization and factorization on GPUs. In this section we will lay out the necessary background information on why GPUs are so well-suited for ML tasks (\autoref{subsec:gpu-architecture}), and how they perform the linear algebra operations needed for factorized ML (\autoref{subsec:gpu-linear-algebra}).
+
+\subsection{Architecture}
+\label{subsec:gpu-architecture}
+
+\todo{
+    Components:\\
+    Streaming Multiprocessors (SMs): Heart of the GPU, executing parallel threads.\\
+    CUDA Cores: Perform computations in parallel.\\
+    Memory Hierarchy: Different memory types (global, shared) and their roles.\\
+    Warp Execution: How warps execute instructions.\\
+    SIMD (Single Instruction, Multiple Data): Exploiting parallelism.\\
+    Thread Blocks: Organizing threads for execution.\\
+    Comparison vs CPU.
+}
+
+\subsection{Linear Algebra Operations}
+\label{subsec:gpu-linear-algebra}
+\todo{
+    Focus Area: GPUs excel in linear algebra (essential for ML):\\
+    Matrix Multiplication: Efficient handling of matrix operations.\\
+    Vector Operations: Dot products, element-wise operations.
+}
+
+
+\todo{Summarize takeaways.}
