@@ -11,5 +11,8 @@
     "latex-workshop.latex.outDir": "%DIR%/out",
     "ltex.latex.environments": {
         "table": "ignore",
-    }
+        "alignat*": "ignore",
+        "alignat": "ignore"
+    },
+    "ltex.additionalRules.enablePickyRules": true,
 }
