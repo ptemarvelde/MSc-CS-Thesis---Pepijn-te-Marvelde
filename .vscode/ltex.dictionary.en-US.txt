@@ -24,3 +24,5 @@ Apptainer
 tgd
 rowSums
 colSums
+SMs
+SIMD

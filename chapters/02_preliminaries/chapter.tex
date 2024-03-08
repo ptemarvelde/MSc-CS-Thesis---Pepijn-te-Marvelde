@@ -36,8 +36,8 @@ The language used for these mappings is \textit{source-to-target tuple generatin
     \intertext{the mapping to target table $T$ can be specified as follows. First we left join $S_2$ with $S_3$:}
      & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
     \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
-                                                                                                                      & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow                                                          \\
-                                                                                                                      & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
+                                                                                                                       & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
+                                                                                                                       & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
                                                                                                                   \end{split}
 \end{alignat*}
 
@@ -386,38 +386,34 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
-\todo{Introduce the relevant parts of GPUs \& Linear Algebra. Such a diagram is nice: \href{https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html}{link}.}
-
 Graphics Processing Units (GPUs) have become the processing unit of choice in the field of Machine Learning, as they offer substantial advantages over Central Processing Units (CPUs) for ML. As CPUs are designed for general-purpose needs, this is to be expected. Whereas CPUs excel in sequential tasks like running an operating system, GPUs are designed for parallel tasks. This choice makes them excellent at performing the same operation on many pieces of data at once, exactly what is needed for the prevalent linear algebra operations in ML.
 
-Because GPUs have the upper hand in ML tasks this thesis focuses on the trade-off between materialization and factorization on GPUs. In this section we will lay out the necessary background information on why GPUs are so well-suited for ML tasks (\autoref{subsec:gpu-architecture}), and how they perform the linear algebra operations needed for factorized ML (\autoref{subsec:gpu-linear-algebra}).
+Because GPUs have the upper hand in ML tasks this, thesis focuses on the trade-off between materialization and factorization on GPUs. In this section we will lay out the necessary background information on why GPUs are so well-suited for ML tasks (\autoref{subsec:gpu-architecture}), and how performance of a given task on a GPU can be estimated in (\autoref{subsec:gpu-performance}).
 
 \subsection{Architecture}
 \label{subsec:gpu-architecture}
 
 \begin{figure}[ht]
     \includegraphics[width=.95\linewidth]{chapters/02_preliminaries/figures/CPU-vs-GPU.pdf}
-    \caption[Schematic representation of the difference in architecture between a CPU and a GPU.]{ Schematic representation of the difference in architecture between a CPU and a GPU. Figure based on visualizations from \cite{gpu-in-ml-survey} \& \cite{cuda-programming-guide}.}
+    \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey} \& \cite{cuda-programming-guide}.}
+    \label{fig:cpu-vs-gpu}
 \end{figure}
+This section details the architecture of a GPU, focussing on what makes it so efficient for Linear Algebra operations. \autoref{fig:cpu-vs-gpu} shows a schematic representation of the difference in architecture between a CPU and a GPU and will be used as a reference for this section.
 
-\todo{
-    Components:\\
-    Streaming Multiprocessors (SMs): Heart of the GPU, executing parallel threads.\\
-    CUDA Cores: Perform computations in parallel.\\
-    Memory Hierarchy: Different memory types (global, shared) and their roles.\\
-    Warp Execution: How warps execute instructions.\\
-    SIMD (Single Instruction, Multiple Data): Exploiting parallelism.\\
-    Thread Blocks: Organizing threads for execution.\\
-    Comparison vs CPU.
-}
+The heart of the GPU is the Streaming Multiprocessor (SM), which is responsible for executing thousands of parallel threads. Each SM contains several CUDA cores (marked in blue), similar to the cores in a CPU, which perform arithmetic operations. These cores are designed to handle multiple operations simultaneously, making them highly efficient for the matrix and vector computations that are fundamental to Machine Learning.
 
-\subsection{Linear Algebra Operations}
-\label{subsec:gpu-linear-algebra}
-\todo{
-    Focus Area: GPUs excel in linear algebra (essential for ML):\\
-    Matrix Multiplication: Efficient handling of matrix operations.\\
-    Vector Operations: Dot products, element-wise operations.
-}
+Data and code move to the SMs through multiple layers of memory. Data is loaded from the host into the GPU's DRAM, from where it moves to the SM through the L2 cache. This facilitates quick data exchange and reduces latency. Threads are organized into blocks, which are then scheduled on SMs. This organization allows for efficient management of resources and execution of threads in parallel. Each SM gets assigned a block of threads, which it then schedules for execution. The cores then execute these threads concurrently resulting in a high degree of parallelism. This processing of multiple data points at a time is called Single Instruction, Multiple Data (SIMD) architecture, which is particularly advantageous for Machine Learning tasks, where the same operation is often applied across many data points. This difference in parallelism is visualized in the bottom part of \autoref{fig:cpu-vs-gpu}. Where a CPU can compute a scalar operation in a single clock cycle, a GPU can perform operations on vectors in parallel.
 
+\subsection{Estimating GPU Performance}
+\label{subsec:gpu-performance}
+\todo{Rewrite \& cite \cite{gpu-perf-guide}}
 
-\todo{Summarize takeaways.}
+Following the architecture overview, it is essential to understand the performance dynamics of a GPU when applied to Machine Learning operations. The GPU's ability to execute thousands of threads concurrently is a cornerstone of its computational power, particularly for tasks with high arithmetic intensity.
+
+Arithmetic intensity is a measure of the number of operations performed per memory operation. In the context of GPUs, it's a critical factor in determining performance limitations. A function's execution time on a GPU can be limited by memory bandwidth, math bandwidth, or latency1. To conceptualize this, imagine a function that reads data, performs computations, and writes results. The time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap, with the total execution time being the maximum of the two $ \max(T_{mem}, T_{math}) $.
+
+If $ T_{math} $ exceeds $ T_{mem} $, the function is considered math-limited, indicating that the GPU's computational resources are the bottleneck. Conversely, if $ T_{mem} $ is greater, it's memory-limited, meaning the memory bandwidth is the constraining factor. This relationship is expressed through the inequality $ \frac{\# ops}{BW_{math}} > \frac{\# bytes}{BW_{mem}} $, which can be rearranged to $ \frac{\# ops}{\# bytes} > \frac{BW_{math}}{BW_{mem}} $. Here, the left side represents the function's arithmetic intensity, and the right side is the GPU's ops:byte ratio.
+
+In practice, many Machine Learning operations, such as linear layers or activation functions, have low arithmetic intensities, often performing just a single operation for every two-byte element read from and written to memory2. This characteristic typically makes them memory-limited on GPUs. However, for operations with high arithmetic intensity, like large matrix multiplications, the GPU's math bandwidth becomes the limiting factor.
+
+To fully leverage a GPU's capabilities, it's crucial to ensure sufficient parallelism. This is achieved by launching a significant number of thread blocks, ideally several times higher than the number of SMs, to minimize the tail effect where only a few active thread blocks remain towards the end of a function's execution3. By maintaining a high level of parallelism, GPUs can effectively hide instruction latency and maximize throughput, making them more well-suited for the parallel computations required in Machine Learning than CPUs.
