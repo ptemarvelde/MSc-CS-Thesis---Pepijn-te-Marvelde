@@ -58,7 +58,7 @@ MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the perform
 \begin{definition}[\textit{MorpheusFI's Decision Rule}]
     \begin{itemize}
         \item[]
-            \item[$q$]Number of base tables with sparsity $ < 5\% $
+        \item[$q$]Number of base tables with sparsity $ < 5\% $
         \item[$p$] Number of base tables
         \item[$e_k$] Sparsity of $R_k$
         \item[$n_S$] Number of samples in $S$
@@ -78,7 +78,7 @@ MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the perform
 
 This rule is not extensively evaluated.
 
-Amalur \cite{schijndel_cost_estimation} implements a combination between the two previously mentioned cost estimation approaches: analytical counting of operations and a heuristic decision rule. The decision rule is based on the complexity ratio between factorization and materialization. It computes the number of Floating Point Operations (FLOPs) for both approaches. This involves analyzing the training algorithms of various ML models and creating formulas to compute the number of FLOPs needed with regard to the input datasets. Which approach to take is chosen as follows:
+Amalur \cite{schijndel_cost_estimation} implements a combination between the two previously mentioned cost estimation approaches: analytical counting of operations and a heuristic decision rule. The decision rule is based on the complexity ratio between factorization and materialization. It computes the number of FLOPs for both approaches. This involves analyzing the training algorithms of various ML models and creating formulas to compute the number of FLOPs needed with regard to the input datasets. Which approach to take is chosen as follows:
 
 \begin{definition}[\textit{Amalur's Decision Rule}]
 
