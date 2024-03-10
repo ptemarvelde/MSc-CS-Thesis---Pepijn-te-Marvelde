@@ -51,14 +51,12 @@ The actual values for these variables, and exact GPU types used, are shown in \a
 
 \paragraph{GPU Architectures}
 We purposefully selected a range of GPU architectures to capture metrics with different characteristics. Both older (Pascal, 2016) and newer (Ampere, 2020) architectures are included in an effort to create a cost estimator not limited to a single generation of hardware. Including only GPUs from a single generation would limit the generalizability of the cost estimator as they use the same architecture, i.e., they use similar Streaming Multiprocessors and Cache layouts.
+
+
 \subsubsection{Model}
-\todo{
-  \begin{enumerate}
-    \item Model type
-    \item Model hyperparameters (not varied so leave out?)
-    \item complexity (ratio)
-  \end{enumerate}
-}
+The model characteristics are only varied by choosing four different models: Linear- and Logistic-Regression, Gaussian Non-negative Matrix Factorization \& K-Means Clustering. To prevent the number of combinations between independent variables from exploding we choose to not vary any hyperparameters such $k$ in K-Means or $r$ in G-NMF. However, we do include numerous features that capture changes that would also be captured by varying those hyperparameters.
+
+The most important of those features is the complexity of the model, i.e., the number of operations needed to train a model. The previously mentioned hyperparameters are parameters of the function to compute this feature, thus we believe our cost models will still be able to accurately predict runtime for different hyperparameter settings, as the complexity (ratio) has already been shown to be a capable predictor for the F/M trade-off. Also, because a lot of emphasis is put on capturing the effect of the other independent variables on the cost of singular operators, we believe that the cost models will also be able to generalize well to totally new ML models.
 
 \subsection{Dependent Variables}
 
@@ -109,7 +107,7 @@ Various \textbf{profiling metrics} are also collected to capture the cost of tra
 \label{sec:4-cost-estimation}
 \todo{\Large Improve after finishing \autoref{chapter:cost-estimation}}
 
-This section introduces the ideas behind the cost models, which are explained in more detail in \autoref{chapter:cost-estimation}. The first, analytical, model is a formula derived from the actual cost of the operations. Due to its simplicity it is highly explainable, but will likely perform worse than more complex methods. Therefore, the next models are ML-based solutions. The statistical, model uses a logistic regression to make its decision. Compared to the first model it is easier to include more features causing this model to have a larger decision space. The third, deep learning, model uses a neural network to make its predictions. It is the least explainable of cost estimators, but can capture the most complex interactions between features. Finally, the hybrid model combines the knowledge gathered from the previous cost estimators and applies it in a model like was done in \cite{halide_cost_model}.
+This section introduces the ideas behind the cost models, which are explained in more detail in \autoref{chapter:cost-estimation}. The first, analytical, model is a formula derived from the actual cost of the operations. Due to its simplicity it is highly explainable, but will likely perform worse than more complex methods. Therefore, the next models are ML-based solutions. The statistical model uses a logistic regression to make its decision. Compared to the first model it is easier to include more features causing this model to have a larger decision space. The third, deep learning, model uses a neural network to make its predictions. It is the least explainable of cost estimators, but can capture the most complex interactions between features. Finally, the hybrid model combines the knowledge gathered from the previous cost estimators and applies it in a model like was done in \cite{halide_cost_model}.
 
 \subsection{Analytical}
 The analytical model is a deterministic model constructed by examining the operations performed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. This formula consists of the crucial factors of the algorithm, e.g., the number of matrix multiplications. For instance, if an algorithm performs an addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our case these operations are the linear algebra operations performed as part of the machine learning model training. So, through capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics} we can calculate the cost of each operation in the training process. The simplified calculation for this would be:
