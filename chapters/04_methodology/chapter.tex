@@ -39,9 +39,18 @@ Literature has identified the effect of some data characteristics on factorized 
 
 \subsubsection{Hardware}
 \label{subsubsec:4-hardware}
-\todo{By addressing the hardware characteristics, we fill \emph{RG.2}}
-\paragraph{GPU Architectures}
+This section answers how this thesis fills \emph{RG.2} by addressing the hardware characteristics. The hardware characteristics are the second dimension that impacts the cost of training a model. The hardware characteristics are varied in this study to capture the effect of these characteristics on the cost of training a model. The overarching split in hardware is between CPU and GPU. This thesis puts more emphasis on GPUs as they are the most commonly used hardware for training ML models. To also allow for a comparison between the two, we include CPU as well, but with a smaller range of variation. We only test varying degrees of parallelism by varying the number of cores. Hardware characteristics linked to GPUs are varied through experiments on different GPU types and architectures. By varying the GPU types used we capture the effect of the following variables:
+\begin{itemize}
+  \item Number of Streaming Processors
+  \item Number of compute cores, clock speeds and floating point processing power
+  \item Cache characteristics (L1, L2 size \& bandwidth)
+  \item Memory characteristics (bandwidth, frequency)
+  \item GPU architecture
+\end{itemize}
+The actual values for these variables, and exact GPU types used, are shown in \autoref{appendix:gpu-characteristics}, and the \textit{GPU Architectures} are detailed more extensively in the next paragraph.
 
+\paragraph{GPU Architectures}
+We purposefully selected a range of GPU architectures to capture metrics with different characteristics. Both older (Pascal, 2016) and newer (Ampere, 2020) architectures are included in an effort to create a cost estimator not limited to a single generation of hardware. Including only GPUs from a single generation would limit the generalizability of the cost estimator as they use the same architecture, i.e., they use similar Streaming Multiprocessors and Cache layouts.
 \subsubsection{Model}
 \todo{
   \begin{enumerate}

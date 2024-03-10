@@ -412,11 +412,12 @@ Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linea
 \end{algorithm}
 
 \subsubsection{K-means Clustering}
-The previously mentioned regression algorithms are supervised, i.e., they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm, which groups data points into, a predefined number of, clusters based on their similarity. The operators used to compute the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}. $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.
+The previously mentioned regression algorithms are supervised, i.e., they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm, which groups data points into, a predefined number of, clusters based on their similarity. The operators used to compute the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
 
 \begin{algorithm}[ht]
     \caption[K-Means Clustering]{K-Means Clustering
-        (\cite{morpheus})}\label{alg:k-means}
+        (\cite{morpheus})\\
+        $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.}\label{alg:k-means}
     \begin{algorithmic}
         \Require $X, k$ (number of centroids)
         \State $C = \text{rand}(r_X \times k)$ \Comment{Randomly initialize centroids matrix $C$}
