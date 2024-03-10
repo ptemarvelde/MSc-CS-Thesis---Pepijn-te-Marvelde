@@ -385,9 +385,7 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 We use the same ML models as \cite{morpheus} and \cite{schijndel_cost_estimation}. The models are: Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. As we have shown the rewrite rules for the used Linear Algebra operators, we can now show how these models can be rewritten for the Normalized matrix. This allows us to perform these ML models without materializing the join between the source tables. The algorithms are shown in the following sections, and the used factorized operators are \red{highlighted in red}. In the algorithms we use the following notation: $X$ is the matrix of independent variables, in our case the normalized matrix. $y$ is the dependent variable, and $w$ is the weight vector. $\gamma$ is the learning rate, and $n$ is the number of iterations.
 
 \subsubsection{Linear Regression}
-Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit for finding linear relationships between independent variables and a dependent variable. The used implementation utilizes gradient descent to gradually approach the optimal solution. As seen in the algorithm, the used LA operators on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
-
-\begin{algorithm}[ht]
+\begin{algorithm}[ht!]
     \caption[Linear regression]{Linear regression using Gradient Descent
         (\cite{morpheus})}\label{alg:linear-regression}
     \begin{algorithmic}
@@ -397,6 +395,7 @@ Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit for f
         \EndFor
     \end{algorithmic}
 \end{algorithm}
+Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit for finding linear relationships between independent variables and a dependent variable. The used implementation utilizes gradient descent to gradually approach the optimal solution. As seen in the algorithm, the used LA operators on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
 
 \subsubsection{Logistic Regression}
 Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linear Regression, but instead of predicting a continuous value, it predicts a binary value. The rewrite rule for Logistic Regression uses the same operators as Linear Regression: Transpose and Left Matrix Multiplication.
