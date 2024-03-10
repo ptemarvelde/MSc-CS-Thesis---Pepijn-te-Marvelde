@@ -432,7 +432,7 @@ The previously mentioned regression algorithms are supervised, i.e., they predic
 \end{algorithm}
 
 \subsubsection{Gaussian Non-negative Matrix Factorization}
-Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two, smaller, non-negative matrices. It is used for feature extraction from data, and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Left Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
+Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two, smaller, non-negative matrices. It is used for feature extraction from data, and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
 
 \begin{algorithm}[ht]
     \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
@@ -449,7 +449,16 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 \end{algorithm}
 
 
+\subsection{Summary}
+\label{subsec:factorized-ml-summary}
 
+\begin{table}[h]
+    \small
+    \resizebox{\textwidth}{!}{%
+        \input{chapters/02_preliminaries/auto-generated/operators}}
+    \caption{Overview of factorized ML operators.}
+    \label{tab:factorized-ml-operators-overview}
+\end{table}
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}

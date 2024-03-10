@@ -77,7 +77,7 @@ code-for-last-col =\color{RoyalBlue}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
-
+\newcolumntype{P}[1]{>{\hspace{0pt}}p{#1}} % hyphenation of the first word in a table cell  
 
 \newcommand{\reducedstrut}{\vrule width 0pt height .9\ht\strutbox depth .9\dp\strutbox\relax}
 \newcommand{\red}[1]{%

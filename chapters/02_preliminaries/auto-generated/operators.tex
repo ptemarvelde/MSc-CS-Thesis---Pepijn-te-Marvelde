@@ -1,0 +1,25 @@
+% LTeX: enabled=false
+\begin{tabular}{p{0.12\linewidth}p{0.16\linewidth}p{0.1\linewidth}p{0.13\linewidth}p{0.15\linewidth}p{0.19\linewidth}}
+\toprule
+Group & Operator & Example & 2\textsuperscript{nd} Operand & Output & Used in models \\
+\midrule\midrule
+\multirow[t]{5}{*}{\parbox{1\linewidth}{\vspace{2.3cm}\hspace{0pt}Element-wise}} & Addition & $T + x$ & scalar $x$ & \multirow[t]{5}{*}{\parbox{1\linewidth}{\vspace{2.3cm}Normalized Matrix}} & — \\
+
+ & Multiplication & $T \times x$ & scalar $x$ &  & K-Means \\
+
+ & Division & $T / x$ & scalar $x$ &  & — \\
+
+ & Transposition & $T^T$ & — &  & LinReg, LogReg, K-Means, G-NMF \\
+
+ & Generic Scalar Function & $f(T)$ & f &  & K-Means ($exp$) \\
+\cline{1-6}
+\multirow[t]{2}{*}{\parbox{1\linewidth}{\vspace{1.3cm}\hspace{0pt}Aggregation}} & Row Summation & \hspace{0pt} row-Sums$(T)$ & — & Column Vector & K-Means \\
+
+ & Column Summation & \hspace{0pt} col-Sums$(T)$ & — & Row Vector & — \\
+\cline{1-6}
+\multirow[t]{2}{*}{\parbox{1\linewidth}{\vspace{1.3cm}\hspace{0pt}Multiplication}} & Left Matrix Multiplication & $T Y$ & Matrix Y $(c_T \times r_Y)$ & Matrix $(r_T \times c_X)$ & LinReg, LogReg, K-Means \\
+
+ & Right Matrix Multiplication & $Y T$ & Matrix Y $(c_X \times r_X)$ & Matrix $(r_Y \times c_T)$ & G-NMF \\
+\cline{1-6}
+\bottomrule
+\end{tabular}
