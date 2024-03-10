@@ -438,7 +438,7 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
     \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
         (\cite{morpheus})}\label{alg:gaussian-nmf}
     \begin{algorithmic}
-        \Require $X, r (rank)$
+        \Require $X, r\ \text{(rank)}$
         \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}
         \State $H = \text{rand}(r \times c_X)$ \Comment{Randomly initialize $H$}
         \For{$i \in 1:n$}
@@ -449,10 +449,11 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 \end{algorithm}
 
 
-\subsection{Summary}
+\subsection{Overview}
 \label{subsec:factorized-ml-summary}
+In this section we have shown the rewrite rules for the Normalized matrix for commonly used Linear Algebra operators, and how these are used to train Machine Learning models without materializing the join between the source tables. \autoref{tab:factorized-ml-operators-overview} shows an overview of the discussed operators, the last column summarizes the used operators for each ML model. This already shows a reason why a good cost model is necessary for factorized ML, as the different models use a diverse set of operators they benefit in, different ways from factorized computation.
 
-\begin{table}[h]
+\begin{table}[ht]
     \small
     \resizebox{\textwidth}{!}{%
         \input{chapters/02_preliminaries/auto-generated/operators}}
