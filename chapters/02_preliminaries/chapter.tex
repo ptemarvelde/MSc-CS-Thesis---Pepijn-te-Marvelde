@@ -320,7 +320,7 @@ As matrix multiplication is not commutative there are different rewrite rules fo
 
 For right matrix multiplication (RMM) the rule is the same, we still essentially materialize the join, but with $X$ on the left-hand side:
 \begin{alignat*}{2}
-    TX   & \rightarrow \sum_1^k X I_k S_k M_k^T \\
+    XT   & \rightarrow \sum_1^k X I_k S_k M_k^T \\
     XT^T & \rightarrow (TX^T)^T
 \end{alignat*}
 
@@ -381,8 +381,76 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 \end{alignat*}
 \endgroup
 
-\subsection{Machine Learning Model Rewrites}
-\todo{Rewrite of 4 ML models, include all or just one?}
+\subsection{Machine Learning Models}
+We use the same ML models as \cite{morpheus} and \cite{schijndel_cost_estimation}. The models are: Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. As we have shown the rewrite rules for the used Linear Algebra operators, we can now show how these models can be rewritten for the Normalized matrix. This allows us to perform these ML models without materializing the join between the source tables. The algorithms are shown in the following sections, and the used factorized operators are \red{highlighted in red}. In the algorithms we use the following notation: $X$ is the matrix of independent variables, in our case the normalized matrix. $y$ is the dependent variable, and $w$ is the weight vector. $\gamma$ is the learning rate, and $n$ is the number of iterations.
+
+\subsubsection{Linear Regression}
+Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit for finding linear relationships between independent variables and a dependent variable. The used implementation utilizes gradient descent to gradually approach the optimal solution. As seen in the algorithm, the used LA operators on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
+
+\begin{algorithm}[ht]
+    \caption[Linear regression]{Linear regression using Gradient Descent
+        (\cite{morpheus})}\label{alg:linear-regression}
+    \begin{algorithmic}
+        \Require $X, y , w, \gamma$
+        \For{$i \in 1:n$}
+        \State $w = w - \gamma (\text{\red{$X^T$}}((\text{\red{$X w$}}) - y))$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Logistic Regression}
+Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linear Regression, but instead of predicting a continuous value, it predicts a binary value. The rewrite rule for Logistic Regression uses the same operators as Linear Regression: Transpose and Left Matrix Multiplication.
+
+\begin{algorithm}[ht]
+    \caption[Linear regression]{Logistic regression using Gradient Descent
+        (\cite{morpheus})}\label{alg:logistic-regression}
+    \begin{algorithmic}
+        \Require $X, y , w, \gamma$
+        \For{$i \in 1:n$}
+        \State $w = w - \gamma \left(\text{\red{$X^T$}} \frac{y}{1+e^{\text{\red{$X w$}}}}\right)$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection{K-means Clustering}
+The previously mentioned regression algorithms are supervised, i.e., they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm, which groups data points into, a predefined number of, clusters based on their similarity. The operators used to compute the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}. $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.
+
+\begin{algorithm}[ht]
+    \caption[K-Means Clustering]{K-Means Clustering
+        (\cite{morpheus})}\label{alg:k-means}
+    \begin{algorithmic}
+        \Require $X, k$ (number of centroids)
+        \State $C = \text{rand}(r_X \times k)$ \Comment{Randomly initialize centroids matrix $C$}
+        \State $D_X = \text{\red{rowSums($X^2$)}} \times \mathbf{1}_{1 \times k}$ \Comment{Compute the $l^2$-norm of points for distances}
+        \State $T_2 = \text{\red{$2 \times X$}}$
+
+        \For{$i \in 1:n$}
+        \State $D = D_X - X_2C + \left( \mathbf{1}_{r_X\times 1} \times \text{colSums}(C^2) \right)$ \Comment{Compute distances}
+        \State $A = (D == \text{rowMin}(D) \times \mathbf{1}_{1 \times k})$ \Comment{Assign points to the closest centroid}
+        \State $C =\frac{\text{\red{$X^T A$}}}{\mathbf{1}_{c_X \times 1} \times \text{colSums}(A)}$ \Comment{Update centroids}
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Gaussian Non-negative Matrix Factorization}
+Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two, smaller, non-negative matrices. It is used for feature extraction from data, and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Left Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
+
+\begin{algorithm}[ht]
+    \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
+        (\cite{morpheus})}\label{alg:gaussian-nmf}
+    \begin{algorithmic}
+        \Require $X, r (rank)$
+        \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}
+        \State $H = \text{rand}(r \times c_X)$ \Comment{Randomly initialize $H$}
+        \For{$i \in 1:n$}
+        \State $H = H \times \left(\frac{\text{\red{$W^T X$}}}{W^T W H}\right)$
+        \State $W = W \times \left(\frac{\text{\red{$X H^T$}}}{W(H H^T)}\right)$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
@@ -406,7 +474,7 @@ Data and code move to the SMs through multiple layers of memory. Data is loaded 
 
 \subsection{Estimating GPU Performance}
 \label{subsec:gpu-performance}
-Following the architecture overview, it is essential to understand the performance dynamics of a GPU when applied to Machine Learning tasks, especially the involved Linear Algebra. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The following paragraphs draw insights from \cite{gpu-perf-guide}.
+Following the architecture overview, it is essential to understand the performance dynamics of a GPU when applied to Machine Learning tasks, especially the involved Linear Algebra. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The following paragraphs draw insights from \cite{nvidia-gpu-performance:online}.
 
 Arithmetic intensity is a measure of the number of math operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance limitations. A function's execution time on a GPU can be limited by memory bandwidth, math bandwidth, or latency. To conceptualize this, imagine a function that reads data, performs computations, and writes results. The time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap, with the total execution time being the maximum of the two: $ \max(T_{mem}, T_{math})$. Due to CPU's inherent sequential nature the total execution time will be much closer to the sum of $T_{mem} \text{ and } T_{math}$. This makes estimating runtime on CPUs easier than for GPUs, as there are some caveats to estimating $T_{mem}$ and $T_{math}$ on GPUs which we will discuss next.
 
