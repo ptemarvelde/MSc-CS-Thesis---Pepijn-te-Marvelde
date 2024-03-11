@@ -17,7 +17,7 @@
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% LTeX: enabled=false
 
 
 %----------------------------------------------------------------------------------------
@@ -150,13 +150,14 @@ code-for-last-col =\color{RoyalBlue}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{flushleft} \large
                 \emph{Author:}\\
-                \href{http://www.johnsmith.com}{\authorname} % Author name - remove the \href bracket to remove the link
+                \authorname % Author name - remove the \href bracket to remove the link
             \end{flushleft}
         \end{minipage}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{flushright} \large
-                \emph{Supervisor:} \\
-                \href{http://www.jamessmith.com}{\supname} % Supervisor name - remove the \href bracket to remove the link  
+                \emph{Supervisors:} \\
+                \href{https://www.wis.ewi.tudelft.nl/hai}{\supname}\\ % Supervisor name - remove the \href bracket to remove the link  
+                \href{https://www.wis.ewi.tudelft.nl/sun}{\todo{title} Wenbo \textsc{Sun}}
             \end{flushright}
         \end{minipage}\\[3cm]
 
@@ -168,6 +169,12 @@ code-for-last-col =\color{RoyalBlue}
 
         \vfill
 
+        \begin{tabular}{lll}
+            Student Number:   & 4886496                                            \\
+            Thesis Committee: & Dr. A. Katsifodimos         & TU Delft, Chair      \\
+                              & Dr. R. Hai                  & TU Delft, Supervisor \\
+                              & \todo{title} S. Chakraborty & TU Delft
+        \end{tabular} \\[0.3cm]
         {\large \today}\\[4cm] % Date
         %\includegraphics{Logo} % University/department logo - uncomment to place it
 

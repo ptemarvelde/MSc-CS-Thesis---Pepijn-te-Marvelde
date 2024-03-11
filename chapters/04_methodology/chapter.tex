@@ -62,16 +62,7 @@ The most important of those features is the complexity of the model, i.e., the n
 
 The dependent variable in this study is the cost of training a model, expressed as \textbf{training time}. The goal of the cost estimators is to pick the fastest method for training a model. This is why we use training time as the dependent variable.
 
-Various \textbf{profiling metrics} are also collected to capture the cost of training a model. These metrics are used to calculate the cost of each operation in the training process. Through micro-benchmarks, run with a representative (sub)range of our independent variables, we find how these variables affect how computations are carried out on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}.
-
-\todo{\begin{itemize}
-    \item Why do we need to capture metrics?
-    \item Why these metrics, how are they used in the cost estimation.
-          \begin{itemize}
-            \item Calculate arithmetic complexity and ops:byte ratio. \cite{nvidia-gpu-performance:online}
-          \end{itemize}
-  \end{itemize}
-}
+Various \textbf{profiling metrics} are also collected to capture the cost of training a model. These metrics are used to calculate the cost of each operation in the training process. Through micro-benchmarks, run with a representative (sub)range of our independent variables, we find how these variables affect how computations are carried out on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}. These metrics were chosen we can investigate the effect of the independent variables on the cost of performing an operation. They allow us to calculate the total time taken for computation and memory ($ops:byte$) and reason about what changes in the independent variables cause the GPUs to be used more efficiently. This likely also affects the F/M trade-off.
 
 \begin{table}[t]
   \begin{tabular}{lll}
@@ -133,12 +124,12 @@ Finally, the knowledge gathered from the previous cost estimators is combined an
 
 \todo{Show architecture of hybrid model.}
 
-\subsection{? Cost Estimation at Training Time?}
-\todo{
-  This is a section I am not sure about. I think it would be interesting to see if we can estimate the cost of training a model at training time. This would allow for a more dynamic approach to the cost estimation. This would entail capturing some metrics (e.g., time taken for row sum/LMM) of the dataset at runtime and comparing cost between F/M.
-  Either fine-tuning a pre-trained model, or without a pretrained model.
-  Caveats:
-  \begin{itemize}
-    \item Needs to be fast, can't diminish the time won by choosing F over M
-  \end{itemize}
-}
+% \subsection{? Cost Estimation at Training Time?}
+% \todo{
+%   This is a section I am not sure about. I think it would be interesting to see if we can estimate the cost of training a model at training time. This would allow for a more dynamic approach to the cost estimation. This would entail capturing some metrics (e.g., time taken for row sum/LMM) of the dataset at runtime and comparing cost between F/M.
+%   Either fine-tuning a pre-trained model, or without a pretrained model.
+%   Caveats:
+%   \begin{itemize}
+%     \item Needs to be fast, can't diminish the time won by choosing F over M
+%   \end{itemize}
+% }
