@@ -12,6 +12,7 @@ To show the major impact our chosen independent variables have on the trade-off 
 We group the Data and Model characteristics as they both influence the actual computations being executed. The hardware characteristics influence how these computations are carried out on the hardware and are discussed separately. All figures and values in this section are computed from the experiments with synthetics datasets, unless specified otherwise.
 
 \subsection{Data \& Model Characteristics}
+\todo{Visualisation showing impact of some data chars on performance ratio.}
 
 
 \subsection{Hardware Characteristics}
@@ -33,7 +34,14 @@ The hardware used for computation impacts the runtime of a program, but here we 
 
 If we investigate these differences between GPUs further we see that, for cases where Factorization is preferred over Materialization ($\text{Time}_F < \text{Time}_M$), there are large differences between the GPUs. Both the mean performance ratio, and the count of cases where F is faster than M varies greatly, as shown in \autoref{tab:5-speedup-per-gpu}. This shows that the choice of hardware is a large factor in when to choose Factorization over Materialization.
 
+Another interesting observation can be seen when comparing the performance ratio against the complexity ratio \cite{schijndel_cost_estimation}, for different hardware settings. As explained in \autoref{sec:3-cost-estimation-for-factorized-ml} the complexity is defined as the number of FLOPs needed to perform the operation. The ratio is defined as the complexity of the factorized case divided by the complexity of the materialized case. Thus, per \cite{schijndel_cost_estimation}, the higher this ratio the more beneficial it is to use factorization. However, our experiments show that while this is the case for a lot of operators on CPU, when performing the computations on GPUs this is not always the case. This is shown in \autoref{fig:5-complexity-ratio-vs-performance-ratio}.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_complexity_ratio.pdf}
+    \caption[Performance ratio plotted against complexity ratio]{Performance ratio, of various operators on synthetic data, against complexity ratio, broken down by CPU and GPU. 95\% Confidence interval shown as shaded area. Where a lot of operators show clear correlation between the complexity ratio and the performance ratio on CPU, this is not the case for GPU.}
+    \label{fig:5-complexity-ratio-vs-performance-ratio}
+\end{figure}
 
 \section{Cost Models}
 \label{sec:5-cost-models}
