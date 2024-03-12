@@ -36,8 +36,8 @@ The language used for these mappings is \textit{source-to-target tuple generatin
     \intertext{the mapping to target table $T$ can be specified as follows. First we left join $S_2$ with $S_3$:}
      & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
     \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
-                                                                                                                       & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
-                                                                                                                       & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
+                                                                                                                      & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
+                                                                                                                      & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
                                                                                                                   \end{split}
 \end{alignat*}
 

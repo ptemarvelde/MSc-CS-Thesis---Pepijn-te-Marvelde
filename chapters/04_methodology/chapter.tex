@@ -15,25 +15,25 @@ As this is an empirical study the focus is on carried out experiments and their 
 To reiterate, the goal of this thesis is to create an accurate, generalizable, cost estimator for choosing whether Factorized or Materialized ML is optimal for a given ML scenario. For this we need knowledge on which factors influence this decision. Previous works have already identified the three dimensions that impact the cost: \emph{data characteristics} \cite{morpheus, amalur,schijndel_cost_estimation}, \emph{hardware characteristics} \cite{orion_learning_gen_lin_models}, and \emph{model-type \& -hyperparameters} \cite{amalur,schijndel_cost_estimation}. Here we detail the independent variables that are varied in this study.
 
 \subsubsection{Data}
-Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M trade off. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
+Literature has identified the effect of some data characteristics on factorized learning. Morpheus \cite{morpheus} Argues that the largest of these factors is the relation between the number of columns/row between the Source tables and Target table. They extend on this notion in \cite{MorpheusFIEnablingOptimizingNonlinear2019} also showing that sparsity has grave implications for the F/M trade-off. Amalur \cite{amalur} merges a larger range of data characteristics into a single metric that estimates the cost of training a model in FLOPs. We include the characteristics mentioned in this study complemented by a new set of features. We also include a larger range of variation per data characteristics allowing for more insights into the relation of these data characteristics and the training cost. All considered data characteristics are detailed in \autoref{tab:4-data_chars}.
 
 \begingroup
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[t]
-  \centering
-  \begin{tabular}{p{0.16\linewidth}p{0.09\linewidth}p{0.23\linewidth}p{0.4\linewidth}}
-    \toprule
-    Independent Variable       & Symbol   & Explanation                                                        & Reason for choice                                                                                                                                          \\ \midrule \midrule
-    Sparsity                   & $e$      & Fraction of zero-valued elements                                   & Impacts the number of computation needed for sparse implementations. \cite{MorpheusFIEnablingOptimizingNonlinear2019, morpheus, schijndel_cost_estimation} \\
-    Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & \cite{morpheus}                                                                                                                                            \\
-    Tuple ratio                & $\rho$   & Ratio of rows from $S_{2\cdots k}$ in $S_1$                        & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
-    Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
-    Join Type                  & $j_T$    & The join type used to join the source tables to the target table   & \cite{schijndel_cost_estimation}                                                                                                                           \\
-    Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M \cite{MorpheusFIEnablingOptimizingNonlinear2019}                                          \\
-    \bottomrule
-  \end{tabular}
-  \caption[Overview of data related features varied in this study]{Overview of data related features varied in this study. A reference in the 'Reason for choice' column denotes this feature is either used in the cost estimation rule in that publication, or the publication has a thorough analysis showing the impact of this feature on runtime.}
-  \label{tab:4-data_chars}
+    \centering
+    \begin{tabular}{p{0.16\linewidth}p{0.09\linewidth}p{0.23\linewidth}p{0.4\linewidth}}
+        \toprule
+        Independent Variable       & Symbol   & Explanation                                                        & Reason for choice                                                                                                                                          \\ \midrule \midrule
+        Sparsity                   & $e$      & Fraction of zero-valued elements                                   & Impacts the number of computation needed for sparse implementations. \cite{MorpheusFIEnablingOptimizingNonlinear2019, morpheus, schijndel_cost_estimation} \\
+        Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & \cite{morpheus}                                                                                                                                            \\
+        Tuple ratio                & $\rho$   & Ratio of rows from $S_{2\cdots k}$ in $S_1$                        & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
+        Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model\cite{morpheus}                                                                        \\
+        Join Type                  & $j_T$    & The join type used to join the source tables to the target table   & \cite{schijndel_cost_estimation}                                                                                                                           \\
+        Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M \cite{MorpheusFIEnablingOptimizingNonlinear2019}                                          \\
+        \bottomrule
+    \end{tabular}
+    \caption[Overview of data related features varied in this study]{Overview of data related features varied in this study. A reference in the 'Reason for choice' column denotes this feature is either used in the cost estimation rule in that publication, or the publication has a thorough analysis showing the impact of this feature on runtime.}
+    \label{tab:4-data_chars}
 \end{table}
 \endgroup
 
@@ -41,11 +41,11 @@ Literature has identified the effect of some data characteristics on factorized 
 \label{subsubsec:4-hardware}
 This section answers how this thesis fills \emph{RG.2} by addressing the hardware characteristics. The hardware characteristics are the second dimension that impacts the cost of training a model. The hardware characteristics are varied in this study to capture the effect of these characteristics on the cost of training a model. The overarching split in hardware is between CPU and GPU. This thesis puts more emphasis on GPUs as they are the most commonly used hardware for training ML models. To also allow for a comparison between the two, we include CPU as well, but with a smaller range of variation. We only test varying degrees of parallelism by varying the number of cores. Hardware characteristics linked to GPUs are varied through experiments on different GPU types and architectures. By varying the GPU types used we capture the effect of the following variables:
 \begin{itemize}
-  \item Number of Streaming Processors
-  \item Number of compute cores, clock speeds and floating point processing power
-  \item Cache characteristics (L1, L2 size \& bandwidth)
-  \item Memory characteristics (bandwidth, frequency)
-  \item GPU architecture
+    \item Number of Streaming Processors
+    \item Number of compute cores, clock speeds and floating point processing power
+    \item Cache characteristics (L1, L2 size \& bandwidth)
+    \item Memory characteristics (bandwidth, frequency)
+    \item GPU architecture
 \end{itemize}
 The actual values for these variables, and exact GPU types used, are shown in \autoref{appendix:gpu-characteristics}, and the \textit{GPU Architectures} are detailed more extensively in the next paragraph.
 
@@ -65,32 +65,32 @@ The dependent variable in this study is the cost of training a model, expressed 
 Various \textbf{profiling metrics} are also collected to capture the cost of training a model. These metrics are used to calculate the cost of each operation in the training process. Through micro-benchmarks, run with a representative (sub)range of our independent variables, we find how these variables affect how computations are carried out on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}. These metrics were chosen we can investigate the effect of the independent variables on the cost of performing an operation. They allow us to calculate the total time taken for computation and memory ($ops:byte$) and reason about what changes in the independent variables cause the GPUs to be used more efficiently. This likely also affects the F/M trade-off.
 
 \begin{table}[t]
-  \begin{tabular}{lll}
-    \toprule
-    Section Name                  & Metric Name                          & Metric Unit  \\
-    \midrule\midrule
-    Command line profiler metrics & \underline{dram\_\_bytes\_read.sum}  & byte         \\
-                                  & \underline{dram\_\_bytes\_write.sum} & byte         \\
-    GPU Speed Of Light Throughput & \underline{DRAM Frequency}           & cycle/second \\
-                                  & \textbf{SM Frequency}                & cycle/second \\
-                                  & \textbf{Elapsed Cycles}              & cycle        \\
-                                  & \underline{Memory Throughput}        & \%           \\
-                                  & \underline{DRAM Throughput}          & \%           \\
-                                  & Duration                             & nsecond      \\
-                                  & \underline{L1 Cache Throughput}      & \%           \\
-                                  & \underline{L2 Cache Throughput}      & \%           \\
-                                  & \textbf{SM Active Cycles}            & cycle        \\
-                                  & \textbf{Compute (SM) Throughput}     & \%           \\
-    Memory Workload Analysis      & \underline{Memory Throughput}        & byte/second  \\
-                                  & \underline{Mem Busy}                 & \%           \\
-                                  & \underline{Max Bandwidth}            & \%           \\
-                                  & \underline{L1 Hit Rate}              & \%           \\
-                                  & \underline{L2 Hit Rate}              & \%           \\
-                                  & \underline{Mem Pipes Busy}           & \%           \\
-    \bottomrule
-  \end{tabular}
-  \caption[Collected profiling metrics and their explanation]{Collected profiling metrics and their explanation. Metrics related to compute cost are \textbf{bold}, those related to memory cost are \underline{underlined}.}
-  \label{tab:4-profiling-metrics}
+    \begin{tabular}{lll}
+        \toprule
+        Section Name                  & Metric Name                          & Metric Unit  \\
+        \midrule\midrule
+        Command line profiler metrics & \underline{dram\_\_bytes\_read.sum}  & byte         \\
+                                      & \underline{dram\_\_bytes\_write.sum} & byte         \\
+        GPU Speed Of Light Throughput & \underline{DRAM Frequency}           & cycle/second \\
+                                      & \textbf{SM Frequency}                & cycle/second \\
+                                      & \textbf{Elapsed Cycles}              & cycle        \\
+                                      & \underline{Memory Throughput}        & \%           \\
+                                      & \underline{DRAM Throughput}          & \%           \\
+                                      & Duration                             & nsecond      \\
+                                      & \underline{L1 Cache Throughput}      & \%           \\
+                                      & \underline{L2 Cache Throughput}      & \%           \\
+                                      & \textbf{SM Active Cycles}            & cycle        \\
+                                      & \textbf{Compute (SM) Throughput}     & \%           \\
+        Memory Workload Analysis      & \underline{Memory Throughput}        & byte/second  \\
+                                      & \underline{Mem Busy}                 & \%           \\
+                                      & \underline{Max Bandwidth}            & \%           \\
+                                      & \underline{L1 Hit Rate}              & \%           \\
+                                      & \underline{L2 Hit Rate}              & \%           \\
+                                      & \underline{Mem Pipes Busy}           & \%           \\
+        \bottomrule
+    \end{tabular}
+    \caption[Collected profiling metrics and their explanation]{Collected profiling metrics and their explanation. Metrics related to compute cost are \textbf{bold}, those related to memory cost are \underline{underlined}.}
+    \label{tab:4-profiling-metrics}
 \end{table}
 
 
@@ -105,9 +105,9 @@ The analytical model is a deterministic model constructed by examining the opera
 
 \vspace{-0.5cm}
 \begin{align*}
-  \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
-                         & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
-                         & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
+    \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
+                           & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
+                           & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
 \end{align*}
 
 By profiling through a large range of the chosen independent variables we can estimate the effect of those variables on the factors in this formula, like the hit rate. By incorporating this in the analytical model we can create a highly explainable model that can be used to estimate the cost of different approaches.
