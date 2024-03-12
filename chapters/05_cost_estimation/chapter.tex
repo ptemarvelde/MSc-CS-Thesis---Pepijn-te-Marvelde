@@ -7,8 +7,6 @@ In this chapter, we share the results of our experiments and explain how we used
 
 \section{Motivation}
 \label{sec:5-motivation}
-\todo{Simple visualisation to show why cost estimation is needed, and obvious correlations between dependent/independent vars.}
-
 This section shows why there is a need for accurate cost estimation for choosing between factorization and materialization. We motivate in three stages. First the benefit of factorization is shown, second we show the impact of data \& model characteristics. By visualizing the performance ratio ($\frac{\text{Time}_M}{\text{Time}_F}$) against a range of independent variables we uncover the first trends that influence the F/M trade-off. Last, we show why GPUs are an important dimension to consider. All figures and values in this section are computed from the experiments with synthetic datasets, unless specified otherwise.
 
 \subsection{Benefit of Factorization}
@@ -40,7 +38,7 @@ The hardware used for computation impacts the runtime of a program, but here we 
 \begin{table}[ht]
     \centering
     \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
-    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose Factorization over Materialization. \todo{Make this into a plot?}}
+    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where Factorization is preferred over Materialization (speedup > 1). This shows hardware choice is a large factor in when to choose Factorization over Materialization.}
     \label{tab:5-speedup-per-gpu}
 \end{table}
 
