@@ -8,8 +8,20 @@ In this chapter, we share the results of our experiments and explain how we used
 \section{Motivation}
 \label{sec:5-motivation}
 \todo{Simple visualisation to show why cost estimation is needed, and obvious correlations between dependent/independent vars.}
-To show the major impact our chosen independent variables have on the trade-off between Materialization and Factorization we first show the performance ratio ($\frac{\text{Time}_M}{\text{Time}_F}$) against a range of independent variables.
-We group the Data and Model characteristics as they both influence the actual computations being executed. The hardware characteristics influence how these computations are carried out on the hardware and are discussed separately. All figures and values in this section are computed from the experiments with synthetics datasets, unless specified otherwise.
+
+This section shows why there is a need for accurate cost estimation for choosing between factorization and materialization. We motivate in three stages. First the benefit of factorization is shown, second we show the impact of data \& model characteristics. By visualizing the performance ratio ($\frac{\text{Time}_M}{\text{Time}_F}$) against a range of independent variables we uncover the first trends that influence the F/M trade-off. Last, we show why GPUs are an important dimension to consider. All figures and values in this section are computed from the experiments with synthetic datasets, unless specified otherwise.
+
+\subsection{Benefit of Factorization}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
+    \caption[Performance gain with factorization on real datasets]{Average Performance ratio of ML models for positive cases ($\text{Time}_M > \text{Time}_F$), split per tested real dataset for.}
+    \label{fig:5-real-perf-ratio}
+\end{figure}
+
+The goal of factorized ML is reducing the number of redundant operations performed during training of a model, to make this process more efficient, i.e., faster. We show the performance gain of factorization over materialization, on real datasets, in \autoref{fig:5-real-perf-ratio}. This shows that exploring factorization is beneficial, as for those cases where it is faster (which is $18\%$ of the tested cases on real datasets), the average speedup is $5.1\times$. In the most extreme cases the training time is reduced by more than $20$ seconds, a reduction by a factor of $27$. In scenarios where training occurs often, e.g., during hyperparameter optimization or online learning this can lead to significant time savings.
+
+% We group the Data and Model characteristics as they both influence the actual computations being executed. The hardware characteristics influence how these computations are carried out on the hardware and are discussed separately. 
 
 \subsection{Data \& Model Characteristics}
 \todo{Visualisation showing impact of some data chars on performance ratio.}
