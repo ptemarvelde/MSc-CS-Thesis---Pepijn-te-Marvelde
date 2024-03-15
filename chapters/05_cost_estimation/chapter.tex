@@ -3,7 +3,7 @@
 \chapter{Cost Estimation}
 
 \label{chapter:cost-estimation}
-In this chapter, we share the results of our experiments and explain how we used these results to build four different cost models. The \hyperref[sec:5-motivation]{first section} shows the results of the experiments, motivating why a cost model is necessary. In \autoref{sec:5-cost-models}, we talk about how we used these results to create the cost models. Each model is made for a specific purpose and offers different ways to solve the problem. This chapter aims to give a clear picture of how we ran the experiments and built the cost models from the results.
+In this chapter, we share the results of our experiments and explain how we used these results to build four different cost models. The \hyperref[sec:5-motivation]{first section} shows the results of the experiments, motivating why a cost model is necessary. In the \hyperref[sec:5-gpu-performance-analysis]{next section} the collected profiling metrics are aggregated and analyzed. In \autoref{sec:5-cost-models}, we talk about how we used the combined results, from the runtime and profiling experiments, to create the cost models. Each model is made for a specific purpose and offers different ways to solve the problem. This chapter aims to give a clear picture of how we ran the experiments and built the cost models from the results.
 
 \section{Motivation}
 \label{sec:5-motivation}
@@ -63,8 +63,9 @@ Another interesting observation can be seen when comparing the performance ratio
 
 \todo{Write last thing about GPU and why the correlations in \autoref{fig:5-complexity-ratio-vs-data-chars} are not as clear as for CPU.}
 
-\section{Profiling Metrics}
-\todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators? something like figure 10 in \cite{tvm}.}
+\section{GPU Performance Analysis}
+\label{sec:5-gpu-performance-analysis}
+\todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators? Something like figure 10 in \cite{tvm}. \textbf{Roofline chart.}}
 
 \section{Cost Models}
 \label{sec:5-cost-models}
