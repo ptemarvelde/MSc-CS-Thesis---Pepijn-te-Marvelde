@@ -65,7 +65,14 @@ Another interesting observation can be seen when comparing the performance ratio
 \label{sec:5-gpu-performance-analysis}
 Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU program is to compute $max(T_{mem}, T_{math})$. In this formula $T_{mem}$ is the time it takes to transfer data to and from GPU memory, and $T_{math}$ is the time it takes to perform the actual computations. This is in line with the fact that the memory throughput of a GPU is much higher than that of a CPU, and thus the computations are often memory-bound. In this section we show whether this is the case for our experiments, and how we can use this to estimate the runtime of a program.
 
-\todo{Show mem cost seconds}
+\todo{Describe \autoref{fig:5-profiling-mem-vs-compute}}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute.pdf}
+    \caption[Memory cost vs math cost of profiled scenarios]{Memory cost vs math (compute)cost of profiled scenarios. The memory cost is computed as the total number of bytes read and written to memory divided by the measured average memory bandwidth. The math cost is the number of cycles the Streaming Multiprocessors were active divided by the measured average SM frequency.}
+    \label{fig:5-profiling-mem-vs-compute}
+\end{figure}
 
 
 \todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators?
@@ -125,8 +132,6 @@ The goal for this statistical estimator is to still be explainable, while provid
 \subsubsection*{STAT.1 Linear Regressor Fit to Full Training Set}
 The first linear regressor is trained on the full training set, which includes all operators. The rationale behind this approach is that there is likely a relationship between the performance of individual operators and the performance of the models in which they are used. By training the regressor on the full set of operators, we aim to capture these relationships and use them to improve the accuracy. This model predicts the time saved by choosing factorization over materialization.
 
-\todo{short eval, exact features}
-
 \subsubsection*{STAT.2 Linear Regressor Fit to Model Runtimes}
 The second linear regressor is trained on the runtimes of the models. With this model we find whether including the operators adds utility. Like STAT.1, this model predicts the time saved by choosing factorization over materialization.
 
@@ -137,12 +142,24 @@ This model is an ensemble of two linear regressors, one for factorization and on
 Much like STAT.3 this estimator is also a combination of multiple inner regressors. However, instead of having one regressor for each factorization and materialization, we have one regressor for each model type. This is done to capture the differences in the relationships between independent variables and runtime for different model types. Like the first two models, this model predicts the time saved by choosing factorization over materialization (by predicting whether time is saved by choosing F).
 
 \subsubsection*{STAT.5 Separate Regressors CPU and GPU}
-\todo{Split GPU and CPU}
+In previous sections we have shown that the choice of hardware plays a large factor in the trade-off we are researching, therefore it is likely there are differences in the relationships between independent variables and runtime between CPU and GPU. A single linear regression model is likely unable to capture these differences. Therefore, we test the performance of an couple of estimators, one which is only fit to CPU scenario's, and one which is only fit to GPU scenario's.
 
 \subsubsection*{STAT.6 Separate Regressors for F, M and Model Type}
 The last version of the statistical model we created is a combination of STAT.4 and STAT.3. By training separate regressors for every combination of factorization, materialization and model type, we allow the models to capture differences between the groups more freely.
 
+\subsubsection*{STAT.7 Separate Regressors Each Dimension}
+The last, most granular, ensemble is one that has a separate regressor for each combination of factorization, materialization, model type and hardware. This is done to capture the differences in the relationships between independent variables and runtime for each combination of the dimensions.
+
+
 \subsubsection{Statistical Model Evaluation}
+\todo{Text to go with \autoref{fig:5-statistical-model-evaluation}.}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
+    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved when using this estimator, as a fraction of the total to-be-saved time (by a perfect estimator).}
+    \label{fig:5-statistical-model-evaluation}
+\end{figure}
 
 \subsection{Deep Learning}
 
