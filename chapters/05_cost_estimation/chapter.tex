@@ -22,8 +22,6 @@ The goal of factorized ML is reducing the number of redundant operations perform
 % We group the Data and Model characteristics as they both influence the actual computations being executed. The hardware characteristics influence how these computations are carried out on the hardware and are discussed separately. 
 
 \subsection{Data \& Model Characteristics}
-\todo{Visualisation showing impact of some data chars on performance ratio.}
-
 We show the impact of various data characteristics on the performance ratio in \autoref{fig:5-complexity-ratio-vs-data-chars}. The figure shows a slight negative correlation between performance ratio and sparsity of target table $T$. The second column shows more insight into the relation between performance and sparsity. It shows that when the sparsity ratio is low, i.e., compared to the base tables $S_k$, $T$ has more zero values, factorization is likely slower than materialization. The right-most plots show that a higher complexity ratio ($\frac{M_{FLOPs}}{F_{FLOPS}}$) is likely to lead to factorization being the training method. This is in line with the intuition that factorization is beneficial when it saves redundant computations. Important to note is that the correlation between these data characteristics and the speedup factorization brings is not as clear when we use GPUs for computation. This is likely due to the fact that the computations are not compute-bound but memory-bound. This is discussed further in the next section.
 
 \begin{figure}[ht]
@@ -65,11 +63,22 @@ Another interesting observation can be seen when comparing the performance ratio
 
 \section{GPU Performance Analysis}
 \label{sec:5-gpu-performance-analysis}
-\todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators? Something like figure 10 in \cite{tvm}. \textbf{Roofline chart.}}
+Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU program is to compute $max(T_{mem}, T_{math})$. In this formula $T_{mem}$ is the time it takes to transfer data to and from GPU memory, and $T_{math}$ is the time it takes to perform the actual computations. This is in line with the fact that the memory throughput of a GPU is much higher than that of a CPU, and thus the computations are often memory-bound. In this section we show whether this is the case for our experiments, and how we can use this to estimate the runtime of a program.
+
+\todo{Show mem cost seconds}
+
+
+\todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators?
+    % results/full_1/analytical_model/analytical.ipynb}
+    \begin{enumerate}
+        \item Something like figure 10 in \cite{tvm}. \textbf{Roofline chart.}
+        \item Show that \\ \texttt{(dram\_bytes\_read\_sum + dram\_bytes\_write\_sum) / memory\_throughput\_byte\_weighted\_mean} is a good estimator for duration.
+    \end{enumerate}
+}
 
 \section{Cost Models}
 \label{sec:5-cost-models}
-\todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters}
+\todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters.\\Show R2 score to compare between models.}
 
 \subsection{Feature Engineering}
 \label{sec:5-feature-engineering}
@@ -85,9 +94,55 @@ Another interesting observation can be seen when comparing the performance ratio
     Finally show schema of the final dataset used for training the models.
 }
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/feature-engineering.pdf}
+    \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}.}
+    \label{fig:5-feature-enrichment}
+\end{figure}
+
 \subsection{Analytical}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
+    \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
+    \label{fig:5-analytical-architecture}
+\end{figure}
 
 \subsection{Statistical}
+The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by fine-tuning, end up at more complex models, such as ensembles.
+
+\todo{
+    \begin{enumerate}
+        \item Linear Regression
+        \item Difference with Analytical: predict time\_saved instead of runtime for both F and M.
+              % \item For each fitted regressor we use Recursive feature elimination with cross-validation to select features \cite{rfecv}.
+        \item Start with simplest single linear regression model, continue to ensembles.
+    \end{enumerate}
+}
+
+
+\subsubsection*{STAT.1 Linear Regressor Fit to Full Training Set}
+The first linear regressor is trained on the full training set, which includes all operators. The rationale behind this approach is that there is likely a relationship between the performance of individual operators and the performance of the models in which they are used. By training the regressor on the full set of operators, we aim to capture these relationships and use them to improve the accuracy. This model predicts the time saved by choosing factorization over materialization.
+
+\todo{short eval, exact features}
+
+\subsubsection*{STAT.2 Linear Regressor Fit to Model Runtimes}
+The second linear regressor is trained on the runtimes of the models. With this model we find whether including the operators adds utility. Like STAT.1, this model predicts the time saved by choosing factorization over materialization.
+
+\subsubsection*{STAT.3 Separate Regressors for F and M}
+This model is an ensemble of two linear regressors, one for factorization and one for materialization. By training separate regressors for factorization and materialization, we aim to capture the relationships between independent variables and runtime more explicitly than is done by the previous models. Each internal regressor predicts the runtime of the scenario under test, and the final prediction is which is predicted to be faster.
+
+\subsubsection*{STAT.4 Separate Regressors for each Model Type}
+Much like STAT.3 this estimator is also a combination of multiple inner regressors. However, instead of having one regressor for each factorization and materialization, we have one regressor for each model type. This is done to capture the differences in the relationships between independent variables and runtime for different model types. Like the first two models, this model predicts the time saved by choosing factorization over materialization (by predicting whether time is saved by choosing F).
+
+\subsubsection*{STAT.5 Separate Regressors CPU and GPU}
+\todo{Split GPU and CPU}
+
+\subsubsection*{STAT.6 Separate Regressors for F, M and Model Type}
+The last version of the statistical model we created is a combination of STAT.4 and STAT.3. By training separate regressors for every combination of factorization, materialization and model type, we allow the models to capture differences between the groups more freely.
+
+\subsubsection{Statistical Model Evaluation}
 
 \subsection{Deep Learning}
 

@@ -1,0 +1,31 @@
+<mxfile host="65bd71144e">
+    <diagram id="trs140lMoVNk6_UFLpw0" name="Page-1">
+        <mxGraphModel dx="384" dy="577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Option 1&lt;br&gt;Single regression model" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="260" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Option 2&lt;br&gt;Split on operator/model level (F/M)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="204" y="260" width="210" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Easiest, fastest&lt;br&gt;one hot encode cat vars" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="310" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Hard to include data on operators, might lose utility" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="249" y="300" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Option 3&lt;br&gt;Split on operator/model AND Compute type&lt;br&gt;CPU/GPU" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="410" y="250" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Hard to include data on operators, might lose utility" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="475" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="realtime model: &lt;br&gt;ADD ROWS FOR SPEEDUP OF EACH OPERATOR?&lt;br&gt;&lt;br&gt;feature enrichment, predict speedup of each operator?&lt;br&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="154" y="380" width="310" height="70" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

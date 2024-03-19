@@ -107,7 +107,7 @@ The experiments are run on a relatively large set of different machines because 
 \end{table}
 
 \subsection{Experiment Setting}
-To ensure reliable training data all runtime experiments were run with a repetition count of $30$. The profiling experiments were not repeated, as NCU ensures actionable and deterministic results through e.g., replaying kernel launches \cite{nsight_compute}. All experiments were run in a containerized environment to ensure reproducibility. The profiling experiments were run with the same image as the runtime experiments, to ensure that the same environment was used for both. Docker\footnote{\url{https://www.docker.com/}} was used as the container runtime, except on the DAIC cluster which enforces the use of Apptainer\footnote{\url{https://apptainer.org/}} image.
+To ensure reliable training data all runtime experiments were run with a repetition count of $30$. The profiling experiments were not repeated, as NCU ensures actionable and deterministic results through, e.g., replaying kernel launches \cite{nsight_compute}. All experiments were run in a containerized environment to ensure reproducibility. The profiling experiments were run with the same image as the runtime experiments, to ensure that the same environment was used for both. Docker\footnote{\url{https://www.docker.com/}} was used as the container runtime, except on the DAIC cluster which enforces the use of Apptainer\footnote{\url{https://apptainer.org/}} image.
 
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
@@ -135,8 +135,6 @@ We first display that the cost estimator generalizes well to new scenarios. Then
 
 \subsection{Exploring Generalizability}
 The utility of our strict train-validate-test split is shown here. We show that the cost estimators generalize well to new scenarios.
-
-\todo{Should also show the performance on synth data?}
 
 \subsubsection{Performance with Real Datasets}
 \label{subsubsec:6-real-datasets}
