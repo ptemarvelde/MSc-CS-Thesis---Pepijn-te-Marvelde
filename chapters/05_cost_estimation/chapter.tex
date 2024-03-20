@@ -74,6 +74,17 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
     \label{fig:5-profiling-mem-vs-compute}
 \end{figure}
 
+% Figure called roofline-plot.pdf
+
+% These visualisations show that when choosing factorization, the average arithmetic intensity is higher than when choosing materialization. The roofline charts also show that although there are points
+\todo{Fig \autoref{fig:5-roofline-plot} shows that...}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-plot.pdf}
+    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPs/Byte) axes. Similar GPU types have similar distributions. \todo{write smth about F vs M.}}
+    \label{fig:5-roofline-plot}
+\end{figure}
 
 \todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators?
     % results/full_1/analytical_model/analytical.ipynb}
@@ -169,6 +180,7 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \end{figure}
 
 \subsection{Deep Learning}
+\todo{Write, show architecture, show results. Use \cite{TreeRNN}, as it shows good performance in \cite{tvm}.}
 
 \subsection{Hybrid}
 

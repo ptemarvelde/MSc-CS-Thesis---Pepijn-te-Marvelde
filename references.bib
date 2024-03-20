@@ -115,7 +115,7 @@
   series    = {SIGMOD '16}
 }
 
-@misc{halide,
+@misc{halide_examples,
   author       = {},
   title        = {What is Halide? Why should I use it? — Learning Halide by Examples documentation},
   howpublished = {\url{https://people.csail.mit.edu/tzumao/tmp/learning_halide/what_is_halide.html}},
@@ -302,15 +302,19 @@
   file         = {/Users/jessie/Zotero/storage/7W6G64YU/Justo et al. - 2021 - Towards a polyglot framework for factorized ML.pdf}
 }
 
-@misc{tvm,
-  doi       = {10.48550/ARXIV.1802.04799},
-  url       = {https://arxiv.org/abs/1802.04799},
-  author    = {Chen,  Tianqi and Moreau,  Thierry and Jiang,  Ziheng and Zheng,  Lianmin and Yan,  Eddie and Cowan,  Meghan and Shen,  Haichen and Wang,  Leyuan and Hu,  Yuwei and Ceze,  Luis and Guestrin,  Carlos and Krishnamurthy,  Arvind},
-  keywords  = {Machine Learning (cs.LG),  Artificial Intelligence (cs.AI),  Programming Languages (cs.PL),  FOS: Computer and information sciences,  FOS: Computer and information sciences},
-  title     = {TVM: An Automated End-to-End Optimizing Compiler for Deep Learning},
-  publisher = {arXiv},
+@inproceedings{tvm,
+  author    = {Chen, Tianqi and Moreau, Thierry and Jiang, Ziheng and Zheng, Lianmin and Yan, Eddie and Cowan, Meghan and Shen, Haichen and Wang, Leyuan and Hu, Yuwei and Ceze, Luis and Guestrin, Carlos and Krishnamurthy, Arvind},
+  title     = {TVM: an automated end-to-end optimizing compiler for deep learning},
   year      = {2018},
-  copyright = {arXiv.org perpetual,  non-exclusive license}
+  isbn      = {9781931971478},
+  publisher = {USENIX Association},
+  address   = {USA},
+  abstract  = {There is an increasing need to bring machine learning to a wide diversity of hardware devices. Current frameworks rely on vendor-specific operator libraries and optimize for a narrow range of server-class GPUs. Deploying workloads to new platforms - such as mobile phones, embedded devices, and accelerators (e.g., FPGAs, ASICs) - requires significant manual effort. We propose TVM, a compiler that exposes graph-level and operator-level optimizations to provide performance portability to deep learning workloads across diverse hardware back-ends. TVM solves optimization challenges specific to deep learning, such as high-level operator fusion, mapping to arbitrary hardware primitives, and memory latency hiding. It also automates optimization of low-level programs to hardware characteristics by employing a novel, learning-based cost modeling method for rapid exploration of code optimizations. Experimental results show that TVM delivers performance across hardware back-ends that are competitive with state-of-the-art, hand-tuned libraries for low-power CPU, mobile GPU, and server-class GPUs. We also demonstrate TVM's ability to target new accelerator back-ends, such as the FPGA-based generic deep learning accelerator. The system is open sourced and in production use inside several major companies.},
+  booktitle = {Proceedings of the 13th USENIX Conference on Operating Systems Design and Implementation},
+  pages     = {579–594},
+  numpages  = {16},
+  location  = {Carlsbad, CA, USA},
+  series    = {OSDI'18}
 }
 
 @misc{nvidia-gpu-performance:online,
@@ -422,4 +426,14 @@
   author    = {Guyon,  Isabelle and Weston,  Jason and Barnhill,  Stephen and Vapnik,  Vladimir},
   year      = {2002},
   pages     = {389–422}
+}
+
+@inproceedings{TreeRNN,
+  title     = {Improved Semantic Representations From Tree-Structured Long Short-Term Memory Networks},
+  url       = {http://dx.doi.org/10.3115/v1/P15-1150},
+  doi       = {10.3115/v1/p15-1150},
+  booktitle = {Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)},
+  publisher = {Association for Computational Linguistics},
+  author    = {Tai,  Kai Sheng and Socher,  Richard and Manning,  Christopher D.},
+  year      = {2015}
 }
