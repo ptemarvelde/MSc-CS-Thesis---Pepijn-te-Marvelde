@@ -67,7 +67,7 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
 
 \todo{Describe \autoref{fig:5-profiling-mem-vs-compute}}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute.pdf}
     \caption[Memory cost vs math cost of profiled scenarios]{Memory cost vs math (compute)cost of profiled scenarios. The memory cost is computed as the total number of bytes read and written to memory divided by the measured average memory bandwidth. The math cost is the number of cycles the Streaming Multiprocessors were active divided by the measured average SM frequency.}
@@ -101,7 +101,7 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
     Finally show schema of the final dataset used for training the models.
 }
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/feature-engineering.pdf}
     \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}.}
@@ -109,7 +109,7 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
 \end{figure}
 
 \subsection{Analytical}
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
     \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
@@ -117,17 +117,24 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
 \end{figure}
 
 \subsection{Statistical}
-The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by fine-tuning, end up at more complex models, such as ensembles.
+The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by fine-tuning, end up at more complex models, with ensembles of linear regression models. The architecture of each of the statistical models is explained in \autoref{fig:5-statistical-architecture}.
+
 
 \todo{
     \begin{enumerate}
         \item Linear Regression
         \item Difference with Analytical: predict time\_saved instead of runtime for both F and M.
               % \item For each fitted regressor we use Recursive feature elimination with cross-validation to select features \cite{rfecv}.
-        \item Start with simplest single linear regression model, continue to ensembles.
+        \item Start with the simplest single linear regression model, continue to ensembles.
     \end{enumerate}
 }
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/statistical-architecture.pdf}
+    \caption[Statistical Estimator Architecture]{Architecture of the Statistical Estimator. Shows how the data, and estimators are split for each model. The final split-level belonging to each respective model is colored in the same color. For STAT.5 we show the linear regression ensemble fit to the data. For clarity, we leave this out for the other models. Three dots ($\boldsymbol{\ldots}$) denote some values were left out to prevent clutter.}
+    \label{fig:5-statistical-architecture}
+\end{figure}
 
 \subsubsection*{STAT.1 Linear Regressor Fit to Full Training Set}
 The first linear regressor is trained on the full training set, which includes all operators. The rationale behind this approach is that there is likely a relationship between the performance of individual operators and the performance of the models in which they are used. By training the regressor on the full set of operators, we aim to capture these relationships and use them to improve the accuracy. This model predicts the time saved by choosing factorization over materialization.
@@ -154,7 +161,7 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \subsubsection{Statistical Model Evaluation}
 \todo{Text to go with \autoref{fig:5-statistical-model-evaluation}.}
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
     \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved when using this estimator, as a fraction of the total to-be-saved time (by a perfect estimator).}
