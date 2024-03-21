@@ -14,5 +14,6 @@
         "alignat*": "ignore",
         "alignat": "ignore"
     },
+    "ltex.language": "en-GB",
     "ltex.additionalRules.enablePickyRules": true,
 }

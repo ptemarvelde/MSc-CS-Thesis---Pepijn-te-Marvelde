@@ -27,3 +27,5 @@ colSums
 SMs
 SIMD
 GFLOPs
+speedup
+math

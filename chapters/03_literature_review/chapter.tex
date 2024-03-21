@@ -27,7 +27,7 @@ While the previously mentioned works are mostly specialized pieces of software w
 \label{sec:3-cost-estimation-for-factorized-ml}
 Several works propose frameworks and methods for deciding between factorization and materialization. However, their cost estimators have limitations as they rely on theoretical analysis, simple heuristics, or conservative assumptions. This section reviews these works and highlights their contributions and challenges.
 
-An analytical model that compares I/O and CPU cost between F and M is used in \cite{orion_learning_gen_lin_models}. The authors analyze the number of operations for each step of Batch Gradient Descent in relation to the input data sizes. This results in a prediction for CPU cost and I/O cost. In their experiments, the model accurately predicts the fastest approach 95\% of the time.
+An analytical model that compares I/O and CPU cost between F and M is used in \cite{orion_learning_gen_lin_models}. The authors analyse the number of operations for each step of Batch Gradient Descent in relation to the input data sizes. This results in a prediction for CPU cost and I/O cost. In their experiments, the model accurately predicts the fastest approach 95\% of the time.
 
 
 Morpheus \cite{morpheus} argues that using specific cost models for LA operators is not feasible because it makes the cost model dependent on a single LA back-end. Thus, they advocate for a “system-agnostic approach that does not need cost models for operators”. This approach uses a decision rule based on feature and tuple ratios to determine whether to factorize. The rule is as follows:
@@ -53,7 +53,7 @@ Morpheus \cite{morpheus} argues that using specific cost models for LA operators
 The conservative choice of thresholds results in Morpheus predicting materialization in cases where it is slower than factorization, but the authors show that these speed-ups are often less than 1.5x.
 % Limitation, might be 'machine-specific' limitations that are not machine specific at all (some optimization might happen every time?)
 
-MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyzes the performance trade-offs and crossovers between its factorized interaction framework and materialized execution for LA operations. The authors identify sparsity as another key factor, along with the already known tuple ratio, and feature ratio, that affects runtime. They propose a heuristic decision rule based on these factors to help users decide when to use their framework. The decision rule uses the cost ratio of the factorized and materialized approaches for left matrix multiplication. The decision rule considers the number of base tables, the number of sparse dimension tables, and the sparsity of each dimension table, the rule is:
+MorpheusFI \cite{MorpheusFIEnablingOptimizingNonlinear2019} analyses the performance trade-offs and crossovers between its factorized interaction framework and materialized execution for LA operations. The authors identify sparsity as another key factor, along with the already known tuple ratio, and feature ratio, that affects runtime. They propose a heuristic decision rule based on these factors to help users decide when to use their framework. The decision rule uses the cost ratio of the factorized and materialized approaches for left matrix multiplication. The decision rule considers the number of base tables, the number of sparse dimension tables, and the sparsity of each dimension table, the rule is:
 
 \begin{definition}[\textit{MorpheusFI's Decision Rule}]
     \begin{itemize}
@@ -80,7 +80,7 @@ In natural language, this states that you should only factorize if a low ratio o
 
 This rule is not extensively evaluated. \todo{Explain rule in natural language?}
 
-Amalur \cite{schijndel_cost_estimation} implements a combination between the two previously mentioned cost estimation approaches: analytical counting of operations and a heuristic decision rule. The decision rule is based on the complexity ratio between factorization and materialization. It computes the number of FLOPs for both approaches. This involves analyzing the training algorithms of various ML models and creating formulas to compute the number of FLOPs needed with regard to the input datasets. Which approach to take is chosen as follows:
+Amalur \cite{schijndel_cost_estimation} implements a combination between the two previously mentioned cost estimation approaches: analytical counting of operations and a heuristic decision rule. The decision rule is based on the complexity ratio between factorization and materialization. It computes the number of FLOPs for both approaches. This involves analysing the training algorithms of various ML models and creating formulas to compute the number of FLOPs needed with regard to the input datasets. Which approach to take is chosen as follows:
 
 \begin{definition}[\textit{Amalur's Decision Rule}]
 
