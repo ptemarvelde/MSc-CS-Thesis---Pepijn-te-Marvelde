@@ -83,7 +83,7 @@ A preliminary step for creating an accurate cost model is to understand the perf
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-plot.pdf}
-    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPs/byte) axes. Similar GPU types have similar distributions. \todo{check GPU specs}}
+    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPs/byte) axes. Similar GPU types have similar distributions.}
     \label{fig:5-roofline-plot}
 \end{figure}
 
@@ -92,7 +92,7 @@ Not only the split in metrics between F and M is interesting, but the difference
 
 The roofline charts for the performed profiling experiments are shown in \autoref{fig:5-roofline-plot}. These charts confirm that almost all scenarios are memory-bound. But, the interesting observation from this plot is the impact of GPU type, and the difference between factorization and materialization. The differences between GPUs are most obvious in the right distribution plots. The A10G and A40 are much more powerful GPUs. On the GTX1660Ti most scenarios reach a low compute performance as they hit the memory bound. The A10G and A40, however, have a much higher memory bandwidth. Thus, the scenarios have reach a higher average performance. The gap these plots show between factorization and materialization gives more valuable insights. The materialized operators have lower arithmetic complexity than their factorized equivalents (shown in top density plots). This means that, on average, the factorized operators are less memory-bound, and thus can utilize a larger part of the GPUs compute capacity. However, the factorized operators show a much larger variance in attained performance (right density plots) due to the fact that the operations on different parts of the normalized matrix are not parallelized. These operators can likely be tweaked, so they can take advantage of the GPUs compute capacity more efficiently.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-operators.pdf}
     \caption[Roofline chart per operator]{Roofline chart comparing factorization and materialization for Left Matrix Multiplication, Left Scalar Multiplication and Row Summation Transpose. Metrics from NVIDIA A40.}
@@ -114,6 +114,14 @@ A roofline chart for a selection of operators is shown in \autoref{fig:5-rooflin
     \end{enumerate}
     Finally show schema of the final dataset used for training the models.
 }
+From our experiments (further detailed in \autoref{sec:6experiment-setup}) we have a dataset with for each scenario (consisting of a dataset, operator, model type F/M, and hardware configuration.) the runtime of this scenario. This section details the process of preprocessing and enriching this dataset with additional features. The goal is to create a dataset that can be used to train the cost models. The features we add are based on the profiling metrics collected during the experiments, and the data and model characteristics. The process is visualized in \autoref{fig:5-feature-enrichment}. The feature set is described in \autoref{tab:5-features}.
+
+\begin{table}
+    \centering
+    \input{chapters/05_cost_estimation/auto-generated/feature-table.tex}
+    \caption{\todo{Caption and fill with engineered features.}}
+    \label{tab:5-features}
+\end{table}
 
 $T_{mem} = \frac{dram\_bytes\_read\_sum + dram\_bytes\_write\_sum}{memory\_throughput\_byte\_weighted\_mean}$
 
@@ -141,6 +149,8 @@ $T_{math} = \frac{sm\_active\_cycles\_sum}{sm\_frequency\_weighted\_mean}$
     \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
     \label{fig:5-analytical-architecture}
 \end{figure}
+
+Architecture: \autoref{fig:5-analytical-architecture}.
 
 \subsection{Statistical}
 The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by drilling down into categorical variables, end up at more complex models, with ensembles of linear regression models.
@@ -192,6 +202,13 @@ STAT.1-3 show relatively little time saved, but the average speedup of positivel
 \todo{Write, show architecture, show results. Use \cite{TreeRNN}, as it shows good performance in \cite{tvm}.}
 
 \subsection{Hybrid}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{chapters/05_cost_estimation/figures/hybrid-architecture.pdf}
+    \caption[Hybrid Estimator Architecture]{Architecture of the Hybrid Estimator. inspired by \cite{halide_cost_model} \todo{Update refine and finalize}.}
+    \label{fig:5-hybrid-architecture}
+\end{figure}
 
 \subsection{Meta-results}
 \todo{Inference speed, training time.}
