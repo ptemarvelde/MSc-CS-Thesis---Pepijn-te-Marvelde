@@ -83,7 +83,7 @@ A preliminary step for creating an accurate cost model is to understand the perf
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-plot.pdf}
-    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPs/Byte) axes. Similar GPU types have similar distributions. \todo{Write smth about F vs M.}}
+    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPs/Byte) axes. Similar GPU types have similar distributions.}
     \label{fig:5-roofline-plot}
 \end{figure}
 
@@ -92,15 +92,14 @@ Not only the split in metrics between F and M is interesting, but the difference
 
 The roofline charts for the performed profiling experiments are shown in \autoref{fig:5-roofline-plot}. These charts confirm that almost all scenarios are memory-bound. But, the interesting observation from this plot is the impact of GPU type, and the difference between factorization and materialization. The differences between GPUs are most obvious in the right distribution plots. The A10G and A40 are much more powerful GPUs. On the GTX1660Ti most scenarios reach a low compute performance as they hit the memory bound. The A10G and A40, however, have a much higher memory bandwidth. Thus, the scenarios have reach a higher average performance. The gap these plots show between factorization and materialization gives more valuable insights. The materialized operators have lower arithmetic complexity than their factorized equivalents (shown in top density plots). This means that, on average, the factorized operators are less memory-bound, and thus can utilize a larger part of the GPUs compute capacity. However, the factorized operators show a much larger variance in attained performance (right density plots) due to the fact that the operations on different parts of the normalized matrix are not parallelized. These operators can likely be tweaked, so they can take advantage of the GPUs compute capacity more efficiently.
 
-\todo{Show roofline per operator}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-operators.pdf}
+    \caption[Roofline chart per operator]{Roofline chart comparing factorization and materialization for Left Matrix Multiplication, Left Scalar Multiplication and Row Summation Transpose. Metrics from NVIDIA A40.}
+    \label{fig:5-roofline-operators}
+\end{figure}
 
-\todo{Add this section showing things like ops:bytes ratio differences between GPUs \& operators?
-    % results/full_1/analytical_model/analytical.ipynb}
-    \begin{enumerate}
-        \item Something like figure 10 in \cite{tvm}. \textbf{Roofline chart.}
-        \item Show that \\ \texttt{(dram\_bytes\_read\_sum + dram\_bytes\_write\_sum) / memory\_throughput\_byte\_weighted\_mean} is a good estimator for duration.
-    \end{enumerate}
-}
+A roofline chart for a selection of operators is shown in \autoref{fig:5-roofline-operators}. This breakdown per operator further shows the differences between factorization and materialization. Compared to the materialized case, the factorized case of Left Matrix Multiplication shows extremely large variance in performance, which is in line with the use of the normalized matrix explained previously. Although, overall, using factorization seems beneficial for LMM when looking at these profiling metrics (values move to the top and right, indicating higher saturation of the available resources). For Left Scalar Multiplication the gap between F and M is much smaller, which is logical as the factorized case only multiplies the Source matrices with the scalar, which is a simpler operation than the one needed for LMM. The right-most plot shows this limitation even more clearly, showing significantly less utilization of the GPU performance than the materialized case for Transpose Row Summation.
 
 \section{Feature Engineering}
 \label{sec:5-feature-engineering}
@@ -117,6 +116,7 @@ The roofline charts for the performed profiling experiments are shown in \autore
 }
 
 $T_{mem} = \frac{dram\_bytes\_read\_sum + dram\_bytes\_write\_sum}{memory\_throughput\_byte\_weighted\_mean}$
+
 $T_{math} = \frac{sm\_active\_cycles\_sum}{sm\_frequency\_weighted\_mean}$
 
 
