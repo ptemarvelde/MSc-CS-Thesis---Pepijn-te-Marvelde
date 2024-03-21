@@ -143,17 +143,9 @@ $T_{math} = \frac{sm\_active\_cycles\_sum}{sm\_frequency\_weighted\_mean}$
 \end{figure}
 
 \subsection{Statistical}
-The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by fine-tuning, end up at more complex models, with ensembles of linear regression models. The architecture of each of the statistical models is explained in \autoref{fig:5-statistical-architecture}.
+The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by drilling down into categorical variables, end up at more complex models, with ensembles of linear regression models.
 
-
-\todo{
-    \begin{enumerate}
-        \item Linear Regression
-        \item Difference with Analytical: predict time\_saved instead of runtime for both F and M.
-              % \item For each fitted regressor we use Recursive feature elimination with cross-validation to select features \cite{rfecv}.
-        \item Start with the simplest single linear regression model, continue to ensembles.
-    \end{enumerate}
-}
+The architecture of each of the statistical models is shown in \autoref{fig:5-statistical-architecture}. In short, before training the dataset is split by a number of categorical variables (operator type, hardware type or $F$/$M$), or by filtering a part of the dataset. Each final model is a set of Linear Regression models each fit to one of the data subsets. For example, for STAT.3 we train two regressors. One on the factorization scenarios, and one on the materialization scenarios. During inference, each of the regressors is used to predict the runtime of the scenario under test. The output is the predicted materialized time minus the predicted factorized time. This is done to predict the time saved by choosing factorization over materialization. When a categorical variable is not used to split the dataset, it is used as a feature in the model.
 
 \begin{figure}[ht]
     \centering
@@ -185,14 +177,16 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 
 
 \subsubsection{Statistical Model Evaluation}
-\todo{Text to go with \autoref{fig:5-statistical-model-evaluation}.}
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
     \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
+
+A performance comparison for the statistical models is shown in \autoref{fig:5-statistical-model-evaluation}. We choose to highlight the cases where the model predicts factorization to be faster, and evaluate the saved time in these cases. Overall, estimators that fit more distinct regressors perform better, showing that each of the chosen categorical variables has impact on the F/M trade-off.
+
+STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the test set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
 
 \subsection{Deep Learning}
 \todo{Write, show architecture, show results. Use \cite{TreeRNN}, as it shows good performance in \cite{tvm}.}
