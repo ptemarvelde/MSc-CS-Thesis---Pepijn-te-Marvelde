@@ -77,7 +77,7 @@ Following NVIDIA's advice, a fitting way to estimate the runtime of a GPU progra
 % Figure called roofline-plot.pdf
 
 % These visualisations show that when choosing factorization, the average arithmetic intensity is higher than when choosing materialization. The roofline charts also show that although there are points
-\todo{Fig \autoref{fig:5-roofline-plot} shows that...}
+\todo{Fig \autoref{fig:5-roofline-plot} shows that \ldots}
 
 \begin{figure}
     \centering
@@ -143,7 +143,7 @@ The goal for this statistical estimator is to still be explainable, while provid
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/statistical-architecture.pdf}
-    \caption[Statistical Estimator Architecture]{Architecture of the Statistical Estimator. Shows how the data, and estimators are split for each model. The final split-level belonging to each respective model is colored in the same color. For STAT.5 we show the linear regression ensemble fit to the data. For clarity, we leave this out for the other models. Three dots ($\boldsymbol{\ldots}$) denote some values were left out to prevent clutter.}
+    \caption[Statistical Estimator Architecture]{Architecture of the Statistical Estimators. Shows how the data, and estimators, are split for each model. The final split-level belonging to each respective model is colored in the same color. For STAT.5 we show the linear regression ensemble fit to the data. For clarity, we leave this out for the other models. Each box represents a regression model, the same-colored boxes, connected via dotted lines, are combined into an ensemble to end up with the statistical cost estimators.}
     \label{fig:5-statistical-architecture}
 \end{figure}
 
@@ -175,7 +175,7 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
-    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved when using this estimator, as a fraction of the total to-be-saved time (by a perfect estimator).}
+    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
 
