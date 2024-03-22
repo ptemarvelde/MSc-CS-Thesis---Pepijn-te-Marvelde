@@ -136,15 +136,15 @@ Here we describe the process of generating new features from combinations of ind
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{p{0.2\linewidth}p{0.45\linewidth}p{0.35\linewidth}}
+    \begin{tabular}{p{0.19\linewidth}p{0.37\linewidth}p{0.35\linewidth}}
         \toprule
-        Feature                                   & Formula                                                                                                                    & Description                                                                                                                                       \\
+        Feature                                   & Formula                                                                                                 & Description                                                                                                                                       \\
         \midrule\midrule
-        \texttt{dram\_bytes\_sum}                 & $\texttt{dram\_bytes\_read\_sum} + \texttt{dram\_bytes\_write\_sum}$                                                       & Total number of bytes read and written to DRAM.                                                                                                   \\
-        $T_{mem}$                                 & $\frac{\texttt{dram\_bytes\_sum}}{\texttt{memory\_throughput\_byte\_weighted\_mean}}$                                      & Total memory bytes divided by the achieved memory throughput. Gives the cost of the involved memory operators in seconds.                         \\
-        $T_{math}$                                & $\frac{\texttt{sm\_active\_cycles\_sum}}{\texttt{sm\_frequency\_weighted\_mean}}$                                          & Total active cycles divided by the achieved frequency of the Streaming Multiprocessors. Gives the cost of the involved math operators in seconds. \\
-        \texttt{FLOPs}                            & $\frac{\texttt{compute\_throughput\_weighted\_mean}}{100} \times \text{\small{gpu\_processing\_power\_double\_precision}}$ & Total number of FLOPs executed in the scenario.                                                                                                   \\
-        \texttt{arithmetic\_-} \texttt{intensity} & $\frac{\texttt{FLOPs} \times \texttt{duration}}{\texttt{dram\_bytes\_sum}}$                                                & The number of FLOPs executed per byte read or written to memory.                                                                                  \\
+        \texttt{dram\_bytes\_sum}                 & $\texttt{dram\_bytes\_read\_sum} + \texttt{dram\_bytes\_write\_sum}$                                    & Total number of bytes read and written to DRAM.                                                                                                   \\
+        $T_{mem}$                                 & $\frac{\texttt{dram\_bytes\_sum}}{\texttt{memory\_throughput\_byte\_weighted\_mean}}$                   & Total memory bytes divided by the achieved memory throughput. Gives the cost of the involved memory operators in seconds.                         \\
+        $T_{math}$                                & $\frac{\texttt{sm\_active\_cycles\_sum}}{\texttt{sm\_frequency\_weighted\_mean}}$                       & Total active cycles divided by the achieved frequency of the Streaming Multiprocessors. Gives the cost of the involved math operators in seconds. \\
+        \texttt{FLOPs}                            & $\frac{\texttt{compute\_throughput\_weighted\_mean}}{100} \times \text{\small{gpu\_processing\_power}}$ & Total number of FLOPs executed in the scenario. Processing power is for double precision.                                                         \\
+        \texttt{arithmetic\_-} \texttt{intensity} & $\frac{\texttt{FLOPs} \times \texttt{duration}}{\texttt{dram\_bytes\_sum}}$                             & The number of FLOPs executed per byte read or written to memory.                                                                                  \\
 
         \bottomrule
     \end{tabular}
