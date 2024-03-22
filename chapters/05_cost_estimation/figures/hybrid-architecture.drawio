@@ -46,8 +46,8 @@
                 <mxCell id="14" value="Kernel cost embedding" style="whiteSpace=wrap;html=1;startSize=30;" parent="1" vertex="1">
                     <mxGeometry x="521.1111111111111" y="697" width="108.88888888888889" height="43.78378378378379" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="Profiling metrics (per kernel)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;" parent="1" vertex="1">
-                    <mxGeometry x="140" y="640" width="330" height="80.27" as="geometry"/>
+                <mxCell id="15" value="Profiling metrics" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;" parent="1" vertex="1">
+                    <mxGeometry x="158.15" y="640" width="330" height="80.27" as="geometry"/>
                 </mxCell>
                 <mxCell id="16" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
                     <mxGeometry y="30" width="330" height="26" as="geometry"/>
@@ -126,7 +126,7 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="35" value="Characteristic embedding" style="whiteSpace=wrap;html=1;startSize=30;" parent="1" vertex="1">
-                    <mxGeometry x="375.9259259259259" y="753.8594594594595" width="108.88888888888889" height="43.78378378378379" as="geometry"/>
+                    <mxGeometry x="379.2659259259259" y="753.8594594594595" width="108.88888888888889" height="43.78378378378379" as="geometry"/>
                 </mxCell>
                 <mxCell id="37" value="fully connected layer" style="whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="521.1111111111111" y="754" width="108.88888888888889" height="43.78378378378379" as="geometry"/>
@@ -137,11 +137,11 @@
                 <mxCell id="40" value="output layer" style="whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="521.1111111111111" y="812" width="108.88888888888889" height="43.78378378378379" as="geometry"/>
                 </mxCell>
-                <mxCell id="43" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="16" target="14" edge="1">
+                <mxCell id="43" style="edgeStyle=orthogonalEdgeStyle;html=1;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="15" target="14" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="684.4444444444445" y="1085.135135135135" as="targetPoint"/>
                         <Array as="points">
-                            <mxPoint x="576" y="683"/>
+                            <mxPoint x="576" y="660"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
