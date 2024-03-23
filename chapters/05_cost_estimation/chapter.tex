@@ -216,7 +216,7 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \subsubsection{Statistical Model Evaluation}
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
+    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
     \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
@@ -225,18 +225,25 @@ A performance comparison for the statistical models is shown in \autoref{fig:5-s
 
 STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the test set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
 
-\subsection{Deep Learning}
+\subsection{XGBoost}
 \todo{Write, show architecture, show results. Use \cite{deep-learning-cost-prediction} as the problem setting is similar.}
-For our deep learning model, that serves as a verification whether there are non-linear feature interactions at play, which the statistical models cannot capture, we use a fully connected deep learning network. The architecture we use is from \cite{deep-learning-cost-prediction}, which is a similar problem setting, but zooms in on cost prediction for deep learning neural networks, whereas we focus on comparing factorization and materialization.
+% For our deep learning model, that serves as a verification whether there are non-linear feature interactions at play, which the statistical models cannot capture, we use a fully connected deep learning network. The architecture we use is from \cite{deep-learning-cost-prediction}, which is a similar problem setting, but zooms in on cost prediction for deep learning neural networks, whereas we focus on comparing factorization and materialization.
 
-The network architecture consists of six layers, with the number of neurons in each layer being 32, 64, 128, 128, 128, and 128 respectively. Each of these layers is followed by a dropout layer, which is only used during training. The final dense layer produces a single output.
+% The network architecture consists of six layers, with the number of neurons in each layer being 32, 64, 128, 128, 128, and 128 respectively. Each of these layers is followed by a dropout layer, which is only used during training. The final dense layer produces a single output.''
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
+    \caption[XGBoost Estimator Comparison]{Evaluation of the XGBoost models on the test set (synthetic data, only models).}
+    \label{fig:5-xgboost-architecture}
+\end{figure}
 
 \subsection{Hybrid}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{chapters/05_cost_estimation/figures/hybrid-architecture.pdf}
-    \caption[Hybrid Estimator Architecture]{Architecture of the Hybrid Estimator. Inspired by \cite{halide_cost_model} \todo{Update refine and finalize}.}
+    \caption[Hybrid Estimator Architecture]{Architecture of the Hybrid Estimator. Inspired by \cite{halide_cost_model}. \todo{Update refine and finalize}.}
     \label{fig:5-hybrid-architecture}
 \end{figure}
 
