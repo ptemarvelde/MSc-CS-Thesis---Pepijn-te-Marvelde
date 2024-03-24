@@ -226,17 +226,38 @@ A performance comparison for the statistical models is shown in \autoref{fig:5-s
 STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the test set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
 
 \subsection{XGBoost}
-\todo{Write, show architecture, show results. Use \cite{deep-learning-cost-prediction} as the problem setting is similar.}
-% For our deep learning model, that serves as a verification whether there are non-linear feature interactions at play, which the statistical models cannot capture, we use a fully connected deep learning network. The architecture we use is from \cite{deep-learning-cost-prediction}, which is a similar problem setting, but zooms in on cost prediction for deep learning neural networks, whereas we focus on comparing factorization and materialization.
-
-% The network architecture consists of six layers, with the number of neurons in each layer being 32, 64, 128, 128, 128, and 128 respectively. Each of these layers is followed by a dropout layer, which is only used during training. The final dense layer produces a single output.''
-
-\begin{figure}
+The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient boosting algorithm, which is an ensemble learning method, using a series of decision trees. We use XGBoost as it has shown excellent performance in a multitude of ML scenarios, as well as showcasing excellent ability for handling unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on the same dataset as the statistical models, and uses the same features.
+\begin{table}[ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
-    \caption[XGBoost Estimator Comparison]{Evaluation of the XGBoost models on the test set (synthetic data, only models).}
+    \begin{tabular}{llll}
+        \toprule
+        Model & Target     & Pruning       & Decision Boundary            \\
+        \midrule \midrule
+        XGB.1 & Runtime    & All operators & $Time_M > Time_F$            \\
+        XGB.2 & Runtime    & Only models   &                              \\
+        XGB.3 & Speedup    & All operators & $\texttt{speedup} > 1.0$     \\
+        XGB.4 & Speedup    & Only model    &                              \\
+        XGB.5 & Time saved & All operators & $\texttt{time\_saved} > 0.0$ \\
+        XGB.6 & Time saved & Only models   &                              \\
+        \bottomrule
+    \end{tabular}
+    \caption[XGBoost configurations]{Overview of the different configurations for the XGBoost models.}
+    \label{tab:5-xgboost-configurations}
+\end{table}
+We explore a number of different configurations for this model, to find the best performing one. We explore along two axes: the target variable, and how to prune the dataset. The target variable can be the runtime of the scenario (one target for factorized, one for materialized), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned only keeping training samples where the operator is one of the model types (KMeans, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
+    \caption[XGBoost Estimator Comparison]{Evaluation of the XGBoost models on the test set.}
     \label{fig:5-xgboost-architecture}
 \end{figure}
+\todo{Evaluation of the XGBoost models.}
+
+
+\subsection{Hybrid}
+
+
 
 \subsection{Hybrid}
 
