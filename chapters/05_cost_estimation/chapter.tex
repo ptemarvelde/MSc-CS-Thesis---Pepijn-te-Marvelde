@@ -203,13 +203,13 @@ This model is an ensemble of two linear regressors, one for factorization and on
 \subsubsection*{STAT.4 Separate Regressors for each Model Type}
 Much like STAT.3 this estimator is also a combination of multiple inner regressors. However, instead of having one regressor for each factorization and materialization, we have one regressor for each model type. This is done to capture the differences in the relationships between independent variables and runtime for different model types. Like the first two models, this model predicts the time saved by choosing factorization over materialization (by predicting whether time is saved by choosing F).
 
-\subsubsection*{STAT.5 Separate Regressors CPU and GPU}
+\subsubsection*{STAT.5 Separate Regressors for CPU and GPU}
 In previous sections we have shown that the choice of hardware plays a large factor in the trade-off we are researching, therefore it is likely there are differences in the relationships between independent variables and runtime between CPU and GPU. A single linear regression model is likely unable to capture these differences. Therefore, we test the performance of a couple of estimators, one which is only fit to CPU scenario's, and one which is only fit to GPU scenario's.
 
 \subsubsection*{STAT.6 Separate Regressors for F, M and Model Type}
 The last version of the statistical model we created is a combination of STAT.4 and STAT.3. By training separate regressors for every combination of factorization, materialization and model type, we allow the models to capture differences between the groups more freely.
 
-\subsubsection*{STAT.7 Separate Regressors Each Dimension}
+\subsubsection*{STAT.7 Separate Regressors For Each Combination of Categories}
 The last, most granular, ensemble is one that has a separate regressor for each combination of factorization, materialization, model type and hardware. This is done to capture the differences in the relationships between independent variables and runtime for each combination of the dimensions.
 
 
@@ -217,16 +217,17 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
-    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the test set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
+    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the validation set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
 
 A performance comparison for the statistical models is shown in \autoref{fig:5-statistical-model-evaluation}. We choose to highlight the cases where the model predicts factorization to be faster, and evaluate the saved time in these cases. Overall, estimators that fit more distinct regressors perform better, showing that each of the chosen categorical variables has impact on the F/M trade-off.
 
-STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the test set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
+STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the validation set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
 
 \subsection{XGBoost}
 The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient boosting algorithm, which is an ensemble learning method, using a series of decision trees. We use XGBoost as it has shown excellent performance in a multitude of ML scenarios, as well as showcasing excellent ability for handling unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on the same dataset as the statistical models, and uses the same features.
+
 \begin{table}[ht]
     \centering
     \begin{tabular}{llll}
@@ -244,20 +245,17 @@ The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \tex
     \caption[XGBoost configurations]{Overview of the different configurations for the XGBoost models.}
     \label{tab:5-xgboost-configurations}
 \end{table}
-We explore a number of different configurations for this model, to find the best performing one. We explore along two axes: the target variable, and how to prune the dataset. The target variable can be the runtime of the scenario (one target for factorized, one for materialized), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned only keeping training samples where the operator is one of the model types (KMeans, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
+
+We explore a number of different configurations for this model. We explore along two axes: the target variable, and whether to include all operators, or just the model operators in the training dataset. The target variable can be the runtime of the scenario (one target for factorized, one for materialized), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned only keeping training samples where the operator is one of the model types (KMeans, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
-    \caption[XGBoost Estimator Comparison]{Evaluation of the XGBoost models on the test set.}
-    \label{fig:5-xgboost-architecture}
+    \caption[XGBoost Estimator Comparison]{Evaluation of the XGBoost models on the validation set.}
+    \label{fig:5-xgboost-evaluation}
 \end{figure}
-\todo{Evaluation of the XGBoost models.}
 
-
-\subsection{Hybrid}
-
-
+A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, as these models are more complex, they perform better than the statistical models. Amongst the XGB models there is little difference in performance on the validation set. There is no significant difference between which target variable is used, or whether all operators are used in the training set. XGB.3, which predicts the speedup of factorization over materialization, barely outperforms the other models, predicting 98\% of the validation scenarios correctly.
 
 \subsection{Hybrid}
 
