@@ -217,7 +217,7 @@ The last, most granular, ensemble is one that has a separate regressor for each 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
-    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the validation set (synthetic data, only models). The first two plots show statistics of those scenarios where the estimator predicts factorization to be faster. The last plot shows the time saved, as a fraction of the total to-be-saved time (by a perfect estimator), when using this estimator.}
+    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the validation set (synthetic data, only models). The plots show statistics of those scenarios where the estimator predicts factorization to be faster. }
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
 
@@ -225,8 +225,10 @@ A performance comparison for the statistical models is shown in \autoref{fig:5-s
 
 STAT.1-3 show relatively little time saved, but the average speedup of positively classified cases is high. This is due to these models producing either producing a lot of false negatives, missing out on a lot of time saved (STAT.1), or a lot of false positives, which drags down the total time saved (STAT.2,3). STAT.4, split only by model type performs worst of the estimators showing that there is a relation for the speedup between the different model types. Estimators STAT.5,6 both find a relatively large fraction of the positive samples, at the cost of a lot of false positives and negatives. STAT.7, which is the most granular, performs best on the validation set. This is likely due to the fact that it can capture the differences in the relationships between independent variables and runtime for each combination of the dimensions. This estimator is the most complex, but also the most accurate, performing 65\% as well as a perfect cost model would, when looking at the time saved.
 
+However, when evaluating on the test datasets, the performance of the models is much lower. This is likely due to the fact that the models are overfitting to the training data (which only contains synthetic dataset scenarios). Only the models STAT.1 and STAT.5 perform relatively well, which can be explained by the fact that they do not use extensive partitioning of the training data, preventing the regression from fitting to the training data. To solve this overfitting we choose to evaluate the performance of a more complex model.
+
 \subsection{XGBoost}
-The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient boosting algorithm, which is an ensemble learning method, using a series of decision trees. We use XGBoost as it has shown excellent performance in a multitude of ML scenarios, as well as showcasing excellent ability for handling unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on the same dataset as the statistical models, and uses the same features.
+The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient boosting algorithm, which is an ensemble learning method, using a series of decision trees. We use XGBoost as it has shown excellent performance in related cost prediction scenarios \cite{tvm}, as well as showcasing excellent ability for handling unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on the same dataset as the statistical models, and uses the same features.
 
 \begin{table}[ht]
     \centering
