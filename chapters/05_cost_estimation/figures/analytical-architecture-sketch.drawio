@@ -407,7 +407,7 @@
                 <mxCell id="131" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="125" vertex="1">
                     <mxGeometry y="70" width="404" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="132" value="KMeans" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" parent="131" vertex="1">
+                <mxCell id="132" value="K-Means" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" parent="131" vertex="1">
                     <mxGeometry width="68" height="40" as="geometry">
                         <mxRectangle width="68" height="40" as="alternateBounds"/>
                     </mxGeometry>
@@ -940,7 +940,7 @@
                 <mxCell id="353" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="345" vertex="1">
                     <mxGeometry y="70" width="404" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="354" value="KMeans" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" parent="353" vertex="1">
+                <mxCell id="354" value="K-Means" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" parent="353" vertex="1">
                     <mxGeometry width="68" height="40" as="geometry">
                         <mxRectangle width="68" height="40" as="alternateBounds"/>
                     </mxGeometry>

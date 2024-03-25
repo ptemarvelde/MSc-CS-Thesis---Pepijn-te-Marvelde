@@ -120,7 +120,7 @@
                 <mxCell id="220" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;shadow=0;dashed=1;endArrow=none;endFill=0;targetPerimeterSpacing=0;dashPattern=1 2;" parent="1" source="152" target="158" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="151" value="KMeans" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
+                <mxCell id="151" value="K-Means" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
                     <mxGeometry x="350.99999999999994" y="713" width="50" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="152" value="LinReg" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
@@ -154,7 +154,7 @@
                 <mxCell id="157" value="LinReg" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
                     <mxGeometry x="420.99999999999994" y="713" width="50" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="158" value="KMeans" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
+                <mxCell id="158" value="K-Means" style="whiteSpace=wrap;html=1;rounded=1;fontSize=10;fillColor=#f8cecc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
                     <mxGeometry x="511" y="713" width="50" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="160" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="120" target="158" edge="1">
@@ -172,7 +172,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="137" value="KMeans" style="whiteSpace=wrap;html=1;rounded=1;fontSize=11;fillColor=#ffe6cc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
+                <mxCell id="137" value="K-Means" style="whiteSpace=wrap;html=1;rounded=1;fontSize=11;fillColor=#ffe6cc;strokeColor=#000000;strokeWidth=0.5;" parent="1" vertex="1">
                     <mxGeometry x="210" y="654" width="60" height="25" as="geometry"/>
                 </mxCell>
                 <mxCell id="217" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;dashed=1;targetPerimeterSpacing=0;shadow=0;dashPattern=1 2;" parent="1" source="138" target="137" edge="1">
