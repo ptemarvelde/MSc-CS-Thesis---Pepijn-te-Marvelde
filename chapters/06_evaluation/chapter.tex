@@ -97,7 +97,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \subsection{Hardware}
 \label{subsec:6-hardware}
 
-The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}} which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
+The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}}, which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
 
 \begin{table}[ht]
   \centering
@@ -112,7 +112,7 @@ To ensure reliable training data all runtime experiments were run with a repetit
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
 
-As the possible set of data, model, and hardware characteristics is extremely large, we need to be confident in the ability of our estimator to make accurate predictions for unseen scenarios. To ensure this we use a very strict train-validate-test split. 70\% of the samples from the synthetic datasets are used in the training set. The remaining 30\% is used as a validation set. The real-world datasets are used solely as a test set. As they are not used in the training of the cost estimators they should give an accurate view of the performance in unseen scenarios, whether this is actually the case is shown in \autoref{subsubsec:6-real-datasets}. To guarantee the same robustness in the hardware dimension we use a similar approach, completely keeping the samples of two of the experiments (\texttt{GPU-T-5} \& \texttt{CPU-T-3}\todo{check}) separate for testing. For the last dimension, the model characteristics, we carry out an ablation study (see \autoref{subsubsec:6-ablation}) to see the effect of different models on the performance of the cost estimators.
+As the possible set of data, model, and hardware characteristics is extremely large, we need to be confident in the ability of our estimator to make accurate predictions for unseen scenarios. To ensure this we use a very strict train-validate-test split. 70\% of the samples from the synthetic datasets are used in the training set. The remaining 30\% is used as a validation set. The real-world datasets are used solely as a test set. As they are not used in the training of the cost estimators they should give an accurate view of the performance in unseen scenarios, whether this is actually the case is shown in \autoref{subsubsec:6-real-datasets}. To guarantee the same robustness in the hardware dimension we use a similar approach, completely keeping the samples of \texttt{GPU-T-5} separate for testing. For the last dimension, the model characteristics, we carry out an ablation study (see \autoref{subsubsec:6-ablation}) to see the effect of different models on the performance of the cost estimators.
 
 
 % \begin{figure}[ht]
@@ -136,6 +136,13 @@ We first display that the cost estimator generalizes well to new scenarios. Then
 \subsection{Exploring Generalizability}
 The utility of our strict train-validate-test split is shown here. We show that the cost estimators generalize well to new scenarios.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
+  \caption{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types.}
+  \label{fig:6-generalization}
+\end{figure}
+
 \subsubsection{Performance with Real Datasets}
 \label{subsubsec:6-real-datasets}
 
@@ -147,7 +154,7 @@ The utility of our strict train-validate-test split is shown here. We show that 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
-  \caption{Comparison of the cost estimators.}
+  \caption{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware). \todo{Show plit between CPU/GPU?}}
   \label{fig:6-sota-comparison}
 \end{figure}
 
