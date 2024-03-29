@@ -264,14 +264,20 @@ We explore a number of different configurations for this model. We explore along
 
 A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, as these models are more complex, they perform better than the statistical models. Amongst the XGB models there is little difference in performance on the validation set. There is no significant difference between which target variable is used, or whether all operators are used in the training set. XGB.3, which predicts the speedup of factorization over materialization, barely outperforms the other models, predicting 98\% of the validation scenarios correctly.
 
-\subsection{Hybrid}
+\subsection{Comparing Performance}
+\todo{Compare the best of each of the models. Also compare some meta characteristics like inference speed, training time.}
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\linewidth]{chapters/05_cost_estimation/figures/hybrid-architecture.pdf}
-    \caption[Hybrid Estimator Architecture]{Architecture of the Hybrid Estimator. Inspired by \cite{halide_cost_model}. \todo{Update refine and finalize}.}
-    \label{fig:5-hybrid-architecture}
+    \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/compare_gpu_vs_cpu.pdf}
+    \caption[Cost Model Comparison Broken Down by Compute Type]{Comparison of the best models, broken down by compute type. Evaluated on the test set.}
+    \label{fig:5-model-cpu-gpu}
 \end{figure}
 
-\subsection{Meta-results}
+\subsubsection{Meta-results}
 \todo{Inference speed, training time.}
+
+\subsection{Final Cost Model: Hybrid}
+\todo{Explain the final model, which is a combination of the best of the models (if compute type is CPU use A, if GPU use XGB).}
+
+
