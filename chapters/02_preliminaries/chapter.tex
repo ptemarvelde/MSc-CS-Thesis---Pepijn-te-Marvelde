@@ -387,7 +387,7 @@ We use the same ML models as \cite{morpheus} and \cite{schijndel_cost_estimation
 \subsubsection{Linear Regression}
 \begin{algorithm}[ht!]
     \caption[Linear regression]{Linear regression using Gradient Descent
-        (\cite{morpheus})}\label{alg:linear-regression}
+        \cite{morpheus}}\label{alg:linear-regression}
     \begin{algorithmic}
         \Require $X, y , w, \gamma$
         \For{$i \in 1:n$}
@@ -402,7 +402,7 @@ Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linea
 
 \begin{algorithm}[ht]
     \caption[Linear regression]{Logistic regression using Gradient Descent
-        (\cite{morpheus})}\label{alg:logistic-regression}
+        \cite{morpheus}}\label{alg:logistic-regression}
     \begin{algorithmic}
         \Require $X, y , w, \gamma$
         \For{$i \in 1:n$}
@@ -416,7 +416,7 @@ The previously mentioned regression algorithms are supervised, i.e., they predic
 
 \begin{algorithm}[ht]
     \caption[K-Means Clustering]{K-Means Clustering
-        (\cite{morpheus})\\
+        \cite{morpheus}\\
         $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.}\label{alg:k-means}
     \begin{algorithmic}
         \Require $X, k$ (number of centroids)
@@ -425,7 +425,7 @@ The previously mentioned regression algorithms are supervised, i.e., they predic
         \State $T_2 = \text{\red{$2 \times X$}}$
 
         \For{$i \in 1:n$}
-        \State $D = D_X - X_2C + \left( \mathbf{1}_{r_X\times 1} \times \text{colSums}(C^2) \right)$ \Comment{Compute distances}
+        \State $D = D_X - T_2C + \left( \mathbf{1}_{r_X\times 1} \times \text{colSums}(C^2) \right)$ \Comment{Compute distances}
         \State $A = (D == \text{rowMin}(D) \times \mathbf{1}_{1 \times k})$ \Comment{Assign points to the closest centroid}
         \State $C =\frac{\text{\red{$X^T A$}}}{\mathbf{1}_{c_X \times 1} \times \text{colSums}(A)}$ \Comment{Update centroids}
         \EndFor
@@ -437,7 +437,7 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 
 \begin{algorithm}[ht]
     \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
-        (\cite{morpheus})}\label{alg:gaussian-nmf}
+        \cite{morpheus}}\label{alg:gaussian-nmf}
     \begin{algorithmic}
         \Require $X, r\ \text{(rank)}$
         \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}

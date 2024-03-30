@@ -178,11 +178,26 @@ Here we describe the process of generating new features from combinations of ind
 
 \subsection{Analytical}
 
-In \autoref{sec:5-gpu-performance-analysis} we have shown that the runtime of the evaluated ML scenarios is dominated by memory cost. To create an accurate prediction of the runtime of a scenario we can use the memory cost as a proxy, which is the approach taken by the analytical estimator. The estimator uses the collected profiling metrics to compute the memory cost of the factorized and materialized scenarios. We then choose the scenario with the lowest predicted runtime.
+In \autoref{sec:5-gpu-performance-analysis} we have shown that the runtime of the evaluated ML scenarios is dominated by memory cost. To create an accurate prediction of the runtime of a scenario we can use the memory cost as a proxy, which is the approach taken by the analytical estimator. We evaluate two analytical estimators. The first estimator uses the collected profiling metrics to compute the memory cost of the factorized and materialized scenarios. The second uses an analysis of the ML algorithms to compute the memory cost.
 
-The workflow for computing the factorized and materialized memory cost is shown in \autoref{fig:5-analytical-architecture}. We first collect the operators used for the model under test. We then use a regressor fit to the collected profiling metrics (as shown in \autoref{fig:5-feature-enrichment}) to predict of the factorized and materialized operators. This step is necessary as we do not have profiling metrics for the scenarios we are testing. Last, the costs for each training type are summed, and choose the scenario with the lowest predicted runtime.
+\subsubsection{ANLY.1 Profiling Metrics Based Estimator}
 
-\todo{Eval}
+The workflow for computing the factorized and materialized memory cost is shown in \autoref{fig:5-analytical-architecture}. We first collect the operators used for the model under test. We then use a regressor fit to the collected profiling metrics (as shown in \autoref{fig:5-feature-enrichment}) to predict the factorized and materialized operators' memory cost. This step is necessary as we do not have profiling metrics for the scenarios we are testing. Last, the costs for each training type are summed, and choose the scenario with the lowest predicted runtime.
+
+\todo{Big downside, does not take into account matrix shapes, which is a big factor in the cost of the operations.}
+
+\subsubsection{ANLY.2 Analysis Based Estimator}
+By inspecting the operations performed during ML model training we can calculate the number of bytes read and written during computation. This is done by calculating the number of bytes read and written for each operation, and summing these values. The memory cost is then calculated by dividing the total number of bytes read and written by the memory throughput of the GPU. This estimator is easier to extend to novel ML models, as it does not require a pre-trained regressor to estimate operator cost. However, it does not take into account other factors that influence memory cost like cache hit rates.
+
+\subsubsection{Analytical Model Evaluation}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/analytical-models-compare.pdf}
+    \caption[Analytical Model Evaluation]{Evaluation of the analytical models on the validation set. \todo{expand}}
+    \label{fig:5-analytical-model-evaluation}
+\end{figure}
+
+\todo{Eval \autoref{fig:5-analytical-model-evaluation}. Talk about boundary.}
 
 \subsection{Statistical}
 The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by drilling down into categorical variables, end up at more complex models, with ensembles of linear regression models.
@@ -274,10 +289,28 @@ A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost
     \label{fig:5-model-cpu-gpu}
 \end{figure}
 
+\subsubsection{Combining Cost Models}
+\todo{Explain the final model, which is a combination of the best of the models (if compute type is CPU use A, if GPU use XGB).}
+
+
 \subsubsection{Meta-results}
 \todo{Inference speed, training time.}
 
-\subsection{Final Cost Model: Hybrid}
-\todo{Explain the final model, which is a combination of the best of the models (if compute type is CPU use A, if GPU use XGB).}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lllll}
+        \toprule
+        Model        & Training time & Extensibility & Inference Speed & Performance \\
+        \midrule
+        Analytical 1 & Slow          & Easy          & Slow            & Bad         \\
+        Analytical 2 & N.A.          & Easy          & Quick           & Bad         \\
+        Statistical  & Fast          & Difficult     & Quick           & Bad         \\
+        XGBoost      & Medium        & Difficult     & Medium          & Mediocre    \\
+        Hybrid       & Medium        & Difficult     & Medium          & Good        \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of the different models.}
+\end{table}
+
 
 
