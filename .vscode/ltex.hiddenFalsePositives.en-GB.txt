@@ -70,3 +70,5 @@
 {"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QThese rewrite rules are: rowSums \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QrowSums \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q rowSums \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QcolSums \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
 {"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QThe rewrite rule for left matrix multiplication (LMM) with another matrix \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q is: \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
 {"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QThe rewrite rule therefore is very simple for these arithmetic operators, as well as for any other scalar function (e.g., \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q) \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Qor more generally: \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"BEEN_PART_AGREEMENT","sentence":"^\\QBy plotting programs on such a roofline chart one can reason about whether they are compute- or memory-bound by checking whether it is to the left (memory bound) or to the right of the ridge point's x coordinate (compute bound).\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qpossible time saved.\\E$"}

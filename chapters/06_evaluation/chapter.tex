@@ -2,7 +2,7 @@
 
 \chapter{Evaluation}
 \label{chapter:evaluation-discussion}
-This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur's factorized ML framework, and a comparison with the state-of-the-art in \autoref{sec:eval-model-evaluation}. Before that, we show how results were collected in \autoref{sec:6experiment-setup}. The \hyperref[sec:eval-discussion]{third section} of this chapter provides an in-depth interpretation of the results as well as a critical view on the implications and limitations of this work.
+This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur's factorized ML framework, and a comparison with the SOTA in \autoref{sec:eval-model-evaluation}. Before that, we show how results were collected in \autoref{sec:6experiment-setup}. The \hyperref[sec:eval-discussion]{third section} of this chapter provides an in-depth interpretation of the results as well as a critical view on the implications and limitations of this work.
 
 \section{Experiment Setup}
 \label{sec:6experiment-setup}
@@ -90,7 +90,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
   \label{fig:tpcx-ai-data-chars}
 \end{figure}
 
-\todo{Explain use cases.}
+The first use case is a join between three tables. First the lineitem table is joined with the order returns data which, in turn, is joined with the orders table. This results in a table with $c_T=7$ columns and a row for each product sold in an order. In the TPCx-AI benchmark customer segmentation is done using KMeans clustering on this dataset. We instead test all four ML models discussed in this thesis as we are not necessarily interested in the utility of the final classifier, but we are interested in the training process. The second use case is a join between two tables. The transaction table is joined with the customer table, resulting in a table with $c_T=5$ columns which can be used to detect fraudulent transactions. We use the same models as in the first use case. The complete dataset schema detailing the involved tables and columns can be found in \autoref{fig:appendix-tpc-ai-schema}.
 
 
 
@@ -112,7 +112,7 @@ To ensure reliable training data all runtime experiments were run with a repetit
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
 
-As the possible set of data, model, and hardware characteristics is extremely large, we need to be confident in the ability of our estimator to make accurate predictions for unseen scenarios. To ensure this we use a very strict train-validate-test split. 70\% of the samples from the synthetic datasets are used in the training set. The remaining 30\% is used as a validation set. The real-world datasets are used solely as a test set. As they are not used in the training of the cost estimators they should give an accurate view of the performance in unseen scenarios, whether this is actually the case is shown in \autoref{subsubsec:6-real-datasets}. To guarantee the same robustness in the hardware dimension we use a similar approach, completely keeping the samples of \texttt{GPU-T-5} separate for testing. For the last dimension, the model characteristics, we carry out an ablation study (see \autoref{subsubsec:6-ablation}) to see the effect of different models on the performance of the cost estimators.
+As the possible set of data, model, and hardware characteristics is extremely large, we need to be confident in the ability of our estimator to make accurate predictions for unseen scenarios. To ensure this we use a very strict train-validate-test split. 70\% of the samples from the synthetic datasets are used in the training set. The remaining 30\% is used as a validation set. The real-world datasets are used solely as a test set. As they are not used in the training of the cost estimators they should give an accurate view of the performance in unseen scenarios, whether this is actually the case is shown in \autoref{subsec:6-generalizability}. To guarantee the same robustness in the hardware dimension we use a similar approach, completely keeping the samples of \texttt{GPU-T-5} separate for testing. For the last dimension, the model characteristics, we carry out an ablation study (see \autoref{subsubsec:6-ablation}) to see the effect of leaving out different models on the performance of the cost estimators.
 
 
 % \begin{figure}[ht]
@@ -131,33 +131,54 @@ In this section we answer
   \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
 \end{itemize}
 
-We first display that the cost estimator generalizes well to new scenarios. Then we show how the cost estimators compare to the state-of-the-art in cost estimation for Factorized ML training.
+We first display that the cost estimator generalizes well to new scenarios. Then we show how the cost estimators compare to the SOTA in cost estimation for Factorized ML training.
 
 \subsection{Exploring Generalizability}
-The utility of our strict train-validate-test split is shown here. We show that the cost estimators generalize well to new scenarios.
+\label{subsec:6-generalizability}
+The goal of this thesis is to create a cost estimator that can accurately predict the optimal choice between factorized and materialized training of a Machine Learning model. To ensure that this cost estimator also performs well in unseen scenarios, i.e., it is not overfitting to the training data, we evaluate the cost estimators on the real-world datasets, and on new hardware. The results are shown in \autoref{fig:6-generalization}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.6\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
-  \caption{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types.}
+  \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
+  \caption{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the validation set as on the training set, when measured by $\frac{\text{time saved}}{\text{max. possible time saved}}$.}
   \label{fig:6-generalization}
 \end{figure}
 
-\subsubsection{Performance with Real Datasets}
-\label{subsubsec:6-real-datasets}
+The \hyperref[fig:6-generalization]{figure} shows that there are large differences for how well the cost estimators generalize to new scenarios. The analytical models show the best relative performance which can be explained by the fact they are not prone to overfitting, and already do not perform very well on the training set. The statistical models show okay relative performance on the real datasets but very poor performance on the new hardware meaning they did not capture the relation between hardware characteristics and cost well. The XGBoost models show great relative performance on new hardware, but poor performance on the real datasets. The hybrid model combines the strong points of the XGBoost and statistical models, showing good relative performance of 82\% on the full dataset.
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
-
+\todo{Show the effect of including/excluding models on the performance of the cost estimators.}
 
 \subsection{Cost Estimator Comparison}
+\label{subsec:6-sota-comparison}
+
+In this section, we compare the performance of our cost models to the SOTA cost estimators. The comparison is based on the same test set used in the previous sections, which includes real datasets and new hardware configurations.
+
+\autoref{fig:6-sota-comparison} presents the results of this comparison. The left plot shows the precision, accuracy, f1 score and recall score of the cost estimators. The right plot shows the total time saved by the cost estimators for the set of scenarios.
+
+From the figure we can infer how each estimator behaves with regard to the precision/recall trade-off. The SOTA cost estimators show poor precision, but higher recall. This means that they are more lenient towards predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI \cite{MorpheusFI} shows the best recall, but that is explained when looking at the accuracy and precision. It just labels all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus \cite{orion_learning_gen_lin_models} shows a total time loss of around $7000$ seconds as it is slightly more conservative than MorpheusFI. Amalur \cite{amalur} shows a total time loss of around $500$ seconds, which shows it is a better estimator than Morpheus and MorpheusFI. The Hybrid cost estimators proposed in this thesis shows a total time saved of around $1350$ seconds, with an accuracy of $95\%$, which is a significant improvement over the SOTA.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
-  \caption{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware). \todo{Show split between CPU/GPU?}}
+  \caption{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware).}
   \label{fig:6-sota-comparison}
 \end{figure}
 
 \section{Discussion}
 \label{sec:eval-discussion}
+We have shown our Hybrid cost estimator is capable of accurately predicting the optimal choice between factorized and materialized training of a Machine Learning model, on both CPU and GPU. The hybrid estimator shows good generalizability to new scenarios, and outperforms the SOTA in cost estimation for Factorized ML training. However, there are some limitations to this work.
 
+The first important note is that the SOTA cost estimators were not created with training on GPUs in mind. This is a significant limitation. We have shown that the trade-off between factorization and materialization behaves drastically different between CPU and GPU training.
+
+The second limitation is that the cost estimators were trained on synthetic data. This is a common practice in cost estimation for ML training, but it is not ideal. The synthetic datasets were created to mimic real-world data, but there are always differences. We have shown that the cost estimators generalize well to real-world data, but there is always a risk that the cost estimators are overfitting to the synthetic data, and the good performance on Hamlet and TPCx-AI is a coincidence. This limitation also applies to the hardware dimension. We have shown that the cost estimators generalize well to new hardware, but there is always a risk that the new hardware settings are not representative enough of hardware settings in real world applications.
+
+Despite these limitations, we believe that our work provides a valuable contribution to the field of cost estimation for ML training. Our hybrid cost estimator shows promising results and outperforms the SOTA in many scenarios. We hope that our work will inspire further research in this area.
+
+\section{Conclusion}
+\label{sec:eval-conclusion}
+
+In this chapter, we have presented the evaluation of our hybrid cost estimator for factorized and materialized ML training. We have shown that our estimator is capable of accurately predicting the optimal choice between factorized and materialized training, and that it outperforms the SOTA in cost estimation.
+
+In the next chapter, we will discuss the future work and potential improvements that can be made to our cost estimator.

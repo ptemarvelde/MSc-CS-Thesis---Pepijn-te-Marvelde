@@ -30,3 +30,9 @@ GFLOPs
 speedup
 math
 ANLY
+GFLOPS
+XGBRegressor
+XGB
+KMeans
+lineitem
+math-bound
