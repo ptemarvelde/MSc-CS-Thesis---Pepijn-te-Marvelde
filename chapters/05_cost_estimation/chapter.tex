@@ -145,6 +145,7 @@ The second issue is that the metrics are not collected for all scenarios. This i
 \end{figure}
 
 \subsection{Model-level Math and Memory cost}
+\label{subsec:5-model-level-cost}
 Here we describe the process of \textbf{calculating} the memory and math costs for each scenario. The memory cost is calculated as the total number of bytes read and written to memory divided by memory throughput. The math cost is calculated as the total number of FLOPs needed for a computation. These are the same definitions as used in the profiling experiments, however here we calculate them from the available data and model characteristics, instead of predicting them using a regressor, as was explained in the previous section.
 
 The complexity of an operator or model was detailed previously. This complexity, or the number of Floating Point operations needed, is equal to the math costs and is calculated by inspecting the algorithms and summing the computations that are done. Various data characteristics such as the number of non-zero items and dataset sizes are taken into account in this process. For the memory costs we do the same, but we sum the number of bytes read and written to memory. For each ML model we add both the total summed costs as a feature, as well as the costs per involved operator. This results in numerous extra features that can be used to train the cost models.
@@ -163,40 +164,47 @@ A subset of the features is shown in \autoref{tab:5-feature-subset}. The full se
 \label{sec:5-cost-models}
 \todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters.\\Show some score to compare between models.}
 
+This section details the process of creating four different (types of) cost estimators capable of distinguishing when to use factorization over materialization. The estimators are created using the enriched dataset, as described in the previous section. The first estimator, which aims to be as explainable as possible, is an analytical estimator (\autoref{subsec:5-analytical}). Next we fit a variety of linear regressors to the dataset, to create a statistical estimator (\autoref{subsec:5-statistical}). The third estimator is a neural network, which is used to show the performance of a more complex model (\autoref{subsec:5-xgboost}). The last estimator is a hybrid model, which combines the analytical and statistical estimators to create a more accurate model. The performance of each of the models is evaluated on a validation set, and the results are shown in \autoref{subsec:5-comparing-performance}.
+
+
+
+\subsection{Analytical}
+\label{subsec:5-analytical}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
     \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
     \label{fig:5-analytical-architecture}
 \end{figure}
-
-\subsection{Analytical}
-
-In \autoref{sec:5-gpu-performance-analysis} we have shown that the runtime of the evaluated ML scenarios is dominated by memory cost. To create an accurate prediction of the runtime of a scenario we can use the memory cost as a proxy, which is the approach taken by the analytical estimator. We evaluate two analytical estimators. The first estimator uses the collected profiling metrics to compute the memory cost of the factorized and materialized scenarios. The second uses an analysis of the ML algorithms to compute the memory cost.
+In \autoref{sec:5-gpu-performance-analysis} we have shown that the runtime of the evaluated ML scenarios is dominated by the time it takes to read from and to memory. To create an accurate prediction of the runtime of a scenario we can thus use the memory cost as a proxy, which is the approach taken with this analytical estimator. We evaluate two analytical estimators. The first estimator uses the collected profiling metrics to compute the memory cost of the factorized and materialized scenarios. The second uses the model-level memory cost introduced in \autoref{subsec:5-model-level-cost}.
 
 \subsubsection{ANLY.1 Profiling Metrics Based Estimator}
 
 The workflow for computing the factorized and materialized memory cost is shown in \autoref{fig:5-analytical-architecture}. We first collect the operators used for the model under test. We then use a regressor fit to the collected profiling metrics (as shown in \autoref{fig:5-feature-enrichment}) to predict the factorized and materialized operators' memory cost. This step is necessary as we do not have profiling metrics for the scenarios we are testing. Last, the costs for each training type are summed, and choose the scenario with the lowest predicted runtime.
 
-\todo{Big downside, does not take into account matrix shapes, which is a big factor in the cost of the operations.}
+A major downside of this estimator is that it requires a pre-trained regressor to predict the memory cost. This regressor is trained on a subset of the collected metrics, and is used to predict the missing metrics. The regressor we use is fit to a subset of factorized and materialized operator scenarios, so it is not fit to predict cost of operations that differ from the tested scenarios. Creating an estimator capable of predicting the memory cost for all scenarios is a complex task, and is left for future work.
 
-\subsubsection{ANLY.2 Analysis Based Estimator}
-By inspecting the operations performed during ML model training we can calculate the number of bytes read and written during computation. This is done by calculating the number of bytes read and written for each operation, and summing these values. The memory cost is then calculated by dividing the total number of bytes read and written by the memory throughput of the GPU. This estimator is easier to extend to novel ML models, as it does not require a pre-trained regressor to estimate operator cost. However, it does not take into account other factors that influence memory cost like cache hit rates.
+\subsubsection{ANLY.2 Model-level Memory Cost Analysis Based Estimator}
+By inspecting the operations performed during ML model training we can calculate the number of bytes read and written during computation. This is done by calculating the number of bytes read and written for each operation, and summing these values. The memory cost is then calculated by dividing the total number of bytes read and written by the memory throughput of the GPU. This estimator is easier to extend to novel ML models, as it does not require a pre-trained regressor to estimate operator cost. However, it does not take into account other factors that influence memory cost like cache layout and hit rates.
 
 \subsubsection{Analytical Model Evaluation}
+Both analytical estimators output a predicted memory cost for both the factorized and materialized case. To make the final decision we calculate the ratio between the cases and choose factorization if this ratio ($\frac{M}{F}$) is above some boundary. We then tune this boundary to reduce the number of false positives while still predicting factorization in those cases where it saves a lot of time over materialization. For ANLY.1 we set the boundary at $1.7$ and for ANLY.2 at $10.0$. The model only performing well with such a high ratio of materialized to factorized memory cost shows that a lot of overhead is added by using factorization in areas not reflected by this simple memory estimation.
+
+The results of the evaluation are shown in \autoref{fig:5-analytical-model-evaluation}. Both models perform similarly well. The ANLY.1 model predicts a lot less false positives, but the sum of time lost by these false positives is almost the same as that of the FPs for ANLY.2. Subtracting the time lost for the FPs from the time saved for the true positives, we see that ANLY.2 saves more time than ANLY.1. This is likely due to the fact that ANLY.2 is more conservative in predicting factorization, and thus has a higher threshold for when to choose factorization over materialization. Altogether both models save around 250s of the total 1670s of the validation set. Breaking down the positively predicted cases by compute type we see that a lot of time (147s \& 136s respectively, shown in \autoref{fig:5-model-cpu-gpu}) is lost for false positives of CPU scenarios. So, for GPU scenarios the model is more accurate than for CPU scenarios, which is expected as we only use memory cost as an estimator for runtime. We have shown this to be a valid strategy for GPUs, but for CPUs the runtime is largely dominated by the number of FLOPs executed.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/analytical-models-compare.pdf}
-    \caption[Analytical Model Evaluation]{Evaluation of the analytical models on the validation set. \todo{expand}}
+    \caption[Analytical Model Confusion Matrix]{Confusion matrix of the analytical models' performance on the test set. Decision boundaries set at $1.7$ and $10.0$ respectively. Adding time difference of the false positive cases and the true positive cases gives the total time saved by the model. For ANLY.1 this is 256s, for ANLY.2 it is 257s. }
     \label{fig:5-analytical-model-evaluation}
 \end{figure}
 
-\todo{Eval \autoref{fig:5-analytical-model-evaluation}. Talk about boundary.}
 
 \subsection{Statistical}
-The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use Linear Regression at their core. We start with a singular regressor, and, by drilling down into categorical variables, end up at more complex models, with ensembles of linear regression models.
+\label{subsec:5-statistical}
+The goal for this statistical estimator is to still be explainable, while providing higher performance than the hand tuned decision rules from related works. We use a variety of models, which all use linear regression at their core. We start with a singular regressor, and, by splitting the dataset by the categorical variables, end up at more complex models, with ensembles of linear regression models.
 
-The architecture of each of the statistical models is shown in \autoref{fig:5-statistical-architecture}. In short, before training the dataset is split by a number of categorical variables (operator type, hardware type or $F$/$M$), or by filtering a part of the dataset. Each final model is a set of Linear Regression models each fit to one of the data subsets. For example, for STAT.3 we train two regressors. One on the factorization scenarios, and one on the materialization scenarios. During inference, each of the regressors is used to predict the runtime of the scenario under test. The output is the predicted materialized time minus the predicted factorized time. This is done to predict the time saved by choosing factorization over materialization. When a categorical variable is not used to split the dataset, it is used as a feature in the model.
+The architecture of each of the statistical models is shown in \autoref{fig:5-statistical-architecture}. In short, before training the dataset is split by a number of categorical variables (operator type, hardware type or $F$/$M$), or by filtering a part of the dataset. Each final model is a set of Linear Regression models, each fit to one of the subsets of the training data. For example, for STAT.3 we train two regressors. One on the factorization scenarios, and one on the materialization scenarios. During inference, each of the regressors is used to predict the runtime of the scenario under test. The output is the predicted materialized time minus the predicted factorized time. This is done to predict the time saved by choosing factorization over materialization. When a categorical variable is not used to split the dataset, it is used as a feature in the model.
 
 \begin{figure}[ht]
     \centering
@@ -242,6 +250,7 @@ STAT.1-3 show relatively little time saved, but the average speedup of positivel
 However, when evaluating on the test datasets, the performance of the models is much lower. This is likely due to the fact that the models are overfitting to the training data (which only contains synthetic dataset scenarios). Only the models STAT.1 and STAT.5 perform relatively well, which can be explained by the fact that they do not use extensive partitioning of the training data, preventing the regression from fitting to the training data. To solve this overfitting we choose to evaluate the performance of a more complex model.
 
 \subsection{XGBoost}
+\label{subsec:5-xgboost}
 The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient boosting algorithm, which is an ensemble learning method, using a series of decision trees. We use XGBoost as it has shown excellent performance in related cost prediction scenarios \cite{tvm}, as well as showcasing excellent ability for handling unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on the same dataset as the statistical models, and uses the same features.
 
 \begin{table}[ht]
@@ -262,7 +271,7 @@ The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \tex
     \label{tab:5-xgboost-configurations}
 \end{table}
 
-We explore a number of different configurations for this model. We explore along two axes: the target variable, and whether to include all operators, or just the model operators in the training dataset. The target variable can be the runtime of the scenario (one target for factorized, one for materialized), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned only keeping training samples where the operator is one of the model types (K-Means, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
+We explore a number of different configurations for this model. The models differ along two axes: their target variable, and whether all operators are included, or just the model operators, in the training dataset. The target variable can be the runtime of the scenario (one target for factorized, one for materialized), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned only keeping training samples where the operator is one of the model types (K-Means, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
 
 \begin{figure}[ht]
     \centering
@@ -273,8 +282,11 @@ We explore a number of different configurations for this model. We explore along
 
 A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, as these models are more complex, they perform better than the statistical models. Amongst the XGB models there is little difference in performance on the validation set. There is no significant difference between which target variable is used, or whether all operators are used in the training set. XGB.3, which predicts the speedup of factorization over materialization, barely outperforms the other models, predicting 98\% of the validation scenarios correctly.
 
+\todo{Evaluate Feature importances.}
+
 \subsection{Comparing Performance}
-\todo{Compare the best of each of the models. Also compare some meta characteristics like inference speed, training time.}
+\label{subsec:5-comparing-performance}
+The performance of the two best estimators per type is shown in \autoref{fig:5-model-cpu-gpu}. We show the total time saved on the test scenarios, which includes the scenarios on Hamlet and TPCx-AI datasets. As expected, the least explainable, most complex, XGBoost models perform best. XGB.3 and XGB.5 respectively save $600$ and $700$ seconds of the total $1670$ seconds. The statistical model performs worst, likely due to overfitting to the synthetic data in the training set. Interesting, however, is splitting the performance by compute type. The XGBoost models perform drastically better on GPU scenarios than on CPU scenarios, whereas STAT.5 performs better on CPU scenarios. This is due to the fact that STAT.5 consists of two separate regressors, one for CPU and one for GPU, which allows it to capture the differences in the relationships between independent variables and runtime for each compute type. How these models are combined to create a more accurate hybrid model is covered next.
 
 \begin{figure}[ht]
     \centering
@@ -284,8 +296,8 @@ A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost
 \end{figure}
 
 \subsubsection{Combining Cost Models}
-\todo{Explain the final model, which is a combination of the best of the models (if compute type is CPU use A, if GPU use XGB).}
-
+\label{subsec:5-hybrid}
+To create the final cost model we combine the best of the models. We use the XGBoost model for GPU scenarios, and the STAT.5 model for CPU scenarios. This is done to capture the differences in the relationships between independent variables and runtime for each compute type. The final model is evaluated on the test set, and the results are shown in \autoref{fig:5-hybrid-model-evaluation}. The model achieves 80\% of the performance of a perfect cost model, saving 1344 seconds of the total 1670 seconds. This is a significant improvement over the best individual models, which achieved a maximum of 47\% of theoretical performance.
 
 \subsubsection{Meta-results}
 \todo{Inference speed, training time.}
