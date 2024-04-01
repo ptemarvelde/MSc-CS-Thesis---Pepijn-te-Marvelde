@@ -1,0 +1,35 @@
+% LTeX: enabled=false
+\begin{tabular}{llll}
+\toprule
+Dimension & Feature & Symbol & Formula \\
+\midrule\midrule
+\multirow[t]{5}{*}{Data} & Dataset size (rows, columns) & $r_T, c_T$ &  \\
+
+ & Sparsity & $e_T$ & $\frac{nnz(T)}{r_T\times c_T}$ \\
+
+ & Sparsity ratio &  & $\frac{e_T}{e_S}$ \\
+
+ & Tuple ratio & $\tau$ & $\frac{\sum_{k=1}^p d_k}{d_S}$ \\
+
+ & \# Base tables & $n$ &  \\
+ 
+\multirow[t]{2}{*}{Data \& Model} & Complexity ratio &  & $\frac{FLOP_M}{FLOP_F}$ \\
+
+ & Memory ratio &  & $\frac{\text{bytes}_M}{\text{bytes}_F}$ \\
+ 
+\multirow[t]{2}{*}{Hardware} & Compute type &  &  \\
+
+ & GPU memory bandwidth &  &  \\
+ 
+\multirow[t]{2}{*}{Model} & Operator &  &  \\
+
+ & \# Iterations & $iter$ &  \\
+ 
+\multirow[t]{3}{*}{\textbf{Dependent}} & Execution Time & $\text{Time}_M$, $\text{Time}_F$ &  \\
+
+ & Performance ratio &  & $\frac{\text{Time}_M}{\text{Time}_F}$ \\
+
+ & Time saved &  & $\text{Time}_M - \text{Time}_F$ \\
+ 
+\bottomrule
+\end{tabular}

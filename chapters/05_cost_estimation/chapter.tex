@@ -29,7 +29,7 @@ The goal of factorized ML is reducing the number of redundant operations perform
     \caption[Performance ratio for various data characteristics]{Performance ratio against various data characteristics. Broken down by compute type (CPU/GPU). $99\%$ confidence interval shown as shaded area. The sparsity ratio is defined as the sparsity of the source tables $S_k, k\in[1,n]$ divided by the sparsity of target table $T$. Sparsity of $S$ is defined as the total non-zero values in the base tables divided by the total number of cells in the base tables, $\frac{\sum_{k=1}^{n} nnz(S_k)}{\sum_{k=1}^{n} r_{S_k} \times c_{S_k}}$. High sparsity ratio means the target table is relatively denser than the source tables.}
     \label{fig:5-complexity-ratio-vs-data-chars}
 \end{figure}
-We show the impact of various data characteristics on the performance ratio in \autoref{fig:5-complexity-ratio-vs-data-chars}. The figure shows a slight negative correlation between performance ratio and sparsity of target table $T$. The second column shows more insight into the relation between performance and sparsity. It shows that when the sparsity ratio is low, i.e., compared to the base tables $S_k$, $T$ has more zero values, factorization is likely slower than materialization. The right-most plots show that a higher complexity ratio ($\frac{M_{FLOP}}{F_{FLOP}}$) is likely to lead to factorization being the preferred training method. This is in line with the intuition that factorization is beneficial when it saves redundant computations.
+We show the impact of various data characteristics on the performance ratio in \autoref{fig:5-complexity-ratio-vs-data-chars}. The figure shows a slight negative correlation between performance ratio and sparsity of target table $T$. The second column shows more insight into the relation between performance and sparsity. It shows that when the sparsity ratio is low, i.e., compared to the base tables $S_k$, $T$ has more zero values, factorization is likely slower than materialization. The right-most plots show that a higher complexity ratio ($\frac{FLOP_M}{FLOP_F}$) is likely to lead to factorization being the preferred training method. This is in line with the intuition that factorization is beneficial when it saves redundant computations.
 
 Important to note is that the correlation between these data characteristics and the speedup factorization brings is not as clear when using GPUs for computation. This is due to the fact that the computations are not compute-bound, but memory-bound. This view is discussed thoroughly in \autoref{sec:5-gpu-performance-analysis}, where the metrics, collected in the profiling experiments, are analysed.
 
@@ -99,51 +99,27 @@ The roofline charts for the performed profiling experiments are shown in \autore
     \label{fig:5-roofline-operators}
 \end{figure}
 
-A roofline chart for a selection of operators is shown in \autoref{fig:5-roofline-operators}. This breakdown per operator further shows the differences between factorization and materialization. Compared to the materialized case, the factorized case of Left Matrix Multiplication shows extremely large variance in performance, which is in line with the use of the normalized matrix explained previously. Although, overall, using factorization seems beneficial for LMM when looking at these profiling metrics (values move to the top and right, indicating higher saturation of the available resources). For Left Scalar Multiplication the gap between F and M is much smaller, which is logical as the factorized case only multiplies the Source matrices with the scalar, which is a simpler operation than the one needed for LMM. The right-most plot shows this limitation even more clearly, showing significantly less utilization of the GPU performance than the materialized case for Transpose Row Summation.
+A roofline chart for a selection of operators is shown in \autoref{fig:5-roofline-operators}. This breakdown per operator further shows the differences between factorization and materialization. Compared to the materialized case, the factorized case of Left Matrix Multiplication shows extremely large variance in performance, which is in line with the use of the normalized matrix explained previously. Although, overall, using factorization seems beneficial for LMM when looking at these profiling metrics (values move to the top and right, indicating higher saturation of the available resources). For Left Scalar Multiplication the gap between F and M is much smaller, which is logical as the factorized case only multiplies the Source matrices with the scalar, which is a simpler operation than the one needed for LMM. The right-most plot shows this limitation even more clearly, showing significantly less utilization of the GPU capabilities than the materialized case for Transpose Row Summation. The complete set of roofline plots broken down per operator can be found in \autoref{appendix:analysis-additional-figures}.
 
 \section{Feature Engineering}
 \label{sec:5-feature-engineering}
-\todo{
-    Data Preprocessing steps
-    \begin{enumerate}
-        \item Collection of data characteristics
-        \item Complexity
-        \item ratios: complexity, sparsity
-        \item Memory costs from profiling metrics
-        \item Computation costs from profiling metrics
-    \end{enumerate}
-    Finally show schema of the final dataset used for training the models.
-}
-From our experiments (further detailed in \autoref{sec:6experiment-setup}) we have a dataset with for each scenario (consisting of a dataset, operator, model type F/M,  hardware configuration and the runtime of this scenario). This section details the process of preprocessing and enriching this dataset with additional features. The goal is to create a dataset that can be used to train the cost models. The features we add are based on the profiling metrics collected during the experiments, and the data and model characteristics. The process is visualized in \autoref{fig:5-feature-enrichment}. The feature set is described in \autoref{tab:5-features}.
-
+From our experiments (further detailed in \autoref{sec:6experiment-setup}) we have a dataset with the runtime for each scenario, defined as the combination of a dataset, operator, model type (F/M) and hardware configuration. This section details the process of preprocessing and enriching this dataset with additional features. The goal is to create a dataset that can be used to train the cost models. The features we add are based on the profiling metrics collected during the experiments, and the data and model characteristics. The process is visualized in \autoref{fig:5-feature-enrichment}. The complete feature set is described in \autoref{appendix:features}, a subset is discussed here and shown in \autoref{tab:5-feature-subset}.
 
 \subsection{Preprocessing Profiling Metrics}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/feature-engineering.pdf}
-    \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}. Description for the aggregation process (“1”) is in \autoref{sec:5-feature-engineering}}
+    \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}. Description for the aggregation process (“1”) is in \autoref{sec:5-feature-engineering}.}
     \label{fig:5-feature-enrichment}
 \end{figure}
 
-There are two issues with the profiling metrics we have collected. First, the metrics are collected on a per-kernel basis, while we are interested in the performance of a scenario (operator). Second, the metrics are collected for a subset of the scenarios, while we want to have metrics for all scenarios. The process of solving these issues is shown in \autoref{fig:5-feature-enrichment} and detailed here.
+The first step in the feature engineering process is enriching the dataset with metrics collected from the profiling experiments, however there are two issues with these metrics. First, they are collected per-kernel, while we are interested in the performance of a scenario (operator). Second, the metrics are collected for a subset of the scenarios, while we want to have metrics for all scenarios. The process of solving these issues is shown in \autoref{fig:5-feature-enrichment} and detailed here.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
-    \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
-    \label{fig:5-analytical-architecture}
-\end{figure}
-
-This paragraph describes the process of aggregating the kernel-level metrics to operator level metrics, annotated by the “1” in \autoref{fig:5-feature-enrichment}. For each scenario, we sum the metrics that are totals, i.e., the metrics with units nanosecond, byte, or cycle (refer to \autoref{tab:4-profiling-metrics} for which metrics this applies to). The remaining metrics are either a percentage or a measure per second. For these metrics we calculate the weighted average, where the weight is the duration of the kernel. This is done to ensure that the metrics are representative of the total runtime of the scenario.
-
-The second issue is that the metrics are not collected for all scenarios. This is solved by fitting a statistical model to the collected metrics, and using this model to predict the missing metrics. The model is a linear regression model, with the collected, aggregated, metrics as features.
-
-\subsection{Derived Features}
-Here we describe the process of generating new features from combinations of independent variables. By combining the multiple collected metrics we can create new features that can be used to train the cost models. The derived features are shown in \autoref{tab:5-derived-features}.
+The process of aggregating the kernel-level metrics to operator level metrics is as follows. It is also shown in \autoref{fig:5-feature-enrichment}, annotated by the “1”. For each scenario, we sum the metrics that are totals, i.e., the metrics with units nanosecond, byte, or cycle (refer to \autoref{tab:4-profiling-metrics} for which metrics this applies to). The remaining metrics are either a percentage or a measure per second. For these metrics we calculate the weighted average, where the weight is the runtime of the kernel. This is done to ensure that the metrics are representative of the total runtime of the scenario. This process gives us accurate operator-level metrics for each scenario.
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{p{0.19\linewidth}p{0.37\linewidth}p{0.35\linewidth}}
+    \begin{tabular}{p{0.19\linewidth}p{0.37\linewidth}>{\footnotesize}p{0.35\linewidth}}
         \toprule
         Feature                                   & Formula                                                                                                 & Description                                                                                                                                       \\
         \midrule\midrule
@@ -155,26 +131,44 @@ Here we describe the process of generating new features from combinations of ind
 
         \bottomrule
     \end{tabular}
-    \caption[Derived features]{Overview of computed features. values in \texttt{monospace} are collected through profiling experiments. Features starting with "gpu" are constants for the specific GPU used.}
+    \caption[Derived features]{Overview of features computed from the profiling metrics. Features starting with "gpu" are constants for the specific GPU used.}
     \label{tab:5-derived-features}
 \end{table}
 
+The second issue is that the metrics are not collected for all scenarios. This is solved by fitting a statistical model to the collected metrics, and using this model to predict the missing metrics. The model (denoted as function $OperatorCost$ in \autoref{fig:5-feature-enrichment}) is an ensemble of linear regressors, with the aggregated metrics, hardware- and data-characteristics as features and the memory cost $T_{mem}$ as target. To further improve the model we engineer a set of additional features from the collected metrics, these are shown in \autoref{tab:5-derived-features}. Each combination of operator and training type (F/M) has an own linear regression model. True vs. predicted values of this estimator are shown in \autoref{fig:5-analytical-regressor-fit}. The model is trained on a subset of the collected metrics, and tested on the remaining metrics. The model is then used to predict the missing metrics. This process is necessary to ensure that we have metrics for all scenarios, as the cost models require a complete dataset to train on.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/analytical-regressor-fit.pdf}
+    \caption{True $T_{mem}$ vs predicted $T_{mem}$ for the analytical estimator's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
+    \label{fig:5-analytical-regressor-fit}
+\end{figure}
 
+\subsection{Model-level Math and Memory cost}
+Here we describe the process of \textbf{calculating} the memory and math costs for each scenario. The memory cost is calculated as the total number of bytes read and written to memory divided by memory throughput. The math cost is calculated as the total number of FLOPs needed for a computation. These are the same definitions as used in the profiling experiments, however here we calculate them from the available data and model characteristics, instead of predicting them using a regressor, as was explained in the previous section.
+
+The complexity of an operator or model was detailed previously. This complexity, or the number of Floating Point operations needed, is equal to the math costs and is calculated by inspecting the algorithms and summing the computations that are done. Various data characteristics such as the number of non-zero items and dataset sizes are taken into account in this process. For the memory costs we do the same, but we sum the number of bytes read and written to memory. For each ML model we add both the total summed costs as a feature, as well as the costs per involved operator. This results in numerous extra features that can be used to train the cost models.
+
+A subset of the features is shown in \autoref{tab:5-feature-subset}. The full set of features is shown in \autoref{appendix:features}. The features are used to train the cost models, as detailed in the next section.
 
 \begin{table}[ht]
-    \centering
-    \input{chapters/05_cost_estimation/auto-generated/feature-table.tex}
-    \caption[Feature table]{Table showing base, and derived/engineered features used for training the cost models. N stands for numerical, C for categorical.}
-    \label{tab:5-features}
+    \input{chapters/05_cost_estimation/auto-generated/feature-table-subset.tex}
+    \caption[Feature table]{Table showing a subset of the base, and derived/engineered features used for training the cost models}
+    \label{tab:5-feature-subset}
 \end{table}
+
 
 
 \section{Cost Models}
 \label{sec:5-cost-models}
 \todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters.\\Show some score to compare between models.}
 
-
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
+    \caption[Analytical Estimator Architecture]{Architecture of the Analytical Estimator. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function as defined in \autoref{fig:5-feature-enrichment}.}
+    \label{fig:5-analytical-architecture}
+\end{figure}
 
 \subsection{Analytical}
 
