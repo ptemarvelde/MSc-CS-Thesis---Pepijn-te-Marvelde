@@ -300,7 +300,9 @@ The performance of the two best estimators per type is shown in \autoref{fig:5-m
 To create the final cost model we combine the best of the models. We use the XGBoost model for GPU scenarios, and the STAT.5 model for CPU scenarios. This is done to capture the differences in the relationships between independent variables and runtime for each compute type. The final model is evaluated on the test set, and the results are shown in \autoref{fig:5-hybrid-model-evaluation}. The model achieves 80\% of the performance of a perfect cost model, saving 1344 seconds of the total 1670 seconds. This is a significant improvement over the best individual models, which achieved a maximum of 47\% of theoretical performance.
 
 \subsubsection{Meta-results}
-\todo{Inference speed, training time.}
+In the ML framework proposed in \cite{amalur}, which this thesis creates a cost model for, the decision between factorization and materialization is made at runtime, and should therefore not introduce any overhead to the training process. We briefly discuss the overhead introduced by the cost of inference of the models, as well as other factors that can affect the choice between cost models. The overview of all facets is shown in \autoref{tab:5-meta-results}.
+
+The first facet we discuss is training time, which is very fast for statistical models, but slower for the XGBoost model. The outliers in this case are the analytical models. ANLY.1 is extremely slow as it needs to fit a large set of regressors, one for each combination of operator and F/M. ANLY.2, on the other hand, does not have training time in the traditional sense as it uses a handcrafted formula. As for Extensibility the ANLY.1 models are easiest to extend for new ML models, as they already have an underlying “understanding” of the used operators. For the remaining models an updated training set is needed which includes the new ML models. Arguably the most important factor, other than performance, is inference speed, as we do not want overhead in the training process. ANLY.2 and Statistical model are very quick as they are a simple equation with no more than $30$ terms. XGBoost, and thus the hybrid model, is slightly slower, but still quick. ANLY.1 is slowest here, as computing the $OperatorCost$ of all involved operators is costly. The last facet is performance, which is discussed in the previous section.
 
 \begin{table}[ht]
     \centering
@@ -309,13 +311,14 @@ To create the final cost model we combine the best of the models. We use the XGB
         Model        & Training time & Extensibility & Inference Speed & Performance \\
         \midrule
         Analytical 1 & Slow          & Easy          & Slow            & Bad         \\
-        Analytical 2 & N.A.          & Easy          & Quick           & Bad         \\
+        Analytical 2 & --            & Easy          & Quick           & Bad         \\
         Statistical  & Fast          & Difficult     & Quick           & Bad         \\
         XGBoost      & Medium        & Difficult     & Medium          & Mediocre    \\
         Hybrid       & Medium        & Difficult     & Medium          & Good        \\
         \bottomrule
     \end{tabular}
     \caption{Comparison of the different models.}
+    \label{tab:5-meta-results}
 \end{table}
 
 
