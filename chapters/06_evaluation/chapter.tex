@@ -29,25 +29,25 @@ In total, we generated $2415$ datasets, each being a two-table join. All other p
 \todo{Expand this! Explain star schema (and show example)?}
 
 \begin{table}[ht]
-  \centering
-  \begin{tabular}{llr}
-    \toprule
-    Data Characteristic             & Symbol    & Range                              \\ \midrule \midrule
-    Target Sparsity                 & $e_T$     & $[ 0.0\text{,\ \ } 0.9]$           \\
-    $S_1$ (Entity) table rows       & $r_{S_1}$ & $[ 40,000\text{,\ \ } 1,000,000]$  \\
-    $S_1$ (Attribute) table rows    & $r_{S_2}$ & $[ 526\text{,\ \ } 1,000,000]$     \\
-    $S_1$ (Entity) table columns    & $c_{S_1}$ & $[ 1\text{,\ \ } 50]$              \\
-    $S_1$ (Attribute) table columns & $c_{S_2}$ & $[ 2\text{,\ \ } 50]$              \\
-    Target table rows               & $r_T$     & $[ 60,000 \text{,\ \ } 1,000,000]$ \\
-    Target table columns            & $c_T$     & $[ 11\text{,\ \ } 100]$            \\
-    Tuple ratio                     & $\rho$    & $[ 1\text{,\ \ } 190]$             \\
-    Feature ratio                   & $\tau$    & $[ 0.2\text{,\ \ } 1]$             \\
-    Join Type                       & $j_T$     & Inner, left or outer.              \\
-    Selectivity                     & $\sigma$  & $[ 1.0\text{,\ \ } 2.0]$           \\
-    \bottomrule
-  \end{tabular}
-  \caption{Ranges of data characteristics for the generated synthetic datasets}
-  \label{tab:6-synthetic-dataset-characteristics}
+    \centering
+    \begin{tabular}{llr}
+        \toprule
+        Data Characteristic             & Symbol    & Range                              \\ \midrule \midrule
+        Target Sparsity                 & $e_T$     & $[ 0.0\text{,\ \ } 0.9]$           \\
+        $S_1$ (Entity) table rows       & $r_{S_1}$ & $[ 40,000\text{,\ \ } 1,000,000]$  \\
+        $S_1$ (Attribute) table rows    & $r_{S_2}$ & $[ 526\text{,\ \ } 1,000,000]$     \\
+        $S_1$ (Entity) table columns    & $c_{S_1}$ & $[ 1\text{,\ \ } 50]$              \\
+        $S_1$ (Attribute) table columns & $c_{S_2}$ & $[ 2\text{,\ \ } 50]$              \\
+        Target table rows               & $r_T$     & $[ 60,000 \text{,\ \ } 1,000,000]$ \\
+        Target table columns            & $c_T$     & $[ 11\text{,\ \ } 100]$            \\
+        Tuple ratio                     & $\rho$    & $[ 1\text{,\ \ } 190]$             \\
+        Feature ratio                   & $\tau$    & $[ 0.2\text{,\ \ } 1]$             \\
+        Join Type                       & $j_T$     & Inner, left or outer.              \\
+        Selectivity                     & $\sigma$  & $[ 1.0\text{,\ \ } 2.0]$           \\
+        \bottomrule
+    \end{tabular}
+    \caption{Ranges of data characteristics for the generated synthetic datasets}
+    \label{tab:6-synthetic-dataset-characteristics}
 \end{table}
 
 
@@ -59,35 +59,35 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 
 
 \begin{table}[ht]
-  \centering
-  \begin{tabular}{p{0.12\linewidth}rrrrrrr}
-    \toprule
-    Dataset$\rightarrow$ Characteristic $\downarrow$ & Book  & Expedia & Flight & Lastfm & Movie & Walmart & Yelp  \\
-    \midrule \midrule
-    $r_T$                                            & 253K  & 942K    & 66.5K  & 344K   & 1M    & 422K    & 216K  \\
-    $c_T$                                            & 81.7K & 52.3K   & 13.7K  & 55.3K  & 13.3K & 2.44K   & 55.6K \\
-    $n$                                              & 2     & 3       & 4      & 2      & 2     & 3       & 2     \\
-    $r_{S_1}$                                        & 27.9K & 942K    & 66.5K  & 5K     & 6.04K & 422K    & 11.5K \\
-    $r_{S_2}$                                        & 50K   & 11.9K   & 540    & 50K    & 3.71K & 2.34K   & 43.9K \\
-    $r_{S_3}$                                        &       & 37K     & 3.17K  &        &       & 45      &       \\
-    $r_{S_4}$                                        &       &         & 3.17K  &        &       &         &       \\
-    $c_{S_1}$                                        & 28K   & 27      & 20     & 5.02K  & 9.51K & 1       & 11.7K \\
-    $c_{S_2}$                                        & 53.6K & 12K     & 718    & 50.2K  & 3.84K & 2.39K   & 43.9K \\
-    $c_{S_3}$                                        &       & 40.2K   & 6.46K  &        &       & 53      &       \\
-    $c_{S_4}$                                        &       &         & 6.47K  &        &       &         &       \\
-    \bottomrule
-  \end{tabular}
-  \caption[Hamlet dataset characteristics]{Hamlet dataset characteristics. $r$ is the number of rows, $c$ is the number of columns, and $n$ is the number of tables. The subscripts denote which table the characteristic belongs to. }
-  \label{tab:6-hamlet-characteristics}
+    \centering
+    \begin{tabular}{p{0.12\linewidth}rrrrrrr}
+        \toprule
+        Dataset$\rightarrow$ Characteristic $\downarrow$ & Book  & Expedia & Flight & Lastfm & Movie & Walmart & Yelp  \\
+        \midrule \midrule
+        $r_T$                                            & 253K  & 942K    & 66.5K  & 344K   & 1M    & 422K    & 216K  \\
+        $c_T$                                            & 81.7K & 52.3K   & 13.7K  & 55.3K  & 13.3K & 2.44K   & 55.6K \\
+        $n$                                              & 2     & 3       & 4      & 2      & 2     & 3       & 2     \\
+        $r_{S_1}$                                        & 27.9K & 942K    & 66.5K  & 5K     & 6.04K & 422K    & 11.5K \\
+        $r_{S_2}$                                        & 50K   & 11.9K   & 540    & 50K    & 3.71K & 2.34K   & 43.9K \\
+        $r_{S_3}$                                        &       & 37K     & 3.17K  &        &       & 45      &       \\
+        $r_{S_4}$                                        &       &         & 3.17K  &        &       &         &       \\
+        $c_{S_1}$                                        & 28K   & 27      & 20     & 5.02K  & 9.51K & 1       & 11.7K \\
+        $c_{S_2}$                                        & 53.6K & 12K     & 718    & 50.2K  & 3.84K & 2.39K   & 43.9K \\
+        $c_{S_3}$                                        &       & 40.2K   & 6.46K  &        &       & 53      &       \\
+        $c_{S_4}$                                        &       &         & 6.47K  &        &       &         &       \\
+        \bottomrule
+    \end{tabular}
+    \caption[Hamlet dataset characteristics]{Hamlet dataset characteristics. $r$ is the number of rows, $c$ is the number of columns, and $n$ is the number of tables. The subscripts denote which table the characteristic belongs to. }
+    \label{tab:6-hamlet-characteristics}
 \end{table}
 
 
 \paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different scale factors from $0.01-0.5$ we generated $18$ datasets for each use case. The data characteristics of the resulting datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
 \begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/tpcx-ai-data-chars.pdf}
-  \caption[TPCx-AI dataset sizes for used scale factors.]{TPCx-AI dataset sizes for used scale factors. The number of columns is independent of the scale factors. For use case 1: $c_1=3, c_2=4, c_3=3, c_T=7$. For use case 10: $c_1=2, c_2=7, c_T=5$.}
-  \label{fig:tpcx-ai-data-chars}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/tpcx-ai-data-chars.pdf}
+    \caption[TPCx-AI dataset sizes for used scale factors.]{TPCx-AI dataset sizes for used scale factors. The number of columns is independent of the scale factors. For use case 1: $c_1=3, c_2=4, c_3=3, c_T=7$. For use case 10: $c_1=2, c_2=7, c_T=5$.}
+    \label{fig:tpcx-ai-data-chars}
 \end{figure}
 
 The first use case is a join between three tables. First the lineitem table is joined with the order returns data which, in turn, is joined with the orders table. This results in a table with $c_T=7$ columns and a row for each product sold in an order. In the TPCx-AI benchmark customer segmentation is done using KMeans clustering on this dataset. We instead test all four ML models discussed in this thesis as we are not necessarily interested in the utility of the final classifier, but we are interested in the training process. The second use case is a join between two tables. The transaction table is joined with the customer table, resulting in a table with $c_T=5$ columns which can be used to detect fraudulent transactions. We use the same models as in the first use case. The complete dataset schema detailing the involved tables and columns can be found in \autoref{fig:appendix-tpc-ai-schema}.
@@ -100,10 +100,10 @@ The first use case is a join between three tables. First the lineitem table is j
 The experiments are run on a relatively large set of different machines because of the need to test on varying hardware. Most experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}}, which made it possible to run experiments on different GPU architectures. Because profiling was not possible on this cluster, some profiling experiments were run on a local machine, AWS, and resources of the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. The exact overview of which experiment was run on which machines is shown in \autoref{tab:6-hardware-overview}.
 
 \begin{table}[ht]
-  \centering
-  \input{chapters/06_evaluation/auto-generated/experiments.tex}
-  \caption[Experiment to machine mapping]{Experiment to machine mapping. The experiment type is either profiling or runtime. Profiling experiments are used to collect the hardware specific metrics for our training data. Runtime experiments are used to gather data on the runtime of the factorized ML framework compared to materialized learning.}
-  \label{tab:6-hardware-overview}
+    \centering
+    \input{chapters/06_evaluation/auto-generated/experiments.tex}
+    \caption[Experiment to machine mapping]{Experiment to machine mapping. The experiment type is either profiling or runtime. Profiling experiments are used to collect the hardware specific metrics for our training data. Runtime experiments are used to gather data on the runtime of the factorized ML framework compared to materialized learning.}
+    \label{tab:6-hardware-overview}
 \end{table}
 
 \subsection{Experiment Setting}
@@ -128,7 +128,7 @@ As the possible set of data, model, and hardware characteristics is extremely la
 
 In this section we answer
 \begin{itemize}
-  \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
+    \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
 \end{itemize}
 
 We first display that the cost estimator generalizes well to new scenarios. Then we show how the cost estimators compare to the SOTA in cost estimation for Factorized ML training.
@@ -138,10 +138,10 @@ We first display that the cost estimator generalizes well to new scenarios. Then
 The goal of this thesis is to create a cost estimator that can accurately predict the optimal choice between factorized and materialized training of a Machine Learning model. To ensure that this cost estimator also performs well in unseen scenarios, i.e., it is not overfitting to the training data, we evaluate the cost estimators on the real-world datasets, and on new hardware. The results are shown in \autoref{fig:6-generalization}.
 
 \begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
-  \caption{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the validation set as on the training set, when measured by $\frac{\text{time saved}}{\text{max. possible time saved}}$.}
-  \label{fig:6-generalization}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
+    \caption[Evaluation of performance on new scenarios]{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the validation set as on the training set, when measured by $\frac{\text{time saved}}{\text{max. possible time saved}}$.}
+    \label{fig:6-generalization}
 \end{figure}
 
 The \hyperref[fig:6-generalization]{figure} shows that there are large differences for how well the cost estimators generalize to new scenarios. The analytical models show the best relative performance which can be explained by the fact they are not prone to overfitting, and already do not perform very well on the training set. The statistical models show okay relative performance on the real datasets but very poor performance on the new hardware meaning they did not capture the relation between hardware characteristics and cost well. The XGBoost models show great relative performance on new hardware, but poor performance on the real datasets. The hybrid model combines the strong points of the XGBoost and statistical models, showing good relative performance of 82\% on the full dataset.
@@ -160,10 +160,10 @@ In this section, we compare the performance of our cost models to the SOTA cost 
 From the figure we can infer how each estimator behaves with regard to the precision/recall trade-off. The SOTA cost estimators show poor precision, but higher recall. This means that they are more lenient towards predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI \cite{MorpheusFI} shows the best recall, but that is explained when looking at the accuracy and precision. It just labels all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus \cite{orion_learning_gen_lin_models} shows a total time loss of around $7000$ seconds as it is slightly more conservative than MorpheusFI. Amalur \cite{amalur} shows a total time loss of around $500$ seconds, which shows it is a better estimator than Morpheus and MorpheusFI. The Hybrid cost estimators proposed in this thesis shows a total time saved of around $1350$ seconds, with an accuracy of $95\%$, which is a significant improvement over the SOTA.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
-  \caption{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware).}
-  \label{fig:6-sota-comparison}
+    \centering
+    \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
+    \caption[Cost estimator comparison vs. SOTA]{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware).}
+    \label{fig:6-sota-comparison}
 \end{figure}
 
 \section{Discussion}

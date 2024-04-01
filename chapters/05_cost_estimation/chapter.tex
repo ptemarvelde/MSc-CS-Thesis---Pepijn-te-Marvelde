@@ -140,7 +140,7 @@ The second issue is that the metrics are not collected for all scenarios. This i
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/analytical-regressor-fit.pdf}
-    \caption{True $T_{mem}$ vs predicted $T_{mem}$ for the analytical estimator's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
+    \caption[Analytical estimator memory cost prediction vs. true values]{True $T_{mem}$ vs. predicted $T_{mem}$ for the analytical estimator's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
     \label{fig:5-analytical-regressor-fit}
 \end{figure}
 
@@ -162,11 +162,7 @@ A subset of the features is shown in \autoref{tab:5-feature-subset}. The full se
 
 \section{Cost Models}
 \label{sec:5-cost-models}
-\todo{Detail the full process going from data to Cost model, what features where used, and what is the inner architecture?\\Show each of the factors is significant. Data, Hardware, Model parameters.\\Show some score to compare between models.}
-
 This section details the process of creating four different (types of) cost estimators capable of distinguishing when to use factorization over materialization. The estimators are created using the enriched dataset, as described in the previous section. The first estimator, which aims to be as explainable as possible, is an analytical estimator (\autoref{subsec:5-analytical}). Next we fit a variety of linear regressors to the dataset, to create a statistical estimator (\autoref{subsec:5-statistical}). The third estimator is a neural network, which is used to show the performance of a more complex model (\autoref{subsec:5-xgboost}). The last estimator is a hybrid model, which combines the analytical and statistical estimators to create a more accurate model. The performance of each of the models is evaluated on a validation set, and the results are shown in \autoref{subsec:5-comparing-performance}.
-
-
 
 \subsection{Analytical}
 \label{subsec:5-analytical}
@@ -184,10 +180,10 @@ The workflow for computing the factorized and materialized memory cost is shown 
 
 A major downside of this estimator is that it requires a pre-trained regressor to predict the memory cost. This regressor is trained on a subset of the collected metrics, and is used to predict the missing metrics. The regressor we use is fit to a subset of factorized and materialized operator scenarios, so it is not fit to predict cost of operations that differ from the tested scenarios. Creating an estimator capable of predicting the memory cost for all scenarios is a complex task, and is left for future work.
 
-\subsubsection{ANLY.2 Model-level Memory Cost Analysis Based Estimator}
+\subsubsection*{ANLY.2 Model-level Memory Cost Analysis Based Estimator}
 By inspecting the operations performed during ML model training we can calculate the number of bytes read and written during computation. This is done by calculating the number of bytes read and written for each operation, and summing these values. The memory cost is then calculated by dividing the total number of bytes read and written by the memory throughput of the GPU. This estimator is easier to extend to novel ML models, as it does not require a pre-trained regressor to estimate operator cost. However, it does not take into account other factors that influence memory cost like cache layout and hit rates.
 
-\subsubsection{Analytical Model Evaluation}
+\subsubsection*{Analytical Model Evaluation}
 Both analytical estimators output a predicted memory cost for both the factorized and materialized case. To make the final decision we calculate the ratio between the cases and choose factorization if this ratio ($\frac{M}{F}$) is above some boundary. We then tune this boundary to reduce the number of false positives while still predicting factorization in those cases where it saves a lot of time over materialization. For ANLY.1 we set the boundary at $1.7$ and for ANLY.2 at $10.0$. The model only performing well with such a high ratio of materialized to factorized memory cost shows that a lot of overhead is added by using factorization in areas not reflected by this simple memory estimation.
 
 The results of the evaluation are shown in \autoref{fig:5-analytical-model-evaluation}. Both models perform similarly well. The ANLY.1 model predicts a lot less false positives, but the sum of time lost by these false positives is almost the same as that of the FPs for ANLY.2. Subtracting the time lost for the FPs from the time saved for the true positives, we see that ANLY.2 saves more time than ANLY.1. This is likely due to the fact that ANLY.2 is more conservative in predicting factorization, and thus has a higher threshold for when to choose factorization over materialization. Altogether both models save around 250s of the total 1670s of the validation set. Breaking down the positively predicted cases by compute type we see that a lot of time (147s \& 136s respectively, shown in \autoref{fig:5-model-cpu-gpu}) is lost for false positives of CPU scenarios. So, for GPU scenarios the model is more accurate than for CPU scenarios, which is expected as we only use memory cost as an estimator for runtime. We have shown this to be a valid strategy for GPUs, but for CPUs the runtime is largely dominated by the number of FLOPs executed.

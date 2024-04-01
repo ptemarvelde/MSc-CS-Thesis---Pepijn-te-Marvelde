@@ -96,33 +96,30 @@ Various \textbf{profiling metrics} are also collected to capture the cost of tra
 
 \section{Cost Estimation}
 \label{sec:4-cost-estimation}
-\todo{\Large Improve after finishing \autoref{chapter:cost-estimation}}
-
 This section introduces the ideas behind the cost models, which are explained in more detail in \autoref{chapter:cost-estimation}. The first, analytical, model is a formula derived from the actual cost of the operations. Due to its simplicity it is highly explainable, but will likely perform worse than more complex methods. Therefore, the next models are ML-based solutions. The statistical model uses a logistic regression to make its decision. Compared to the first model it is easier to include more features causing this model to have a larger decision space. The third, deep learning, model uses a neural network to make its predictions. It is the least explainable of cost estimators, but can capture the most complex interactions between features. Finally, the hybrid model combines the knowledge gathered from the previous cost estimators and applies it in a model like was done in \cite{halide_cost_model}.
 
 \subsection{Analytical}
-The analytical model is a deterministic model constructed by examining the operations performed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. This formula consists of the crucial factors of the algorithm, e.g., the number of matrix multiplications. For instance, if an algorithm performs an addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our case these operations are the linear algebra operations performed as part of the machine learning model training. So, through capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics} we can calculate the cost of each operation in the training process. The simplified calculation for this would be:
+The analytical model is a deterministic model constructed by examining the operations performed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. This formula consists of the crucial factors of the algorithm, e.g., the number of matrix multiplications. For instance, if an algorithm performs an addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our case these operations are the linear algebra operations performed as part of the machine learning model training. So, through capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics} we can calculate the cost of each operation in the training process. As will be shown in \autoref{chapter:cost-estimation}, the memory cost of an operation is an accurate predictor for its total runtime. This is why we focus on the memory cost of an operation in the analytical model.
 
-\vspace{-0.5cm}
-\begin{align*}
-    \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
-                           & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
-                           & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
-\end{align*}
+% The simplified calculation for this would be:
 
-By profiling through a large range of the chosen independent variables we can estimate the effect of those variables on the factors in this formula, like the hit rate. By incorporating this in the analytical model we can create a highly explainable model that can be used to estimate the cost of different approaches.
+% \vspace{-0.5cm}
+% \begin{align*}
+%     \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
+%                            & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
+%                            & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
+% \end{align*}
+
+By profiling through a large range of the chosen independent variables we can estimate the effect of those variables on the memory cost. By incorporating this in the analytical model we can create a highly explainable model that can be used to estimate the cost of different approaches.
 
 \subsection{Statistical}
-The statistical model uses reasoning and analysis of performance-impacting factors to estimate the optimal approach. This model is based on empirical data and uses logistic regression to make predictions. The model considers various features known to impact performance, such as the size of the input data, the algorithm's complexity, and the hardware configuration. By analysing the relationships between these features and the actual runtime of the algorithm, the statistical model can make accurate, and explainable, predictions about the cost of different approaches.
+The statistical model uses reasoning and analysis of performance-impacting factors to estimate the optimal approach. This model is based on empirical data and uses linear regression to predict runtime and decide between F/M. The model considers various features known to impact performance, such as the size of the input data, the algorithm's complexity, and the hardware configuration. By analysing the relationships between these features and the actual runtime of the algorithm, the statistical model can make accurate, and explainable, predictions about the cost of different approaches.
 
 \subsection{XGBoost}
 To check whether the previous models, such as the analytical and statistical models, are too simplistic we include this more complex estimator. If this model significantly outperforms the other models, it indicates that there are more complex feature interactions happening which the other models have failed to capture. This estimator can model these complex interactions from the data and make more accurate predictions about the cost of different approaches. The major drawback being that this model is less explainable than the other models.
-\todo{What Neural network?}
 
 \subsection{Hybrid}
-Finally, the knowledge gathered from the previous cost estimators is combined and applied in a hybrid model. Much like the optimization model from \cite{halide_cost_model} this model aims to create a highly accurate, but explainable, model. This is achieved by combining intricate knowledge of the most impactful features and their interactions with a neural network to estimate the weights of its (combined) features.
-
-\todo{Show architecture of hybrid model.}
+Finally, the knowledge gathered from the previous cost estimators is combined and applied in a hybrid model. By exploiting the strong points of multiple models, the hybrid model can make more accurate predictions about the cost of different approaches.
 
 % \subsection{? Cost Estimation at Training Time?}
 % \todo{
