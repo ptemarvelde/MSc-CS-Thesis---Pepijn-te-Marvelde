@@ -311,7 +311,7 @@ The first facet we discuss is training time, which is very fast for statistical 
         Hybrid       & Medium        & Difficult     & Medium          & Good        \\
         \bottomrule
     \end{tabular}
-    \caption{Comparison of the different models.}
+    \caption{Qualitative comparison of the different models.}
     \label{tab:5-meta-results}
 \end{table}
 
@@ -319,19 +319,16 @@ The first facet we discuss is training time, which is very fast for statistical 
 \label{subsec:6-feature-importance}
 To answer the question of which characteristics are most influential in the F/M trade-off, we inspect the final hybrid model. Especially the gain per feature, from the GPU leg of the model, is interesting.
 
-We show the gain of the ten most influential features of the XGBoost model in \autoref{fig:5-gpu-feature-importance}. The gain estimates the impact a feature has based on how it reduces the training error in the underlying decision trees. It can be interpreted as a number showing how much impact a feature has on the prediction of the model, which is interesting as we are interested in which features impact the F/M trade-off the most. From the figure we can infer that the model type is most impactful. This is in line with the results shown in \autoref{sec:5-motivation}, where we showed that the choice of model has a large impact on the F/M trade-off. Due to operators used in each model, the speedup differs greatly between models, even on the same dataset. For example, factorized Gaussian training is beneficial twice as often, compared to factorized KMeans. Other important features data characteristics like the number of rows in the tables ($r_{S_1}, r_T$), features related to the amount of zeros in a table ($e_T, nnz(S)$), or features related to the differences between the materialized and factorized case ($\rho, \frac{FLOP_M}{FLOP_F}$). We see that, although the relation between complexity and speedup was not as clear in \autoref{sec:5-motivation}, features related to the number of FLOPS are important, also when solely concercing GPUs.
-\todo{smth about complexity, smth about bytes read, split paragraph.}
+We show the gain of the ten most influential features of the XGBoost model in \autoref{fig:5-gpu-feature-importance}. The gain estimates the impact a feature has based on how it reduces the training error in the underlying decision trees. It can be interpreted as a number showing how much impact a feature has on the prediction of the model, which is insightful as we are interested in which features impact the F/M trade-off the most.
 
-\todo{No hardware chars as the split is made earlier (only concern GPU), apparently diffs between gpu are less important.}
+From the figure we can infer that the model type is most impactful. This is in line with the results shown in \autoref{sec:5-motivation}, where we showed that the choice of model has a large impact on the F/M trade-off. Due to operators used in each model, the speedup differs greatly between models, even on the same dataset. For example, factorized Gaussian training is beneficial twice as often, compared to factorized KMeans. Other important features data characteristics like the number of rows in the tables ($r_{S_1}, r_T$), features related to the amount of zeros in a table ($e_T, nnz(S)$), or features related to the differences between the materialized and factorized case ($\rho, \frac{FLOP_M}{FLOP_F}$). We see that, although the relation between complexity and speedup was not as clear in \autoref{sec:5-motivation}, features related to the number of operations are important, also when solely concerning GPUs. This is apparent by the materialized and scalar complexity having relatively high gain. This is logical as scalar operations have high speed-ups compared to other operators.
 
-\begin{figure}
+From these gain values we can conclude that, in our experiments, differences between GPUs are less impactful than differences in data characteristics and models. The GPU characteristic with the highest gain is a categorical feature for the GPU architecture, with a gain of $7$, followed by the L1 cache size and number of Streaming Multiprocessors with gain values of $2.5$ \& $1.4$ respectively.
+
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgboost-feat-importance.pdf}
-    \caption{Feature importance of the Hybrid model, XGBoost (GPU) leg.}
+    \caption[Feature importances of the hybrid model]{Feature importances of the Hybrid model, XGBoost (GPU) leg.}
     \label{fig:5-gpu-feature-importance}
 \end{figure}
 
-% The most important features for the GPU leg are the memory cost, the number of FLOPs executed, and the arithmetic intensity. This is in line with the results from the GPU performance analysis, where we showed that the runtime of the scenarios is dominated by the time it takes to read from and to memory. The most important features for the CPU leg are the memory cost, the number of FLOPs executed, and the number of non-zero items in the dataset. This is in line with the results from the CPU performance analysis, where we showed that the runtime of the scenarios is dominated by the number of FLOPs executed.
-
-
-\todo{Evaluate Feature importances.}

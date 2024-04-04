@@ -144,7 +144,7 @@ The goal of this thesis is to create a cost estimator that can accurately predic
     \label{fig:6-generalization}
 \end{figure}
 
-The \hyperref[fig:6-generalization]{figure} shows that there are large differences for how well the cost estimators generalize to new scenarios. The analytical models show the best relative performance which can be explained by the fact they are not prone to overfitting, and already do not perform very well on the training set. The statistical models show okay relative performance on the real datasets but very poor performance on the new hardware meaning they did not capture the relation between hardware characteristics and cost well. The XGBoost models show great relative performance on new hardware, but poor performance on the real datasets. The hybrid model combines the strong points of the XGBoost and statistical models, showing good relative performance of 82\% on the full dataset.
+There are large differences between estimators regarding how well they generalize to new scenarios. The analytical models show the best relative performance which can be explained by the fact they are not prone to overfitting, and already do not perform very well on the training set. The statistical models show okay relative performance on the real datasets but very poor performance on the new hardware meaning they did not capture the relation between hardware characteristics and cost well. The XGBoost models show great relative performance on new hardware, but poor performance on the real datasets. The hybrid model combines the strong points of the XGBoost and statistical models, showing good relative performance of 82\% on the full dataset.
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
