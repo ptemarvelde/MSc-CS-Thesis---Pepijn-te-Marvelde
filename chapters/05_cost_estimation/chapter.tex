@@ -278,8 +278,6 @@ We explore a number of different configurations for this model. The models diffe
 
 A comparison and evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, as these models are more complex, they perform better than the statistical models. Amongst the XGB models there is little difference in performance on the validation set. There is no significant difference between which target variable is used, or whether all operators are used in the training set. XGB.3, which predicts the speedup of factorization over materialization, barely outperforms the other models, predicting 98\% of the validation scenarios correctly.
 
-\todo{Evaluate Feature importances.}
-
 \subsection{Comparing Performance}
 \label{subsec:5-comparing-performance}
 The performance of the two best estimators per type is shown in \autoref{fig:5-model-cpu-gpu}. We show the total time saved on the test scenarios, which includes the scenarios on Hamlet and TPCx-AI datasets. As expected, the least explainable, most complex, XGBoost models perform best. XGB.3 and XGB.5 respectively save $600$ and $700$ seconds of the total $1670$ seconds. The statistical model performs worst, likely due to overfitting to the synthetic data in the training set. Interesting, however, is splitting the performance by compute type. The XGBoost models perform drastically better on GPU scenarios than on CPU scenarios, whereas STAT.5 performs better on CPU scenarios. This is due to the fact that STAT.5 consists of two separate regressors, one for CPU and one for GPU, which allows it to capture the differences in the relationships between independent variables and runtime for each compute type. How these models are combined to create a more accurate hybrid model is covered next.
@@ -317,5 +315,25 @@ The first facet we discuss is training time, which is very fast for statistical 
     \label{tab:5-meta-results}
 \end{table}
 
+\subsection{Evaluating Feature Importance}
+\label{subsec:6-feature-importance}
+To answer the question of which characteristics are most influential in the F/M trade-off, we inspect the final hybrid model. For the GPU leg of the model we evaluate the feature gain. For the CPU leg we reason about the feature coefficients in the Linear Regression model. The results are shown in \autoref{fig:5-feature-importance} and \autoref{fig:5-cpu-feature-importance}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgboost-feat-importance.pdf}
+    \caption{Feature importance of the Hybrid model, XGBoost (GPU) leg.}
+    \label{fig:5-gpu-feature-importance}
+\end{figure}
+
+% The most important features for the GPU leg are the memory cost, the number of FLOPs executed, and the arithmetic intensity. This is in line with the results from the GPU performance analysis, where we showed that the runtime of the scenarios is dominated by the time it takes to read from and to memory. The most important features for the CPU leg are the memory cost, the number of FLOPs executed, and the number of non-zero items in the dataset. This is in line with the results from the CPU performance analysis, where we showed that the runtime of the scenarios is dominated by the number of FLOPs executed.
 
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{chapters/05_cost_estimation/figures/stat5-feat-importance.pdf}
+    \caption{Feature importance of the Hybrid model, Statistical (CPU) leg.}
+    \label{fig:5-cpu-feature-importance}
+\end{figure}
+
+\todo{Evaluate Feature importances.}
