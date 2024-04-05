@@ -222,9 +222,13 @@ code-for-last-col =\color{RoyalBlue}
 %	ABSTRACT PAGE
 %----------------------------------------------------------------------------------------
 
+% In the realm of machine learning, the need for efficiency in training processes is paramount. This research addresses this need by investigating the multidimensional cost optimization problem that arises when choosing between factorized learning and traditional materialized learning methods1. A GPU-optimized implementation of factorized machine learning frameworks is introduced, along with a cost model that predicts the faster training method. The cost model, developed through empirical studies and comparisons of various cost calculation strategies, reveals that memory operations are better predictors for GPU training due to the memory-bound nature of most scenarios. The evaluation of the proposed cost model on real-world datasets demonstrates its superiority, particularly in terms of time savings during intensive training scenarios. The model’s generalizability is also confirmed, maintaining accuracy even when applied to hardware and data characteristics not included in the training set. This research contributes to more efficient machine learning processes, potentially reducing training costs without compromising performance
+
 \begin{abstract}
     \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-    \todo{The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots.}
+    In the realm of machine learning (ML), the need for efficiency in training processes is paramount. The conventional first step in an ML workflow involves collecting data from various sources and merging them into a single table, a process known as materialization, which can introduce inefficiencies caused by redundant data. Factorized ML strives to reduce this redundancy by maintaining the original data forms, and performing computations on the separate source tables. This approach can lead to significant increases in training efficiency.
+    However, the cost of training with factorized ML is not always lower than with traditional materialized learning. This research tackles this issue by examining the multidimensional cost optimization problem that emerges when deciding between factorized and traditional materialized learning methods. It fills in gaps left by prior research,  primarily focused on CPU-based training, by investigating the cost estimation landscape for factorized ML, with a special emphasis on GPU performance compared to CPUs. The factorized ML framework is expanded to incorporate GPU training, a topic not explored in previous research. It is demonstrated that GPU training exhibits significantly different cost characteristics than CPU training, which has substantial implications for the design of cost estimators and the optimization of factorized ML.
+    Through an empirical study, an ML-based cost estimator is developed that can accurately predict the faster training method for factorized ML2. This estimator outperforms state-of-the-art methods in both GPU and CPU scenarios, including scenarios with novel, real-world datasets and hardware settings the estimator is not trained on.
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -233,8 +237,12 @@ code-for-last-col =\color{RoyalBlue}
 
 \begin{acknowledgements}
     \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-    \todo{The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots.} Research reported in this work was partially facilitated by computational resources and support of the Delft AI Cluster (DAIC) at TU Delft (URL:\url{https://doc.daic.tudelft.nl/}), but remains the sole responsibility of the authors, not the DAIC team.
-    % Wenbo, Rihan, Asterios, Jessie for providing framework. 
+    \section*{Acknowledgements}
+    I would like to express my heartfelt gratitude to my supervisor, Dr. Rihan Hai, for their guidance, encouragement, and valuable insights throughout this research journey. I am also very thankful for  Wenbo Sun's constructive feedback, and the guidance he provided. Their ideas and perspectives greatly enriched this study. I would also like to express my gratitude to Dr. Asterios Katsifodimos and Dr. Soham Chakraborty for serving on my thesis committee.
+
+    My sincere thanks go to my family and friends for their unwavering support, patience, and understanding during this thesis. Their encouragement and occasional distractions were invaluable.
+
+    Lastly, research reported in this work was partially facilitated by computational resources and support of the Delft AI Cluster (DAIC) at TU Delft (URL:\url{https://doc.daic.tudelft.nl/}), but remains the sole responsibility of the authors, not the DAIC team.
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------

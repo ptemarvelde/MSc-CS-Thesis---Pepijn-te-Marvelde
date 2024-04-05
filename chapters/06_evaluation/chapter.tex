@@ -7,7 +7,7 @@ This chapter shows Contribution \textbf{C.2}: A robust cost estimator for Amalur
 \section{Experiment Setup}
 \label{sec:6experiment-setup}
 
-This section goes into detail about anything needed to replicate the results. This includes the experimental environment (\hyperref[subsec:6-software]{Software}, \hyperref[subsec:6-datasets]{Datasets} \& \hyperref[subsec:6-hardware]{Hardware}),  and how the data was treated to ensure sound results for the cost estimators (\hyperref[subsec:6-validation-strategy]{validation strategy}). For further details and implementations please refer to the GitHub repository\footnote{\todo{TODO}}.
+This section goes into detail about anything needed to replicate the results. This includes the experimental environment (\hyperref[subsec:6-software]{Software}, \hyperref[subsec:6-datasets]{Datasets} \& \hyperref[subsec:6-hardware]{Hardware}),  and how the data was treated to ensure sound results for the cost estimators (\hyperref[subsec:6-validation-strategy]{validation strategy}). For further details and implementations please refer to the GitHub repository\footnote{\url{https://github.com/ptemarvelde/amalur-experiments}}.
 
 \subsection{Software}
 \label{subsec:6-software}
@@ -22,24 +22,20 @@ For collecting the GPU metrics we use NVIDIA's Nsight Compute (ncu)\footnote{\ur
 The datasets used in the experiments are a mix of synthetic and real-world datasets. The synthetic datasets are used to generate a training set to train the cost estimators on. The real-world datasets are used to validate the cost estimators on unseen data.
 
 \subsubsection{Synthetic Datasets}
-To create the synthetic datasets with a wide variety of data characteristics the data generator from \cite{schijndel_cost_estimation} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from \cite{valentine-data-generator}.
-
-In total, we generated $2415$ datasets, each being a two-table join. All other parameters were varied, the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
-
-\todo{Expand this! Explain star schema (and show example)?}
+To create the synthetic datasets with a wide variety of data characteristics the data generator from \cite{schijndel_cost_estimation} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from \cite{valentine-data-generator}. In total, we generated $2415$ datasets, each being a two-table join. All other parameters were varied, the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{llr}
         \toprule
         Data Characteristic             & Symbol    & Range                              \\ \midrule \midrule
-        Target Sparsity                 & $e_T$     & $[ 0.0\text{,\ \ } 0.9]$           \\
         $S_1$ (Entity) table rows       & $r_{S_1}$ & $[ 40,000\text{,\ \ } 1,000,000]$  \\
-        $S_1$ (Attribute) table rows    & $r_{S_2}$ & $[ 526\text{,\ \ } 1,000,000]$     \\
+        $S_2$ (Attribute) table rows    & $r_{S_2}$ & $[ 526\text{,\ \ } 1,000,000]$     \\
         $S_1$ (Entity) table columns    & $c_{S_1}$ & $[ 1\text{,\ \ } 50]$              \\
-        $S_1$ (Attribute) table columns & $c_{S_2}$ & $[ 2\text{,\ \ } 50]$              \\
+        $S_2$ (Attribute) table columns & $c_{S_2}$ & $[ 2\text{,\ \ } 50]$              \\
         Target table rows               & $r_T$     & $[ 60,000 \text{,\ \ } 1,000,000]$ \\
         Target table columns            & $c_T$     & $[ 11\text{,\ \ } 100]$            \\
+        Target Sparsity                 & $e_T$     & $[ 0.0\text{,\ \ } 0.9]$           \\
         Tuple ratio                     & $\rho$    & $[ 1\text{,\ \ } 190]$             \\
         Feature ratio                   & $\tau$    & $[ 0.2\text{,\ \ } 1]$             \\
         Join Type                       & $j_T$     & Inner, left or outer.              \\
@@ -50,6 +46,15 @@ In total, we generated $2415$ datasets, each being a two-table join. All other p
     \label{tab:6-synthetic-dataset-characteristics}
 \end{table}
 
+
+The data is organized in a star schema. $S_1$ is the Entity (transactional) table, which is connected to the attribute table $S_2$. This attribute table holds the features of the entities. The target table $T$ is the result of the join between $S_1$ and $S_2$. An example with an inner join is shown in \autoref{fig:6-data-gen-example}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{chapters/06_evaluation/figures/data-gen-example.pdf}
+    \caption[Example of generated synthetic dataset]{Example of synthetic dataset generation. The entity table $S_1$ is joined with the attribute table $S_2$ to create the target table $T$.}
+    \label{fig:6-data-gen-example}
+\end{figure}
 
 \subsubsection{Real-world Datasets}
 The synthetic datasets are convenient for testing and training purposes. However, to assess whether the cost estimators are generalizable to real-world data, we use real-world datasets for validation.
@@ -83,6 +88,7 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 
 
 \paragraph{TPCx-AI \cite{tpcx-ai}} We also evaluate on a scenario even more realistic than Hamlet, as it is based on a real-world benchmark used to evaluate end-to-end ML platforms. As that is not the focus of this work, we use only two out of the ten use cases, namely the first and the tenth use case. This benchmark also provides a data generator with scalable generation capabilities, through setting different scale factors from $0.01-0.5$ we generated $18$ datasets for each use case. The data characteristics of the resulting datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
+
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/tpcx-ai-data-chars.pdf}
@@ -91,8 +97,6 @@ The Hamlet datasets are widely used in related literature \cite{2016-hamlet-sigm
 \end{figure}
 
 The first use case is a join between three tables. First the lineitem table is joined with the order returns data which, in turn, is joined with the orders table. This results in a table with $c_T=7$ columns and a row for each product sold in an order. In the TPCx-AI benchmark customer segmentation is done using KMeans clustering on this dataset. We instead test all four ML models discussed in this thesis as we are not necessarily interested in the utility of the final classifier, but we are interested in the training process. The second use case is a join between two tables. The transaction table is joined with the customer table, resulting in a table with $c_T=5$ columns which can be used to detect fraudulent transactions. We use the same models as in the first use case. The complete dataset schema detailing the involved tables and columns can be found in \autoref{fig:appendix-tpc-ai-schema}.
-
-
 
 \subsection{Hardware}
 \label{subsec:6-hardware}
@@ -140,7 +144,7 @@ The goal of this thesis is to create a cost estimator that can accurately predic
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
-    \caption[Evaluation of performance on new scenarios]{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the validation set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the validation set as on the training set, when measured by $\frac{\text{time saved}}{\text{max. possible time saved}}$.}
+    \caption[Evaluation of performance on new scenarios]{Evaluation and comparison of cost model's relative performance on new scenarios. The y-axis shows the relative performance, defined as total time saved, with regard to the test set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the test set as on the training set, when measured by $\frac{\text{time saved}}{\text{max. possible time saved}}$.}
     \label{fig:6-generalization}
 \end{figure}
 
@@ -148,7 +152,16 @@ There are large differences between estimators regarding how well they generaliz
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
-\todo{Show the effect of including/excluding models on the performance of the cost estimators.}
+To verify whether our cost estimator is capable of generalizing to new model types, we perform an ablation study. We leave out one model type at a time and evaluate the performance of the cost estimator on the scenarios from the test set with just that model type.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\linewidth]{chapters/06_evaluation/figures/hybrid-ablation.pdf}
+    \caption[Results of ablation study]{Result of leave-one-out ablation study. The x-axis shows the relative performance of the cost estimator, defined as total time saved, with regard to the test set, for each group model.}
+    \label{fig:6-ablation}
+\end{figure}
+\autoref{fig:6-ablation} shows the results of this ablation study. The x-axis shows the relative performance compared to a perfect model. The results show that our hybrid model performs poorly for new model types. Although for Gaussian NMF the model still offers some utility, resulting in time savings, for the other models utilizing our cost estimator would result in large time losses, especially for KMeans and Linear Regression. From this we can conclude that our cost model fits specifically to the model types it was trained on. The linear algebra operators that are part of the training set offer some extra utility, as shown in \autoref{fig:5-xgboost-evaluation}, but this is not enough to make the cost estimator model independent.
+
+To resolve this limitation, we could update the feature engineering process to include more model-independent derived features. This would require a more in-depth analysis of the factorized ML framework and the models it supports. The other solution that is more reliable is including novel models in the training set as they get incorporated into the factorized ML framework.
 
 \subsection{Cost Estimator Comparison}
 \label{subsec:6-sota-comparison}
@@ -179,6 +192,6 @@ Despite these limitations, we believe that our work provides a valuable contribu
 \section{Conclusion}
 \label{sec:eval-conclusion}
 
-In this chapter, we have presented the evaluation of our hybrid cost estimator for factorized and materialized ML training. We have shown that our estimator is capable of accurately predicting the optimal choice between factorized and materialized training, and that it outperforms the SOTA in cost estimation.
+In this chapter, we have presented the evaluation of our hybrid cost estimator for factorized and materialized ML training. We have shown that our estimator is capable of accurately predicting the optimal choice between factorized and materialized training, and that it outperforms the SOTA in real-world scenarios. The estimator also generalizes well to settings involving new hardware and data characteristics, however, utility for predicting whether to factorize or materialize for scenarios with novel ML models is limited.
 
 In the next chapter, we will discuss the future work and potential improvements that can be made to our cost estimator.
