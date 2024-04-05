@@ -24,7 +24,7 @@ However, while joining datasets to a single table is necessary for ML, it can in
 Factorized Machine Learning aims to alleviate problems one to three by “learning over joins” \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
 
 \subsection{Schema Mapping}
-Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way of specifying how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
+Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
 
 The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are formulas in first-order logic form that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples from the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
     \intertext{Given source datasets, with abbreviated column names:}
@@ -55,7 +55,7 @@ As Machine Learning Algorithms can be expressed in Linear Algebra (LA) we need t
 The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent how the columns and rows from each source table $S_k$ map to the Target table $T$.
 
 \subsubsection{Mapping Matrix}
-The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how source columns map to target columns. A value of 1 in this matrix denotes that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
+The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how source columns map to target columns. A value of 1 in this matrix indicates that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
 
 \begin{definition}[\textit{Mapping matrix} \cite{amalur}]
     Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
@@ -71,8 +71,7 @@ Note that in the case that there is no column overlap between source tables this
 
 
 \subsubsection{Indicator Matrix}
-% TODO intro
-Now that we have defined how to map the columns from source tables to target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
+Now that we have defined how to map the columns from the source tables to the target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
 
 \begin{definition}[\textit{Indicator matrix} \cite{morpheus}]
     Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape $r_T \times r_{S_k}$, where
@@ -88,7 +87,7 @@ Now that we have defined how to map the columns from source tables to target tab
 
 
 \subsubsection{Materialization}
-Using the normalized matrix, we can now \textbf{materialize} the join to get the Target matrix $T$:
+Using the normalized matrix, we can now \textbf{materialize} the join to obtain the target matrix $T$:
 
 \begin{definition}[\textit{Materializing the Normalized Matrix to obtain Target matrix $T$}]
     \begin{itemize}
@@ -124,7 +123,7 @@ The materialization case when there is no column overlap is a horizontal concate
 
 \subsubsection{Running Example: Normalized Matrix}
 \label{subsubsec:2-fac-ml-example}
-To make the translation to how the normalized matrix is used in ML algorithms we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join. For completeness, we show the calculations with the Mapping matrices $M_k$ included, but as highlighted before this is not needed due to this scenario having no column overlap. However, it is insightful to show as it gives an idea of how this process looks when there is column overlap.
+To translate the normalized matrix to how it is used in ML algorithms, we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join. For completeness, we show the calculations with the Mapping matrices $M_k$ included, but as highlighted before, this is not needed due to this scenario having no column overlap. However, it is insightful to show as it gives an idea of how this process looks when there is column overlap.
 \begin{alignat*}{6}
     \intertext{
         These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
@@ -292,19 +291,19 @@ This group of operators all perform an operation on every element of a matrix, i
     f(T)        & \rightarrow [f(S), I, M]
 \end{alignat*}
 
-These operations all return a normalized matrix, and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then for any downstream operators the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
+These operations all return a normalized matrix, and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
 \begin{alignat*}{2}
     f(T^T) & \rightarrow [f(S), I, M]^T
 \end{alignat*}
 
 \subsubsection{Aggregation}
-The supported aggregation operators are row-wise and column-wise summation, respectively abbreviated to rowSums and colSums. For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant this operation produces a single (column) vector of size $r_T \times 1$. For the transposed case it is equal to a column summation. These rewrite rules are:
+The supported aggregation operators are row-wise and column-wise summation, respectively, abbreviated to rowSums and colSums. For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant this operation produces a single (column) vector of size $r_T \times 1$. For the transposed case, it is equal to a column summation. These rewrite rules are:
 \begin{alignat*}{2}
     \text{rowSums}(T)   & \rightarrow \sum_1^k I_k \text{rowSums}(S_k) \\
     \text{rowSums}(T^T) & \rightarrow \text{colSums}(T)
 \end{alignat*}
 
-Summing column wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column=wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
+Summing column wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column-wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
 \begin{alignat*}{2}
     \text{colSums}(T)   & \rightarrow \sum_1^k \text{colSums}(I_k) S_k M_k^T \\
     \text{colSums}(T^T) & \rightarrow \text{rowSums}(T)
