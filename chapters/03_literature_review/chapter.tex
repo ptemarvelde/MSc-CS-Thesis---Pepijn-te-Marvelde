@@ -61,15 +61,15 @@ MorpheusFI \cite{MorpheusFI} analyses the performance trade-offs and crossovers 
             \item[$q$]Number of base tables with sparsity $ < 5\% $
         \item[$p$] Number of base tables
         \item[$e_k$] Sparsity of $R_k$
-        \item[$n_S$] Number of samples in $S$
-        \item[$n_k$] Number of rows in $R_k$
+        \item[$r_{S_1}$] Number of samples in $S_1$
+        \item[$r_k$] Number of rows in $R_k$
     \end{itemize}
 
     \begin{align*}
         \begin{split}
-            Optimize_{MorpheusFI}(q, p, e, n_S, n) =
+            Optimize_{MorpheusFI}(q, p, e, r_{S_1}, r) =
             \begin{cases}
-                Factorize   & \parbox[t]{.18\linewidth}{$q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall i \in [1,q], e_k \frac{n_S}{n_k} > 1)$} \\
+                Factorize   & \parbox[t]{.18\linewidth}{$q < \lfloor \frac{p}{2} \rfloor \vee ( q \geq \lfloor \frac{p}{2} \rfloor \wedge \forall k \in [1,q], e_k \frac{r_{S_1}}{r_k} > 1)$} \\
                 Materialize & \text{otherwise}
             \end{cases}
         \end{split}

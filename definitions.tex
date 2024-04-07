@@ -42,17 +42,16 @@
 
     % \addlinespace % Gap to separate the Roman symbols from the Greek
 
-    $\rho$       & Feature ratio ($\frac{n_S}{\sum_{k=1}^p n_k} $)\\
+    $\rho$       & Feature ratio ($\frac{c_{S_1}}{\sum_{k=2}^n c_k} $)\\
+    $\tau$       & Tuple ratio ($\frac{\sum_{k=2}^n c_k}{c_{S_1}}$)                                             &\\
     $\sigma$     & Selectivity                                              &\\
-    $\tau$       & Tuple ratio ($\frac{\sum_{k=1}^p d_k}{d_S}$)                                             &\\
-    $c_t$     & Number of columns in table $t$               &\\
-    $d_t$ & Number of columns (features) in table $t$                &\\
+    $r_t$     & Number of rows (samples/tuples) in table $t$                  &\\
+    $c_t$     & Number of columns (features) in table $t$               &\\
     $e_t$ & Sparsity (fraction of $0$ values) of table $t$                                   &\\
-    $j_t$        & Join type of table $t$                                           &\\
-    $n_t$ & Number of rows (samples/tuples) in table $t$            &\\
-    $p$          & Number of base tables                                    &\\
-    $R_k$        & Attribute table $i$                                      &\\
-    $r_t$     & Number of rows in table $t$                  &\\
-    $S$          & Entity table                                             &\\
+    $j_t$        & Join type $t$                                           &\\
+    $n$          & Number of base tables                                    &\\
     $T$            & Target table, result of joining tables (materialization) &\\
+    $S_k$          & Source matrix $k$                                            &\\
+    $I_k$& Indicator matrix $k$ & \\
+    $M_k$ &Mapping matrix $k$ &\\
 \end{symbols}

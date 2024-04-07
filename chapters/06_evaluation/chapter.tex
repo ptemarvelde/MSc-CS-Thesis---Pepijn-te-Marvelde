@@ -118,15 +118,6 @@ To ensure reliable training data all runtime experiments were run with a repetit
 
 As the possible set of data, model, and hardware characteristics is extremely large, we need to be confident in the ability of our estimator to make accurate predictions for unseen scenarios. To ensure this we use a very strict train-validate-test split. 70\% of the samples from the synthetic datasets are used in the training set. The remaining 30\% is used as a validation set. The real-world datasets are used solely as a test set. As they are not used in the training of the cost estimators they should give an accurate view of the performance in unseen scenarios, whether this is actually the case is shown in \autoref{subsec:6-generalizability}. To guarantee the same robustness in the hardware dimension we use a similar approach, completely keeping the samples of \texttt{GPU-T-5} separate for testing. For the last dimension, the model characteristics, we carry out an ablation study (see \autoref{subsubsec:6-ablation}) to see the effect of leaving out different models on the performance of the cost estimators.
 
-
-% \begin{figure}[ht]
-%   \centering
-%   \includegraphics[width=0.8\linewidth]{chapters/06_evaluation/figures/experiment-pipeline.pdf}
-%   \caption{\todo{update} Overview of the planned experiments: combinations of datasets and machines we run the experiments
-%     on. }
-%   \label{fig:enter-label}
-% \end{figure}
-
 \section{Cost Model Performance and Comparative Analysis}
 \label{sec:eval-model-evaluation}
 

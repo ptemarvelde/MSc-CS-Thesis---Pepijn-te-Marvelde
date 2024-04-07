@@ -112,7 +112,7 @@ The materialization case when there is no column overlap is a horizontal concate
     \State $rows_k \gets I_k S_k$ \Comment{Map the source table rows to the target table}
     \State $T_k \gets rows_k M^T_k$ \Comment{Map the source table columns to the target table}
     \EndFor
-    \State $T \gets \sum_{k=1}^{n-1} T_k$ \Comment{Sum the results}
+    \State $T \gets \sum_{k=1}^{n} T_k$ \Comment{Sum the results}
 \end{algorithmic}
 
 \subsubsection{Running Example: Normalized Matrix}
@@ -259,7 +259,7 @@ To translate the normalized matrix to how it is used in ML algorithms, we first 
                                      0 & \cdots & 0 & 0                                              \\
                                      0 & \cdots & 0 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 \\
                                  \end{bNiceMatrix}
-    T  = \sum_{k=0}^{2} I_k S_k M^T_k =  \begin{bNiceMatrix}[first-row,last-col]
+    T  = \sum_{k=1}^{3} I_k S_k M^T_k =  \begin{bNiceMatrix}[first-row,last-col]
                                              0 & 1  & 2    & 3                                           & 4  & 5  & 6                                                  \\
                                              \Block[fill=red!15,rounded-corners]{4-3}{}
                                              1 & 11 & 2024 & \Block[fill=blue!15,rounded-corners]{4-3}{}
@@ -336,7 +336,7 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
                15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
            \end{bNiceMatrix}                                             \\
     \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
-    X T & = \sum_{k=0}^{n-1} X I_k S_k M^T_k
+    X T & = \sum_{k=1}^{n} X I_k S_k M^T_k
     \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the sub calculations for $T_{1,2}$.}
         & = X T_0 + X T_1 + X T_2                                                           \\
         & = \begin{bNiceMatrix}
