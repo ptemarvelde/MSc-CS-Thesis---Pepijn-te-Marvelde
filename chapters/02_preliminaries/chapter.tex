@@ -3,35 +3,35 @@
 \chapter{Preliminaries: Factorized Machine Learning}
 \label{chapter:preliminary}
 
-This chapter details the preliminary theoretical concepts for this thesis. First, we explain \hyperref[sec:2-data-integration]{Data Integration}: the process of combining data from different sources, which is crucial to any ML workflow. With these concepts in mind, we explore \hyperref[sec:2-factorized-ml]{Factorized Machine Learning} in detail. Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
+This chapter details the preliminary theoretical concepts for this thesis. First, we explain \hyperref[sec:2-data-integration]{Data Integration}: the process of combining data from different sources, which is crucial for any ML workflow. With these concepts in mind, we explore \hyperref[sec:2-factorized-ml]{Factorized Machine Learning} in detail. Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
 
 
 \section{Data Integration}
 \label{sec:2-data-integration}
 In order to comprehend the significance and complexities of Factorized Machine Learning (ML), it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
 
-Nevertheless, when merging datasets into a unified table is essential for machine learning, it may lead to the following significant challenges \cite{data-management-in-ML-kumar-2017}.
+However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges \cite{data-management-in-ML-kumar-2017}.
 
 \begin{enumerate}
     \item \textbf{Extra storage}\\ The joined dataset will take extra space to store.
-    \item \textbf{Computational redundancy} \\ Joining tables can introduce duplication of values in the materialized data (shown in orange in \autoref{fig:running-example-fac-vs-mat}). These values are included in any computations done during the training of an ML model in this dataset, resulting in duplicate computations.
+    \item \textbf{Computational redundancy} \\ Joining tables can introduce duplication of values in the materialized data (shown in orange in \autoref{fig:running-example-fac-vs-mat}). These values are included in any computations made during the training of an ML model in this dataset, resulting in duplicate computations.
     \item \textbf{Join time} \\For complex scenarios, joining datasets can take a significant amount of time.
     \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-Factorized Machine Learning seeks to address issues one through three through the concept of "learning over joins" \cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
+Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins'' \cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
 
 \subsection{Schema Mapping}
-Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
+Schema mapping is an integral step in the Data Integration process and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
 
-The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are formulas in first-order logic form that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples from the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
+The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are first-order logic formulas that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples of the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
     \intertext{Given source datasets, with abbreviated column names:}
      & o=order\_id, c=customer\_id, d=date,                                                                                                                      \\
      & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity                                                                                              \\
      & S_1(o, c, d)                                                                                                                                              \\
      & S_2(o, p_{id} , q,  p)                                                                                                                                    \\
      & S_3(o, p_{id}, rq)                                                                                                                                      & \\
-    \intertext{the mapping to target table $T$ can be specified as follows. First we left join $S_2$ with $S_3$:}
+    \intertext{the mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$:}
      & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
     \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
                                                                                                                       & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
@@ -273,11 +273,11 @@ To translate the normalized matrix to how it is used in ML algorithms, we first 
 
 
 \subsection{Factorized Linear Algebra}
-In the previous section we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how (most of) these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
+In the previous section, we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how (most of) these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
 
 
 \subsubsection{Element-wise Scalar Operations}
-This group of operators all perform an operation on every element of a matrix, independently of one another. The arithmetic operations are: $+$, $-$, $\times$, $\div$ and $ ^\wedge $ (these operators are denoted by $\oslash$). This can be seen as a scalar function $f$ applied to each element of a matrix $T$. The rewrite rule therefore is very simple for these arithmetic operators, as well as for any other scalar function (e.g., $log$, $round$) $f$:
+This group of operators perform an operation on every element of a matrix independently of each other. The arithmetic operations are: $+$, $-$, $\times$, $\div$ and $ ^\wedge $ (these operators are denoted by $\oslash$). This can be seen as a scalar function $f$ applied to each element of a matrix $T$. The rewrite rule therefore is very simple for these arithmetic operators, as well as for any other scalar function (e.g., $log$, $round$) $f$:
 \begin{alignat*}{2}
     x \oslash T & \rightarrow [x \oslash S, I, M] \\
     T \oslash x & \rightarrow [S \oslash x, I, M]
@@ -285,35 +285,35 @@ This group of operators all perform an operation on every element of a matrix, i
     f(T)        & \rightarrow [f(S), I, M]
 \end{alignat*}
 
-These operations all return a normalized matrix, and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
+These operations all return a normalized matrix and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
 \begin{alignat*}{2}
     f(T^T) & \rightarrow [f(S), I, M]^T
 \end{alignat*}
 
 \subsubsection{Aggregation}
-The supported aggregation operators are row-wise and column-wise summation, respectively, abbreviated to rowSums and colSums. For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant this operation produces a single (column) vector of size $r_T \times 1$. For the transposed case, it is equal to a column summation. These rewrite rules are:
+The supported aggregation operators are row-wise and column-wise summation, respectively abbreviated to rowSums and colSums. For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant. This operation produces a single (column) vector of size $r_T \times 1$. For the transposed case, it is equal to a column summation. These rewrite rules are:
 \begin{alignat*}{2}
-    \text{rowSums}(T)   & \rightarrow \sum_1^k I_k \text{rowSums}(S_k) \\
+    \text{rowSums}(T)   & \rightarrow \sum_{k=1}^n I_k \text{rowSums}(S_k) \\
     \text{rowSums}(T^T) & \rightarrow \text{colSums}(T)
 \end{alignat*}
 
-Summing column wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column-wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
+Summing column-wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column-wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
 \begin{alignat*}{2}
-    \text{colSums}(T)   & \rightarrow \sum_1^k \text{colSums}(I_k) S_k M_k^T \\
+    \text{colSums}(T)   & \rightarrow \sum_{k=1}^n \text{colSums}(I_k) S_k M_k^T \\
     \text{colSums}(T^T) & \rightarrow \text{rowSums}(T)
 \end{alignat*}
 As these operations do not create normalized matrices, and in fact materialize (part of) the join the benefit of factorized computation is smaller.
 
 \subsubsection{Multiplication}
-As matrix multiplication is not commutative there are different rewrite rules for left- and right-matrix multiplication. The rewrite rule for left matrix multiplication (LMM) with another matrix $X$ is:
+As matrix multiplication is not commutative, there are different rewrite rules for left- and right-matrix multiplication. The rewrite rule for left matrix multiplication (LMM) with another matrix $X$ is:
 \begin{alignat*}{2}
-    TX   & \rightarrow \sum_1^k I_k S_k M_k^T X \\
+    TX   & \rightarrow \sum_{k=1}^n I_k S_k M_k^T X \\
     T^TX & \rightarrow (X^TT)^T
 \end{alignat*}
 
 For right matrix multiplication (RMM) the rule is the same, we still essentially materialize the join, but with $X$ on the left-hand side:
 \begin{alignat*}{2}
-    XT   & \rightarrow \sum_1^k X I_k S_k M_k^T \\
+    XT   & \rightarrow \sum_{k=1}^n X I_k S_k M_k^T \\
     XT^T & \rightarrow (TX^T)^T
 \end{alignat*}
 
@@ -337,7 +337,7 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
            \end{bNiceMatrix}                                             \\
     \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
     X T & = \sum_{k=1}^{n} X I_k S_k M^T_k
-    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the sub calculations for $T_{1,2}$.}
+    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the subcalculations for $T_{1,2}$.}
         & = X T_0 + X T_1 + X T_2                                                           \\
         & = \begin{bNiceMatrix}
                 1 & 1 & 2 & 3 \\
@@ -372,7 +372,7 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 \endgroup
 
 \subsection{Machine Learning Models}
-We use the same ML models as \cite{morpheus} and \cite{schijndel_cost_estimation}. The models are: Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. As we have shown the rewrite rules for the used Linear Algebra operators, we can now show how these models can be rewritten for the Normalized matrix. This allows us to perform these ML models without materializing the join between the source tables. The algorithms are shown in the following sections, and the used factorized operators are \red{highlighted in red}. In the algorithms we use the following notation: $X$ is the matrix of independent variables, in our case the normalized matrix. $y$ is the dependent variable, and $w$ is the weight vector. $\gamma$ is the learning rate, and $n$ is the number of iterations.
+We use the same machine learning models as Morpheus \cite{morpheus} and \cite{schijndel_cost_estimation}. These models consist of Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. Having demonstrated the transformation rules for the relevant Linear Algebra operations, we are now able to illustrate how these models can be adapted for the Normalized matrix. This adaptation enables us to execute these machine learning models without materializing the join between the source tables. The algorithms are detailed in the next sections, with the factorized operators used highlighted in red. Within the algorithms, we use the following conventions: $X$ represents the matrix of independent variables, which in our scenario corresponds to the normalized matrix. The dependent variable is denoted as $y$, the weight vector as $w$, the learning rate as $\gamma$, and $n$ represents the number of iterations.
 
 \subsubsection{Linear Regression}
 \begin{algorithm}[ht!]
@@ -385,7 +385,7 @@ We use the same ML models as \cite{morpheus} and \cite{schijndel_cost_estimation
         \EndFor
     \end{algorithmic}
 \end{algorithm}
-Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit for finding linear relationships between independent variables and a dependent variable. The used implementation utilizes gradient descent to gradually approach the optimal solution. As seen in the algorithm, the used LA operators on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
+Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit to find linear relationships between independent variables and a dependent variable. The algorithm utilises gradient descent to iteratively converge towards the best solution. The LA operators performed on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
 
 \subsubsection{Logistic Regression}
 Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linear Regression, but instead of predicting a continuous value, it predicts a binary value. The rewrite rule for Logistic Regression uses the same operators as Linear Regression: Transpose and Left Matrix Multiplication.
@@ -402,7 +402,7 @@ Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linea
 \end{algorithm}
 
 \subsubsection{K-means Clustering}
-The previously mentioned regression algorithms are supervised, i.e., they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm, which groups data points into, a predefined number of, clusters based on their similarity. The operators used to compute the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
+The regression algorithms discussed above are supervised, that is, they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm that groups data points into a predefined number of clusters based on their similarity. The operators used to calculate the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation, and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
 
 \begin{algorithm}[ht]
     \caption[K-Means Clustering]{K-Means Clustering
@@ -423,7 +423,7 @@ The previously mentioned regression algorithms are supervised, i.e., they predic
 \end{algorithm}
 
 \subsubsection{Gaussian Non-negative Matrix Factorization}
-Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two, smaller, non-negative matrices. It is used for feature extraction from data, and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
+Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two smaller nonnegative matrices. It is used for feature extraction from data and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
 
 \begin{algorithm}[ht]
     \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
@@ -442,7 +442,7 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 
 \subsection{Overview}
 \label{subsec:factorized-ml-summary}
-In this section we have shown the rewrite rules for the Normalized matrix for commonly used Linear Algebra operators, and how these are used to train Machine Learning models without materializing the join between the source tables. \autoref{tab:factorized-ml-operators-overview} shows an overview of the discussed operators, the last column summarizes the used operators for each ML model. This already shows a reason why a good cost model is necessary for factorized ML, as the different models use a diverse set of operators they benefit in, different ways from factorized computation.
+In this section we have presented the rewrite rules for the Normalized matrix, for commonly used Linear Algebra operators, and how these are used in the training of Machine Learning models without the need to explicitly compute the join between the source tables. \autoref{tab:factorized-ml-operators-overview}  provides a summary of the operators discussed, with the final column describing the specific operators employed for each ML model. This underscores the importance of a robust cost model in factorized ML, since various models leverage a range of operators in distinct ways when benefiting from factorized computation.
 
 \begin{table}[ht]
     \small
@@ -454,9 +454,7 @@ In this section we have shown the rewrite rules for the Normalized matrix for co
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
-Graphics Processing Units (GPUs) have become the processing unit of choice in the field of Machine Learning, as they offer substantial advantages over Central Processing Units (CPUs) for ML. As CPUs are designed for general-purpose needs, this is to be expected. Whereas CPUs excel in sequential tasks like running an operating system, GPUs are designed for parallel tasks. This choice makes them excellent at performing the same operation on many pieces of data at once, exactly what is needed for the prevalent linear algebra operations in ML.
-
-Because GPUs have the upper hand in ML tasks this, thesis focuses on the trade-off between materialization and factorization on GPUs. In this section we will lay out the necessary background information on why GPUs are so well-suited for ML tasks (\autoref{subsec:gpu-architecture}), and how performance of a given task on a GPU can be estimated in (\autoref{subsec:gpu-performance}).
+Graphics Processing Units (GPUs) have emerged as the preferred processing units in the Machine Learning domain due to their significant advantages over Central Processing Units (CPUs). As CPUs are designed for diverse general-purpose applications, this is not surprising. Whereas CPUs excel in executing sequential tasks such as running an operating system, GPUs are optimised for parallel tasks. This specialisation enables them to efficiently carry out identical operations on multiple pieces of data simultaneously, exactly what is needed for the prevalent linear algebra operations in ML.
 
 \subsection{Architecture}
 \label{subsec:gpu-architecture}
@@ -466,20 +464,20 @@ Because GPUs have the upper hand in ML tasks this, thesis focuses on the trade-o
     \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}.}
     \label{fig:cpu-vs-gpu}
 \end{figure}
-This section details the architecture of a GPU, focussing on what makes it so efficient for Linear Algebra operations. \autoref{fig:cpu-vs-gpu} shows a schematic representation of the difference in architecture between a CPU and a GPU and will be used as a reference for this section.
+This section elaborates on the architecture of a GPU, emphasizing its effectiveness in performing Linear Algebra tasks. \autoref{fig:cpu-vs-gpu} illustrates the architectural differences between a CPU and a GPU and will serve as a point of reference throughout this section.
 
-The heart of the GPU is the Streaming Multiprocessor (SM), which is responsible for executing thousands of parallel threads. Each SM contains several CUDA cores (marked in blue), similar to the cores in a CPU, which perform arithmetic operations. These cores are designed to handle multiple operations simultaneously, making them highly efficient for the matrix and vector computations that are fundamental to Machine Learning.
+The heart of the GPU is the Streaming Multiprocessor (SM), which is responsible for executing thousands of parallel threads. Each SM comprises multiple CUDA cores (highlighted in blue), resembling CPU cores, that carry out arithmetic operations. These cores are optimised to manage multiple operations concurrently, enhancing their effectiveness for the matrix and vector calculations crucial in Machine Learning.
 
-Data and code move to the SMs through multiple layers of memory. Data is loaded from the host into the GPU's DRAM, from where it moves to the SM through the L2 cache. This facilitates quick data exchange and reduces latency. Threads are organized into blocks, which are then scheduled on SMs. This organization allows for efficient management of resources and execution of threads in parallel. Each SM gets assigned a block of threads, which it then schedules for execution. The cores then execute these threads concurrently resulting in a high degree of parallelism. This processing of multiple data points at a time is called Single Instruction, Multiple Data (SIMD) architecture, which is particularly advantageous for Machine Learning tasks, where the same operation is often applied across many data points. This difference in parallelism is visualized in the bottom part of \autoref{fig:cpu-vs-gpu}. Where a CPU can compute a scalar operation in a single clock cycle, a GPU can perform operations on vectors in parallel.
+Data and code are transferred to the streaming multiprocessors (SMs) by passing through various memory layers. Initially, data is fetched from the host and stored in the GPU's DRAM, after which it is moved to the SM via the L2 cache. This facilitates quick data exchange and minimises latency. Threads are grouped into blocks and then allocated to SMs for scheduling. This organisation enables efficient resource management and parallel thread execution. Each SM is responsible for managing a block of threads, which are then scheduled for execution. The cores within the SM execute these threads concurrently, resulting in a high degree of parallelism. This simultaneous processing of multiple data points is known as Single Instruction, Multiple Data (SIMD) architecture, which proves to be advantageous in Machine Learning applications, where identical operations are applied across numerous data points. While a CPU can handle a scalar operation within a single clock cycle, a GPU can perform operations on vectors concurrently. This difference in parallelism is illustrated in the lower section of \autoref{fig:cpu-vs-gpu}. 
 
 \subsection{Estimating GPU Performance}
 \label{subsec:gpu-performance}
-Following the architecture overview, it is essential to understand the performance dynamics of a GPU when applied to Machine Learning tasks, especially the involved Linear Algebra. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The following paragraphs draw insights from \cite{nvidia-gpu-performance:online}.
+Following the architecture overview, it is essential to grasp the performance dynamics of a GPU in the context of Machine Learning applications, specifically focusing on Linear Algebra operations.. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The subsequent passages provide valuable perspectives from \cite{nvidia-gpu-performance:online}.
 
-Arithmetic intensity is a measure of the number of math operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance limitations. A function's execution time on a GPU can be limited by memory bandwidth, math bandwidth, or latency. To conceptualize this, imagine a function that reads data, performs computations, and writes results. The time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap, with the total execution time being the maximum of the two: $ \max(T_{mem}, T_{math})$. Due to CPU's inherent sequential nature the total execution time will be much closer to the sum of $T_{mem} \text{ and } T_{math}$. This makes estimating runtime on CPUs easier than for GPUs, as there are some caveats to estimating $T_{mem}$ and $T_{math}$ on GPUs which we will discuss next.
+The arithmetic intensity refers to the ratio of mathematical operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance constraints. The time it takes for a function to execute on a GPU can be constrained by memory bandwidth, mathematical bandwidth, or latency. To illustrate this, imagine a function that reads the input data, performs calculations, and writes the output. The time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap, with the total execution time being the maximum of the two: $ \max(T_{mem}, T_{math})$. Given the inherently sequential nature of CPUs, the total execution time tends to closely approximate the sum of $T_{mem} \text{ and } T_{math}$. This characteristic makes predicting runtime on CPUs more straightforward compared to GPUs, as there are complexities involved in estimating $T_{mem}$ and $T_{math}$ on GPUs.
 
-When $ T_{math} $ exceeds $ T_{mem} $, a function is considered math-bound, indicating that the GPU's computational resources are the bottleneck. On the contrary, if $ T_{mem} $ is greater, it is memory-bound, meaning the memory bandwidth is the constraining factor. This relationship is expressed through the inequality $ \frac{\# ops}{BW{math}} > \frac{\# bytes}{BW{mem}} $, which can be rearranged to $ \frac{\# ops}{\# bytes} > \frac{BW{math}}{BW{mem}} $. Here, the left-hand side represents a function's arithmetic intensity, and the right side is the GPU's $ops:byte$ ratio, i.e., the number of Floating Point Operations (FLOPs) per byte accessed from memory.
+When the computational time $ T_{math} $ exceeds the memory access time $ T_{mem} $, a function is classified as math-bound, indicating that the GPU's computational capabilities are the limiting factor. In contrast, if $ T_{mem} $ is higher, it is memory-bound, which means that the memory bandwidth is the restricting element. This relationship is illustrated by the inequality $ \frac{\# ops}{BW_{math}} > \frac{\# bytes}{BW_{mem}} $, which can be rearranged as $ \frac{\# ops}{\# bytes} > \frac{BW_{math}}{BW_{mem}} $. Here, the left side denotes a function's arithmetic intensity, while the right side represents the GPU's $ops:byte$ ratio, i.e., the number of Floating Point Operations (FLOPs) per byte retrieved from memory.
 
-In practice, many Machine Learning operations, such as linear layers or activation functions, have low arithmetic intensities, often performing just a single operation for every two-byte element read from and written to memory2. This characteristic typically makes them memory-bound on GPUs. However, for operations with high arithmetic intensity, like large matrix multiplications, the GPU's math bandwidth becomes the limiting factor.
+In practice, many Machine Learning operations, such as linear layers or activation functions, often have low arithmetic intensities, sometimes executing only one operation for every two-byte element accessed from and stored in memory. This characteristic typically renders them memory-bound on GPUs. However, for operations with high arithmetic intensity, like large matrix multiplications, the GPU's mathematical bandwidth emerges as the constraining factor.
 
-To fully leverage a GPU's capabilities, it is crucial to ensure sufficient parallelism. This is achieved by launching a significant number of thread blocks, ideally several times higher than the number of SMs, to minimize the tail effect where only a few active thread blocks remain towards the end of a function's execution. By maintaining a high level of parallelism, GPUs can effectively hide instruction latency and maximize throughput, making them more well-suited for the parallel computations required in Machine Learning than CPUs.
+To fully leverage a GPU's capabilities, it is crucial to ensure sufficient parallelism. This is achieved by launching a significant number of thread blocks, ideally several times higher than the number of SMs, to minimise the tail effect where only a few active thread blocks remain towards the end of a function's execution. By maintaining a high level of parallelism, GPUs can effectively hide instruction latency and maximise throughput, rendering them better suited for the parallel processing demands of Machine Learning compared to CPUs.
