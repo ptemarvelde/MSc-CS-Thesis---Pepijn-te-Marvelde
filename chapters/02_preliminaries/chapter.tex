@@ -8,11 +8,9 @@ This chapter details the preliminary theoretical concepts for this thesis. First
 
 \section{Data Integration}
 \label{sec:2-data-integration}
-To grasp the value and intricacies of Factorized ML, one first needs to understand the field of Data Integration (DI). In the broadest definition, DI details relations between data(sets), allowing data from disparate sources to be consolidated into a single dataset. This is essential for ML use cases, as ML libraries (e.g., Keras\footnote{\url{https://keras.io/}}, TensorFlow\footnote{\url{https://www.tensorflow.org/}}) expect a single table as input. An example of such a DI scenario is shown in \autoref{fig:running-example-fac-vs-mat}.
+In order to comprehend the significance and complexities of Factorized Machine Learning (ML), it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
 
-% Paragraph on formalization?
-
-However, while joining datasets to a single table is necessary for ML, it can introduce major overheads \cite{data-management-in-ML-kumar-2017}:
+Nevertheless, when merging datasets into a unified table is essential for machine learning, it may lead to the following significant challenges \cite{data-management-in-ML-kumar-2017}.
 
 \begin{enumerate}
     \item \textbf{Extra storage}\\ The joined dataset will take extra space to store.
@@ -21,7 +19,7 @@ However, while joining datasets to a single table is necessary for ML, it can in
     \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-Factorized Machine Learning aims to alleviate problems one to three by “learning over joins” \cite{orion_learning_gen_lin_models}, that is, pushing the computations needed for an ML model down to the separate tables.
+Factorized Machine Learning seeks to address issues one through three through the concept of "learning over joins" \cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
 
 \subsection{Schema Mapping}
 Schema mapping is an integral step to the Data Integration process, and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
@@ -49,8 +47,7 @@ As stated previously in this thesis, Factorized ML is the process of training Ma
 
 \subsection{Normalized Matrix}
 \label{subsec:2-normalized-matrix}
-
-As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, .i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{ Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table \cite{amalur, morpheus}.
+As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, .i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table \cite{amalur, morpheus}.
 
 The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent how the columns and rows from each source table $S_k$ map to the Target table $T$.
 
@@ -67,7 +64,7 @@ The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ th
     \end{align*}
 \end{definition}
 
-Note that in the case that there is no column overlap between source tables this Mapping Matrix is redundant. This does affect how materialization works, as shown in \autoref{def:materialization}.
+Note that in the case that there is no column overlap between source tables this Mapping Matrix is redundant. This affects the materialization step, as shown in \autoref{def:materialization}.
 
 
 \subsubsection{Indicator Matrix}
@@ -82,9 +79,6 @@ Now that we have defined how to map the columns from the source tables to the ta
                    \end{cases}
     \end{align*}
 \end{definition}
-
-% \subsubsection{Redundancy Matrix}
-
 
 \subsubsection{Materialization}
 Using the normalized matrix, we can now \textbf{materialize} the join to obtain the target matrix $T$:
@@ -118,7 +112,7 @@ The materialization case when there is no column overlap is a horizontal concate
     \State $rows_k \gets I_k S_k$ \Comment{Map the source table rows to the target table}
     \State $T_k \gets rows_k M^T_k$ \Comment{Map the source table columns to the target table}
     \EndFor
-    \State $T \gets \sum_{k=0}^{n-1} T_k$ \Comment{Sum the results}
+    \State $T \gets \sum_{k=1}^{n-1} T_k$ \Comment{Sum the results}
 \end{algorithmic}
 
 \subsubsection{Running Example: Normalized Matrix}
