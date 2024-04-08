@@ -88,3 +88,4 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QBy conducting micro-benchmarks within a representative subrange of our independent variables, we discern how these variables influence the execution of computations on the GPU.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[Feature importances of the hybrid model]Feature importances of the Hybrid model, XGBoost (GPU) leg.\\E$"}
 {"rule":"THREE_NN","sentence":"^\\QWe have explored the cost estimation landscape for factorized machine learning, with a particular focus on the performance of GPUs compared to CPUs.\\E$"}
+{"rule":"OTHER_OTHERS","sentence":"^\\QInitially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types.\\E$"}
