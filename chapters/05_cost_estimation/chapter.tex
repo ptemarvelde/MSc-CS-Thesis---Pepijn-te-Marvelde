@@ -255,7 +255,7 @@ The final, most granular, ensemble is one that has a distinct regressor for each
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
-    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the validation set (synthetic data, only models). The plots show statistics of those scenarios where the estimator predicts factorization to be faster. The plot on the left shows $\sum \text{Time}_M - \sum \text{Time}_F$ to show total time saved across all scenarios. The right plots shows $\frac{\text{Time}_M}{\text{Time}_F}$ highlighting that conservative estimators can result in high performance ratio's with a low amount of time saved, for example STAT.7.}
+    \caption[Statistical Model Evaluation]{Evaluation of the statistical models on the validation set (synthetic data, only models). The plots show statistics of those scenarios where the estimator predicts factorization to be faster. The plot on the left shows $\sum \text{Time}_M - \sum \text{Time}_F$, the total time saved across positively predicted scenarios. The right plots shows $\frac{\text{Time}_M}{\text{Time}_F}$ highlighting that conservative estimators can result in high performance ratio's with a low amount of time saved, for example STAT.7.}
     \label{fig:5-statistical-model-evaluation}
 \end{figure}
 
