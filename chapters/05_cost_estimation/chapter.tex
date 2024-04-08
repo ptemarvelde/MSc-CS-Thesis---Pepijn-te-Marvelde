@@ -13,7 +13,7 @@ This section illustrates the need for precise cost estimation when deciding betw
 \subsection{Benefit of factorization}
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
+    \includegraphics[width=0.85\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
     \vspace*{-5mm}
     \caption[Performance ratio with factorization on real datasets]{Average Performance ratio of ML models for positive cases ($\text{Time}_M > \text{Time}_F$), split per tested real dataset and compute type. }
     \label{fig:5-real-perf-ratio}
@@ -356,15 +356,15 @@ The final aspect is performance, which was discussed in the previous section.
 To determine which characteristics are most influential in the factorization/materialization (F/M) trade-off, we examine the final hybrid model, with a particular focus on the gain per feature from the GPU leg of the model.
 
 We present the gain of the ten most influential features of the XGBoost model in \autoref{fig:5-gpu-feature-importance}. The gain quantifies the impact of a feature based on its contribution to reducing training error in the underlying decision trees. It can be interpreted as a measure of the influence a feature exerts on the model's prediction, which is insightful, as we are interested in identifying which features most significantly impact the F/M trade-off.
-
-From the figure, we can deduce that the model type is the most impactful. This aligns with the results shown in \autoref{sec:5-motivation}, where we demonstrate that the choice of model significantly influences the F/M trade-off. Due to the operators used in each model, the speedup varies considerably between models, even when applied to the same dataset. For instance, factorized Gaussian training is beneficial twice as often compared to factorized KMeans. Other important features include data characteristics such as the number of rows in the tables ($r_{S_1}, r_T$), features related to the number of zeros in a table ($e_T, nnz(S)$), or features related to the differences between the materialized and factorized case ($\rho, \frac{FLOP_M}{FLOP_F}$). We observe that although the relationship between complexity and speedup was not as clear in \autoref{sec:5-motivation}, features related to the number of operations are important, even when considering only GPUs. This is evident from the relatively high gain of the materialized and scalar complexity. This is logical, as scalar operations have high speed-ups compared to other operators.
-
-From these gain values we can conclude that, in our experiments, differences between GPUs are less impactful than differences in data characteristics and models. The GPU characteristic with the highest gain is a categorical feature for the GPU architecture, with a gain of $7$, followed by the L1 cache size and the number of Streaming Multiprocessors with gain values of $2.5$ and $1.4$, respectively.
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgboost-feat-importance.pdf}
     \caption[Feature importances of the hybrid model]{Feature importances of the Hybrid model, XGBoost (GPU) leg.}
     \label{fig:5-gpu-feature-importance}
 \end{figure}
+
+From the figure, we can deduce that the model type is the most impactful. This aligns with the results shown in \autoref{sec:5-motivation}, where we demonstrate that the choice of model significantly influences the F/M trade-off. Due to the operators used in each model, the speedup varies considerably between models, even when applied to the same dataset. For instance, factorized Gaussian training is beneficial twice as often compared to factorized KMeans. Other important features include data characteristics such as the number of rows in the tables ($r_{S_1}, r_T$), features related to the number of zeros in a table ($e_T, nnz(S)$), or features related to the differences between the materialized and factorized case ($\rho, \frac{FLOP_M}{FLOP_F}$). We observe that although the relationship between complexity and speedup was not as clear in \autoref{sec:5-motivation}, features related to the number of operations are important, even when considering only GPUs. This is evident from the relatively high gain of the materialized and scalar complexity. This is logical, as scalar operations have high speed-ups compared to other operators.
+
+From these gain values we can conclude that, in our experiments, differences between GPUs are less impactful than differences in data characteristics and models. The GPU characteristic with the highest gain is a categorical feature for the GPU architecture, with a gain of $7$, followed by the L1 cache size and the number of Streaming Multiprocessors with gain values of $2.5$ and $1.4$, respectively.
+
 
