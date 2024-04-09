@@ -182,13 +182,15 @@ To evaluate the performance of the cost models, we employ a set of metrics that 
 
 Consequently, we introduce a new metric, the time saved, which is the sum of the time saved for all positively predicted scenarios. This metric provides a more detailed view of the cost model's utility in a real-world setting. Rather than averaging the performance. The time saved is the difference between the sum of materialized times and the sum of factorized times, for those cases where the cost models predict factorization to be faster. The cases where the cost model predicts materialization to be faster are less relevant, as such a case will not result in a time loss compared to the normal, materialized execution. However, because we want to reason about whether the models have sufficient performance, we also include the maximum possible time saved as a benchmark.
 
+\todo{Decrease font size}
 \begin{alignat*}{2}
-    \text{Time Saved}           & = \sum \text{Time}_M - \sum \text{Time}_F \text{ where F is predicted to be faster}       \\
-    \text{Max. Time Saved}      & = \sum \text{Time}_M - \sum \text{Time}_F  \text{ where F is faster}                      \\
-    \text{Weighted Perf. Ratio} & = \frac{\sum \text{Time}_M}{\sum \text{Time}_F} \text{ where F is predicted to be faster}
+    \text{Time Saved}           & = \footnotesize{\sum \text{Time}_M - \sum \text{Time}_F \text{ where Factorization is predicted to be faster}}       \\
+    \text{Max. Time Saved}      & = \footnotesize{\sum \text{Time}_M - \sum \text{Time}_F  \text{ where F is faster}}                      \\
+    \text{Weighted Perf. Ratio} & = \frac{\sum \text{Time}_M}{\sum \text{Time}_F} \text{ where F is predicted to be faster}\\
+    \text{Utility } U & = \frac{\text{Time Saved}}{\text{Max. Time Saved}}
 \end{alignat*}
 
-We also slightly alter the performance ratio used. As scenarios were the time savings are larger are more important, we weigh the performance ratio by the time saved. This gives a more nuanced view of the relative performance gains.
+We also slightly alter the performance ratio used. As scenarios were the time savings are larger are more important, we weigh the performance ratio by the time saved. This gives a more nuanced view of the relative performance gains. The last metric, which is used to verify generalizability in \autoref{subsec:6-generalizability}, is the utility of an estimator: the fraction of time saved when using this estimator, relative to the maximum time saved.
 
 \subsection{Analytical}
 \label{subsec:5-analytical}

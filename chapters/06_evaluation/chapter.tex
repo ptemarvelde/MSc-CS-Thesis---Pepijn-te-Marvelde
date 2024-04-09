@@ -121,7 +121,7 @@ In this section we answer
     \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
 \end{itemize}
 
-We first demonstrate the ability of the cost estimator to generalize effectively to novel situations. Next, we illustrate the comparison of the cost estimators with the state-of-the-art in cost estimation for Factorized Machine Learning training.
+We first illustrate the comparison of the cost estimators with the state-of-the-art in cost estimation for Factorized Machine Learning training. Next, we demonstrate the ability of the best performing cost estimators to generalize effectively to novel scenarios.
 
 \subsection{Exploring Generalizability}
 \label{subsec:6-generalizability}
@@ -130,7 +130,7 @@ The aim of this thesis is to create a cost estimator capable of reliably predict
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
-    \caption[Evaluation of utility on new scenarios]{Evaluation and comparison of cost model's relative utility on new scenarios. The x-axis shows the relative utility, defined as total time saved, with regard to the test set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the test set as on the training set. In short, utility is defined as $U = \frac{\text{estimator time saved}}{\text{true time saved}}$. Relative utility shown here is the utility on the validation set (synthetic data) divided by utility on the test set (real-world data): $\frac{U_{\text{val}}}{U_{\text{test}}} \times 100$}
+    \caption[Evaluation of utility on new scenarios]{Evaluation and comparison of cost model's relative utility on new scenarios. The x-axis shows the relative utility, defined as total time saved, with regard to the test set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the test set as on the training set. In short, utility is defined as $U = \frac{\text{time saved}}{\text{true time saved}}$. Relative utility shown here is the utility on the validation set (synthetic data) divided by utility on the test set (real-world data): $\frac{U_{\text{val}}}{U_{\text{test}}} \times 100$}
     \label{fig:6-generalization}
 \end{figure}
 
