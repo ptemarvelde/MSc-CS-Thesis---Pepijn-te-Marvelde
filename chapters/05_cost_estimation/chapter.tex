@@ -169,14 +169,15 @@ A subset of these features is presented in \autoref{tab:5-feature-subset}. The c
     \label{tab:5-feature-subset}
 \end{table}
 
-\todo{Section defining metrics used? Also elaborate on the choice of modelling this as a regression problem vs a binary classification.}
-
 \section{Cost Models}
 \label{sec:5-cost-models}
 This section details the process of developing four different types of cost estimators, each capable of choosing when to favor factorization over materialization. These estimators are constructed using the enriched dataset, as described in the preceding section. We start with an introduction of the metrics used to evaluate cost model performance (\autoref{sec:5-metrics}), followed by the estimators themselves. The first estimator, designed to be as interpretable as possible, is an analytical estimator (\autoref{subsec:5-analytical}). Next, we fit a range of linear regressors to the dataset to create a statistical estimator (\autoref{subsec:5-statistical}). The third estimator is a tree-boosting model, employed to demonstrate the performance of a more intricate model (\autoref{subsec:5-xgboost}). The final estimator is a hybrid model, which merges the statistical and tree-boosting estimators to yield a more precise model.
 
-\subsection{Assessing Model Performance}
+\subsection{Problem Modelling and Assessing Performance}
 \label{sec:5-metrics}
+The problem of choosing between factorization and materialization is a binary classification problem, however scenarios that result in more time saved during training are more important to predict correctly. Therefore we use regression models instead of classification models. This allows setting the decision boundary ourselves giving more control towards favoring scenarios with higher performance gains.
+
+\section{Metrics to Assess Cost Model Performance}
 To evaluate the performance of the cost models, we employ a set of metrics that provide insight into the models' accuracy and efficiency. Previous work \cite{schijndel_cost_estimation,orion_learning_gen_lin_models,MorpheusFI} use accuracy and performance ratio values to reason about the effectiveness of their cost estimation techniques. However, as the dataset is imbalanced, with a majority of the scenarios favoring materialization, accuracy is not a suitable metric. The performance ratio also has limitations, as one loses a lot of information when averaging the ratio of multiple scenarios into a single value, as it does not capture how much time was saved, which is the more informative metric when assessing cost model performance for a set of scenarios.
 
 Consequently, we introduce a new metric, the time saved, which is the sum of the time saved for all positively predicted scenarios. This metric provides a more detailed view of the cost model's utility in a real-world setting. Rather than averaging the performance. The time saved is the difference between the sum of materialized times and the sum of factorized times, for those cases where the cost models predicts factorization to be faster. The cases where the cost model predicts materialization to be faster are less relevant, as such a case will not result in time loss compared to the normal, materialized execution. However, because we want reason about whether the models have sufficient performance, we also include the maximum possible time saved as a benchmark.
