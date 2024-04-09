@@ -123,6 +123,21 @@ In this section we answer
 
 We first illustrate the comparison of the cost estimators with the state-of-the-art in cost estimation for Factorized Machine Learning training. Next, we demonstrate the ability of the best performing cost estimators to generalize effectively to novel scenarios.
 
+\subsection{Cost Estimator Comparison}
+\label{subsec:6-sota-comparison}
+We compare the two best performing cost models from each type with the SOTA. Using the test set described previously, which includes real datasets and new hardware configurations, we evaluate the performance of the cost models. \autoref{fig:6-sota-comparison} presents the results of this comparative assessment. The plot on the left shows the precision, accuracy, f1 score and recall score of the cost estimators. The right plot quantifies the total time saved by the cost estimators across the set of scenarios.
+
+From the figure we can infer how each estimator behaves with regard to the precision/recall trade-off. The SOTA cost estimators show diminished precision, yet augmented recall, indicative of favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI \cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus \cite{orion_learning_gen_lin_models} presents a lesser time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur \cite{amalur} shows a total time loss of roughly $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost estimator introduced in this thesis has a net time savings of $\mathbf{1350}$ seconds, with an accuracy of $\mathbf{95\%}$, which is a significant improvement over the SOTA.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
+    \caption[Cost estimator comparison vs. SOTA]{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware).}
+    \label{fig:6-sota-comparison}
+\end{figure}
+
+We have shown stellar performance across the test set, next we will explore the generalizability of the two best cost estimators, XGB.5 and the Hybrid model.
+
 \subsection{Exploring Generalizability}
 \label{subsec:6-generalizability}
 The aim of this thesis is to create a cost estimator capable of reliably predicting the most suitable option between factorized and materialized training methods for a Machine Learning model. To ensure that this cost estimator maintains good performance in unfamiliar situations, i.e., it is not overfitting to the training data, we evaluate the cost estimators on the real-world datasets, and on new hardware. The results are shown in \autoref{fig:6-generalization}.
@@ -130,11 +145,11 @@ The aim of this thesis is to create a cost estimator capable of reliably predict
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_generalization.pdf}
-    \caption[Evaluation of utility on new scenarios]{Evaluation and comparison of cost model's relative utility on new scenarios. The x-axis shows the relative utility, defined as total time saved, with regard to the test set, for each group of scenario types. A value of 100\% means that the cost estimator performs equally well on the test set as on the training set. In short, utility is defined as $U = \frac{\text{time saved}}{\text{true time saved}}$. Relative utility shown here is the utility on the validation set (synthetic data) divided by utility on the test set (real-world data): $\frac{U_{\text{val}}}{U_{\text{test}}} \times 100$}
+    \caption[Evaluation of utility on new scenarios]{Evaluation and comparison of cost model's relative utility on new scenarios. The x-axis shows the relative utility. Recall that utility is defined as $U=\frac{\text{Time Saved}}{\text{Max. Time Saved}}$. With the relative utility we can see how an estimator performs on the test set compared to the validation set, with regard to the time saved. Relative utility is defined as $\frac{U_{\text{val}}}{U_{\text{test}}} \times 100$. A value of 100\% means that the cost estimator performs equally well on the test set as on the training set.}
     \label{fig:6-generalization}
 \end{figure}
 
-Significant disparities exist among the estimators in terms of their ability to generalize to unfamiliar situations. The analytical models show superior relative utility, which can be attributed to their resistance to overfitting, and their already subpar performance on the training set. The statistical models demonstrate satisfactory relative performance on the real datasets but falter significantly on the new hardware, indicating a failure to adequately capture the relationship between hardware characteristics and cost. The XGBoost models excel in terms of relative performance on new hardware but underperform on the real datasets. The hybrid model combines the strong points of the XGBoost and statistical models, achieving good relative performance of 82\% on the full dataset.
+Significant disparities exist among the estimators in terms of their ability to generalize to unfamiliar situations. The XGBoost model excels in terms of relative performance on new hardware but underperform on the real-world datasets. The hybrid model combines the strong points of the XGBoost and Linear Regression models, achieving good relative performance of 82\% on the full dataset.
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
@@ -143,28 +158,13 @@ To assess the generalizability of our cost estimator across new model types, we 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\linewidth]{chapters/06_evaluation/figures/hybrid-ablation.pdf}
-    \caption[Results of ablation study]{Result of leave-one-out ablation study. The x-axis shows the relative performance of the cost estimator, defined as total time saved, with regard to the test set, for each group model.}
+    \caption[Results of the ablation study]{Result of the leave-one-out ablation study of the Hybrid model. The x-axis shows the relative performance of the cost estimator, defined as total time saved, with regard to the test set, for each group.}
     \label{fig:6-ablation}
 \end{figure}
 
 The results of this ablation study are illustrated in \autoref{fig:6-ablation}. The x-axis represents the relative performance compared to an ideal model. The findings indicate that our hybrid model exhibits suboptimal performance when applied to new model types. While the Gaussian Non-negative Matrix Factorization (NMF) demonstrates marginal utility, facilitating some time savings, the application of our cost estimator to other models, notably KMeans and Linear Regression, would lead to considerable increases in computational time. This suggests that our cost model is specifically tailored to the model types included in its training dataset. The inclusion of linear algebra operators within the training set confers additional benefits, as evidenced in Figure 5 (\autoref{fig:5-xgboost-evaluation}); however, these benefits are insufficient to achieve model independence in cost estimation.
 
 To mitigate this limitation, we propose two potential strategies: First, refining the feature engineering process to incorporate a broader spectrum of model-agnostic derived features, necessitating a comprehensive analysis of the factorized machine learning framework and its supported models. Second, and perhaps more effectively, expanding the training dataset to include emerging models as they are integrated into the factorized machine learning framework.
-
-\subsection{Cost Estimator Comparison}
-\label{subsec:6-sota-comparison}
-In this section, we evaluate the performance of our cost models with the SOTA. The comparison is based on the same test set used in the previous sections, which includes real datasets and new hardware configurations.
-
-\autoref{fig:6-sota-comparison} presents the results of this comparative assessment. The plot on the left shows the precision, accuracy, f1 score and recall score of the cost estimators. The right plot quantifies the total time saved by the cost estimators across the set of scenarios.
-
-From the figure we can infer how each estimator behaves with regard to the precision/recall trade-off. The SOTA cost estimators show diminished precision, yet augmented recall, indicative of favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI \cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus \cite{orion_learning_gen_lin_models} presents a lesser time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur \cite{amalur} shows a total time loss of roughly $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost estimator introduced in this thesis has a net time savings of $1350$ seconds, with an accuracy of $95\%$, which is a significant improvement over the SOTA.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/06_evaluation/figures/eval_sota_results.pdf}
-    \caption[Cost estimator comparison vs. SOTA]{Comparison of the cost estimators. Performance evaluated on the test set (real datasets and new hardware).}
-    \label{fig:6-sota-comparison}
-\end{figure}
 
 \section{Discussion}
 \label{sec:eval-discussion}

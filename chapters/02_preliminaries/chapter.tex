@@ -461,7 +461,7 @@ Graphics Processing Units (GPUs) have emerged as the preferred processing units 
 
 \begin{figure}[ht]
     \includegraphics[width=.95\linewidth]{chapters/02_preliminaries/figures/CPU-vs-GPU.pdf}
-    \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive the a sequential matrix multiplication algorithm where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in in parallel.}
+    \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive shows an algorithm performing sequential matrix multiplication where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in parallel.}
     \label{fig:cpu-vs-gpu}
 \end{figure}
 This section elaborates on the architecture of a GPU, emphasizing its effectiveness in performing Linear Algebra tasks. \autoref{fig:cpu-vs-gpu} illustrates the architectural differences between a CPU and a GPU and will serve as a point of reference throughout this section.
