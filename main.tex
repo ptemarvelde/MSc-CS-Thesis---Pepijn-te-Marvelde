@@ -186,27 +186,27 @@ code-for-last-col =\color{RoyalBlue}
 %	DECLARATION PAGE
 %----------------------------------------------------------------------------------------
 
-\begin{declaration}
-    \addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
-    \noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
+% \begin{declaration}
+%     \addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+%     \noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
 
-    \begin{itemize}
-        \item This work was done wholly or mainly while in candidature for a research degree at this University.
-        \item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
-        \item Where I have consulted the published work of others, this is always clearly attributed.
-        \item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
-        \item I have acknowledged all main sources of help.
-        \item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
-    \end{itemize}
+%     \begin{itemize}
+%         \item This work was done wholly or mainly while in candidature for a research degree at this University.
+%         \item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+%         \item Where I have consulted the published work of others, this is always clearly attributed.
+%         \item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+%         \item I have acknowledged all main sources of help.
+%         \item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
+%     \end{itemize}
 
-    \noindent Signed:\\
-    \rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
+%     \noindent Signed:\\
+%     \rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
 
-    \noindent Date:\\
-    \rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
-\end{declaration}
+%     \noindent Date:\\
+%     \rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
+% \end{declaration}
 
-\cleardoublepage
+% \cleardoublepage
 
 %----------------------------------------------------------------------------------------
 %	QUOTATION PAGE
@@ -226,9 +226,9 @@ code-for-last-col =\color{RoyalBlue}
 
 \begin{abstract}
     \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-    In the realm of machine learning (ML), the need for efficiency in training processes is paramount. The conventional first step in an ML workflow involves collecting data from various sources and merging them into a single table, a process known as materialization, which can introduce inefficiencies caused by redundant data. Factorized ML strives to reduce this redundancy by maintaining the original data forms, and performing model training on the separate source tables. This approach can lead to significant increases in training efficiency.
+    In the realm of machine learning (ML), the need for efficiency in training processes is paramount. The conventional first step in an ML workflow involves collecting data from various sources and merging them into a single table, a process known as materialization, which can introduce inefficiencies caused by redundant data. Factorized ML strives to reduce this redundancy by maintaining the original data forms and performing model training on the separate source tables. This approach can lead to significant increases in training efficiency.
     However, the cost of training with factorized ML is not always lower than with traditional materialized learning. This research tackles this issue by examining the multidimensional cost optimization problem that emerges when deciding between factorized and traditional materialized learning methods. It fills in gaps left by prior research,  primarily focused on CPU-based training, by investigating the cost estimation landscape for factorized ML, with a special emphasis on GPU performance compared to CPUs. The factorized ML framework is expanded to incorporate GPU training, a topic not explored in previous research. We demonstrate that GPU training exhibits significantly different cost characteristics than CPU training, which has substantial implications for the design of cost estimators and the optimization of factorized ML.
-    Through an empirical study, an ML-based cost estimator is developed that can accurately predict the faster training method for a wide variety of scenarios. This estimator outperforms state-of-the-art methods in both GPU and CPU scenarios, including scenarios with novel, real-world datasets and hardware settings the estimator is not trained on.
+    Through an empirical study, an ML-based cost estimator is developed that can accurately predict the faster training method for a wide variety of scenarios. This estimator outperforms state-of-the-art methods in both GPU and CPU scenarios, including scenarios with novel, real-world datasets and hardware settings on which the estimator is not trained.
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -237,12 +237,11 @@ code-for-last-col =\color{RoyalBlue}
 
 \begin{acknowledgements}
     \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-    \section*{Acknowledgements}
-    I would like to express my heartfelt gratitude to Dr. Rihan Hai for their guidance and encouragement as my supervisor throughout this thesis. I am also very thankful for  Wenbo Sun's constructive feedback, valuable insights, and the guidance he provided. Their ideas and perspectives greatly enriched this study. I would also like to express my gratitude to Dr. Asterios Katsifodimos and Dr. Soham Chakraborty for serving on my thesis committee.
+    I would like to express my heartfelt gratitude to Dr. Rihan Hai for their guidance and encouragement as my supervisor throughout this thesis. I am also very thankful for Wenbo Sun's constructive feedback, valuable insights, and the guidance he provided. Their ideas and perspectives greatly enriched this study. I also express my gratitude to Dr. Asterios Katsifodimos and Dr. Soham Chakraborty for serving on my thesis committee.
 
     My sincere thanks go to my family and friends for their unwavering support, patience, and understanding during this thesis. Their encouragement and occasional distractions were invaluable.
 
-    Lastly, research reported in this work was partially facilitated by computational resources and support of the Delft AI Cluster (DAIC) at TU Delft (URL:\url{https://doc.daic.tudelft.nl/}), but remains the sole responsibility of the authors, not the DAIC team.
+    Lastly, the research reported in this work was partially facilitated by computational resources and support of the Delft AI Cluster (DAIC) at TU Delft (\url{https://daic.tudelft.nl/}), but remains the sole responsibility of the authors, not the DAIC team.
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
