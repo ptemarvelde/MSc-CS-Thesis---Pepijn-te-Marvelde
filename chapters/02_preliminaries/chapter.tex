@@ -3,12 +3,12 @@
 \chapter{Preliminaries: Factorized Machine Learning}
 \label{chapter:preliminary}
 
-This chapter details the preliminary theoretical concepts for this thesis. First, we explain Data Integration (\autoref{sec:2-data-integration}): the process of combining data from different sources, which is crucial for any ML workflow. With these concepts in mind, we explore Factorized Machine Learning in detail (\autoref{sec:2-factorized-ml}). Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
+This chapter details the preliminary theoretical concepts for this thesis. First, we explain Data Integration: the process of combining data from different sources, which is crucial for any ML workflow, in \autoref{sec:2-data-integration}. With these concepts in mind, we explore Factorized Machine Learning in detail (\autoref{sec:2-factorized-ml}). Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
 
 
 \section{Data Integration}
 \label{sec:2-data-integration}
-In order to comprehend the significance and complexities of Factorized Machine Learning (ML), it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
+In order to comprehend the significance and complexities of Factorized Machine Learning, it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
 
 However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges \cite{data-management-in-ML-kumar-2017}.
 
@@ -24,20 +24,35 @@ Factorized Machine Learning seeks to address issues one through three through th
 \subsection{Schema Mapping}
 Schema mapping is an integral step in the Data Integration process and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
 
-The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are first-order logic formulas that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples of the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
+For the running example the schema mapping is as follows:
+\begin{alignat*}{2}
     \intertext{Given source datasets, with abbreviated column names:}
-     & o=order\_id, c=customer\_id, d=date,                                                                                                                      \\
-     & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity                                                                                              \\
-     & S_1(o, c, d)                                                                                                                                              \\
-     & S_2(o, p_{id} , q,  p)                                                                                                                                    \\
-     & S_3(o, p_{id}, rq)                                                                                                                                      & \\
-    \intertext{the mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$:}
-     & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
-    \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
-                                                                                                                      & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
-                                                                                                                      & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
-                                                                                                                  \end{split}
+     & o=order\_id, c=customer\_id, d=date,                           \\
+     & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity   \\
+     & S_1(o, c, d)                                                   \\
+     & S_2(o, p_{id} , q,  p)                                         \\
+     & S_3(o, p_{id}, rq)                                           & \\
+    \intertext{The mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$ on $S_{2}.o=S_{3}.o$ and $S_{2}.p_{id}=S_{3}.p_{id}$ to get an intermediate table with schema:}
+     & T(o, p_{id}, q, p, rq)                                         \\
+    \intertext{Next, we inner join this with $S_1$ to get the final table $T$:}
+     & T(o, c, d, p_{id}, q, p, rq)                                   \\
 \end{alignat*}
+
+
+% The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are first-order logic formulas that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples of the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
+%     \intertext{Given source datasets, with abbreviated column names:}
+%      & o=order\_id, c=customer\_id, d=date,                                                                                                                      \\
+%      & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity                                                                                              \\
+%      & S_1(o, c, d)                                                                                                                                              \\
+%      & S_2(o, p_{id} , q,  p)                                                                                                                                    \\
+%      & S_3(o, p_{id}, rq)                                                                                                                                      & \\
+%     \intertext{the mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$:}
+%      & \forall o, p_{id}, q, p, rq \left( S_3(o, p_{id}, rq) \land S_2(o, p_{id}, q, p) \rightarrow \exists o, p_{id}, q, p, rq T(o, p_{id}, q, p, rq) \right)   \\
+%     \intertext{Next, we inner join the result with $S_1$ to get the final schema $T(o, c, d, p_{id}, q, p, rq)$:} \begin{split}
+%                                                                                                                       & \forall o, c, d, p_{id}, q, p, rq ( S_1(o, c, d) \land T(o, p_{id}, q, p, rq) \rightarrow \\
+%                                                                                                                       & \exists o, c, d, p_{id}, q, p, rq T(o, c, d, p_{id}, q, p, rq) )
+%                                                                                                                   \end{split}
+% \end{alignat*}
 
 Now that we have the schema mapping we can translate this to the normalized matrix, which we will do in the next section.
 
