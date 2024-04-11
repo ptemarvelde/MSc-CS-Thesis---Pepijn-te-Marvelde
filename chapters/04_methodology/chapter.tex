@@ -52,8 +52,6 @@ This section answers how this thesis addresses \emph{RG.2} by addressing the har
 The specific values for these variables, along with the exact types of GPU used, are provided in \autoref{appendix:gpu-characteristics}. A more comprehensive discussion of \textit{GPU Architectures} is presented in the next paragraph.
 
 \paragraph{GPU Architectures}
-We purposefully selected a range of GPU architectures to capture metrics with different characteristics. Both older (Pascal, 2016) and newer (Ampere, 2020) architectures are included in an effort to create a cost estimator not limited to a single generation of hardware. Including only GPUs from a single generation would limit the generalizability of the cost estimator as they use the same architecture, i.e., they use similar Streaming Multiprocessors and Cache layouts.
-
 We intentionally chose a variety of GPU architectures to capture metrics of GPUs with different characteristics. Both older (Pascal, 2016) and newer (Ampere, 2020) architectures are incorporated with the aim of developing a cost estimator that is not confined to a single generation of hardware. Restricting the study to GPUs from a single generation would constrain the generalizability of the cost estimator, as they employ the same architecture, i.e., they utilize similar Streaming Multiprocessors and Cache layouts.
 
 \subsubsection{Model}
@@ -66,7 +64,7 @@ One of those features is the complexity of the model, that is, the number of ope
 \subsection{Dependent Variables}
 In this study, the dependent variable is the cost of training a model, which is represented as the training time. The objective of the cost estimators is to identify the most efficient method for training a model, which is why we utilize training time as the dependent variable.
 
-A variety of \textbf{profiling metrics} is also gathered to quantify the cost of training a model. These metrics are used to calculate the cost associated with each operation in the training process. By conducting micro-benchmarks within a representative subrange of our independent variables, we discern how these variables influence the execution of computations on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}. They allow us to calculate the total time taken for computation and memory ($ops:byte$), and allow us to infer how changes in the independent variables lead to more efficient utilization of GPUs. This likely also affects the F/M trade-off.
+A variety of \textbf{profiling metrics} is also gathered to quantify the cost of training a model. These metrics are used to calculate the cost associated with each operation in the training process. By conducting micro-benchmarks within a representative subrange of our dependent variables, we discern how these variables influence the execution of computations on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}. They allow us to calculate the total time taken for computation and memory ($ops:byte$), and allow us to infer how changes in the independent variables lead to more efficient utilization of GPUs. This likely also affects the F/M trade-off.
 
 \begin{table}[t]
     \begin{tabular}{lll}
@@ -105,22 +103,13 @@ This section provides an introduction to the concepts underlying the cost models
 \subsection{Analytical}
 The analytical model is a deterministic model, constructed by examining the operations executed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. This formula encapsulates the critical factors of the algorithm, such as the number of matrix multiplications. For example, if an algorithm performs one addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our context, these operations are the linear algebra operations performed as part of the machine learning model training. Therefore, by capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics}, we can compute the cost of each operation in the training process. As will be demonstrated in \autoref{chapter:cost-estimation}, the memory cost of an operation is a reliable predictor for its total runtime. This is the reason we concentrate on the memory cost of an operation in the analytical model.
 
-% The simplified calculation for this would be:
-
-% \vspace{-0.5cm}
-% \begin{align*}
-%     \text{{Operator cost}} & =  \underbrace{\# \text{{instructions}} \times \text{{instruction latency}}}_{\text{{Processor Cost}}}                                                         \\
-%                            & + \underbrace{\text{{hit rate}} \times \text{{cache latency}} \times \text{{cache bandwidth}} \times \text{{amount read}}}_{\text{{Cache Memory Access Cost}}} \\
-%                            & + \underbrace{(1 - \text{{hit rate}}) \times \text{{RAM latency}} \times \text{{RAM bandwidth}} \times \text{{amount read}}}_{\text{{RAM Memory Access Cost}}}
-% \end{align*}
-
 By profiling across a broad spectrum of the selected independent variables, we can estimate their impact on memory cost. By integrating this information into the analytical model, we can construct a highly interpretable model that can be utilized to estimate the cost of various approaches.
 
 \subsection{Linear Regression}
 This model is grounded in empirical data and utilizes linear regression to predict runtime and make a decision between factorization and materialization. It takes into account various features known to influence performance, including the size of the input data, the complexity of the algorithm, and the hardware configuration. By examining the relationships between these features and the actual runtime of the algorithm, the linear regression model can make accurate and interpretable predictions about the cost of different approaches.
 
 \subsection{XGBoost}
-To evaluate whether the preceding models, such as the analytical and linear regression models, are overly simplistic, we incorporate this more intricate estimator. If this model markedly surpasses the performance of the other models, it suggests that more complex feature interactions occur that the other models have not been able to capture. This estimator is capable of modeling these complex interactions from the data and making more precise predictions about the cost of different approaches. The primary disadvantage is that this model is less interpretable than the other models.
+To evaluate whether the preceding models, such as the analytical and linear regression models, are overly simplistic, we incorporate this more intricate estimator. If this model markedly surpasses the performance of the other models, it suggests that more complex feature interactions occur that the other models have not been able to capture. This estimator is capable of modeling these complex interactions from the data and making more precise predictions about the cost of different approaches. The primary disadvantage is that this model is more expensive to train and is prone to overfitting on small training sets \cite{xgboost}.
 
 \subsection{Hybrid}
 Finally, the insights obtained from the preceding cost estimators are amalgamated and used in a hybrid model. By leveraging the strengths of multiple models, the hybrid model is able to make more accurate predictions about the cost of different approaches.
