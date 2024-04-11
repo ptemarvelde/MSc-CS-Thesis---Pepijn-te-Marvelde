@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="1Iw5H5zncnqYSbrTsxRB" name="Page-1">
-        <mxGraphModel dx="1484" dy="1570" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="300" dy="622" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -104,7 +104,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="PF3yWMWYn2p4N7kOVZgF-22" value="Cost &lt;br&gt;estimator" style="rhombus;whiteSpace=wrap;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" parent="1" vertex="1">
+                <mxCell id="PF3yWMWYn2p4N7kOVZgF-22" value="Cost &lt;br&gt;model" style="rhombus;whiteSpace=wrap;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="450" y="182.5" width="100" height="75" as="geometry"/>
                 </mxCell>
                 <mxCell id="PF3yWMWYn2p4N7kOVZgF-28" value="&lt;ul style=&quot;font-size: 12px;&quot;&gt;&lt;li style=&quot;&quot;&gt;Hyperparam. tuning&lt;/li&gt;&lt;li style=&quot;&quot;&gt;Online training&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fillStyle=dots;labelBackgroundColor=none;labelBorderColor=none;rounded=1;fontSize=14;" parent="1" vertex="1">

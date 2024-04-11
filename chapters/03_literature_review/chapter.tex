@@ -25,7 +25,7 @@ While the previously mentioned works are mostly specialized pieces of software w
 
 \section{Cost Estimation for Factorized Machine Learning}
 \label{sec:3-cost-estimation-for-factorized-ml}
-Several works propose frameworks and methods to decide between factorization (F) and materialization (M). However, their cost estimators have limitations as they rely on theoretical analysis, simple heuristics, or conservative assumptions. This section reviews these works and highlights their contributions and challenges.
+Several works propose frameworks and methods to decide between factorization (F) and materialization (M). However, their cost models have limitations as they rely on theoretical analysis, simple heuristics, or conservative assumptions. This section reviews these works and highlights their contributions and challenges.
 
 In \cite{orion_learning_gen_lin_models} an analytical model that compares the I/O cost and the CPU cost between F and M is used. The authors analyze the number of operations for each step of Batch Gradient Descent in relation to the input data sizes. This results in a prediction for CPU cost and I/O cost. In their experiments, the model accurately predicts the fastest approach 95\% of the time.
 
@@ -111,7 +111,7 @@ A comparison of these approaches (see \autoref{tab:cost_model_overview}) shows t
         Amalur     \cite{schijndel_cost_estimation}     & Analytical cost model (FLOPs) $\rightarrow$ Decision rule            & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=00.3cm] \item Complexity ratio \end{itemize}                                                \\
         \bottomrule
     \end{tabular}
-    \caption{Overview of cost estimators for factorized learning}
+    \caption{Overview of cost models for factorized learning}
     \label{tab:cost_model_overview}
 \end{table}
 
@@ -123,7 +123,7 @@ Machine learning optimizers are algorithms or techniques that improve the perfor
 
 TVM \cite{tvm} is an end-to-end automated optimization compiler for deep learning that achieves portability of performance through graph and operator level optimizations. It uses a statistical approach to the cost model by using an ML model to predict runtime on a given hardware back-end. The model considers features such as the number of float additions and integer comparisons to make its predictions. This approach enables TVM to generate efficient code for a wide range of hardware back-ends without requiring detailed hardware information or manual tuning.
 
-These optimizers are not directly applicable to the scenario we are creating a cost estimator for, as the models cannot currently be compiled with TVM or Halide and making them compatible is outside the scope of this thesis. However, insights from these optimizers can inform the cost estimation problem addressed in this research. \autoref{tab:optimizer_overview} presents factors that can help create an accurate model to predict whether materialization or factorization is faster.
+These optimizers are not directly applicable to the scenario we are creating a cost model for, as the models cannot currently be compiled with TVM or Halide and making them compatible is outside the scope of this thesis. However, insights from these optimizers can inform the cost estimation problem addressed in this research. \autoref{tab:optimizer_overview} presents factors that can help create an accurate model to predict whether materialization or factorization is faster.
 
 \begin{table}[ht]
     \centering
