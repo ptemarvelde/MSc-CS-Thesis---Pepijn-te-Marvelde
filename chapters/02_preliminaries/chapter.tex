@@ -10,7 +10,7 @@ This chapter details the preliminary theoretical concepts for this thesis. First
 \label{sec:2-data-integration}
 In order to comprehend the significance and complexities of Factorized Machine Learning, it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
 
-However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges \cite{data-management-in-ML-kumar-2017}.
+However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges~\cite{data-management-in-ML-kumar-2017}.
 
 \begin{enumerate}
   \item \textbf{Extra storage}\\ The joined dataset will take extra space to store.
@@ -19,7 +19,7 @@ However, when merging data sets into a unified table is essential for machine le
   \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins'' \cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
+Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins''~\cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
 
 \subsection{Schema Mapping}
 Schema mapping is an integral step in the Data Integration process and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
@@ -39,7 +39,7 @@ For the running example the schema mapping is as follows:
 \end{alignat*}
 
 
-% The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)} \cite{tgds-Fagin2009}. These are first-order logic formulas that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples of the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
+% The language used for these mappings is \textit{source-to-target tuple generating dependencies (s-t tgd)}~\cite{tgds-Fagin2009}. These are first-order logic formulas that specify, through atomic formulas over schemas $S$ and the target schema $T$, how the tuples of the source tables map to the target table. Here, we show the TGD for the running example.\begin{alignat*}{2}
 %     \intertext{Given source datasets, with abbreviated column names:}
 %      & o=order\_id, c=customer\_id, d=date,                                                                                                                      \\
 %      & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity                                                                                              \\
@@ -62,14 +62,14 @@ As stated previously in this thesis, Factorized ML is the process of training Ma
 
 \subsection{Normalized Matrix}
 \label{subsec:2-normalized-matrix}
-As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, .i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table \cite{amalur, morpheus}.
+As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, .i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table~\cite{amalur, morpheus}.
 
 The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent how the columns and rows from each source table $S_k$ map to the Target table $T$.
 
 \subsubsection{Mapping Matrix}
 The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how source columns map to target columns. A value of 1 in this matrix indicates that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
 
-\begin{definition}[\textit{Mapping matrix} \cite{amalur}]
+\begin{definition}[\textit{Mapping matrix}~\cite{amalur}]
   Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
   \begin{align*}
     M_k[i,j] = \begin{cases}
@@ -85,7 +85,7 @@ Note that in the case that there is no column overlap between source tables this
 \subsubsection{Indicator Matrix}
 Now that we have defined how to map the columns from the source tables to the target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
 
-\begin{definition}[\textit{Indicator matrix} \cite{morpheus}]
+\begin{definition}[\textit{Indicator matrix}~\cite{morpheus}]
   Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape $r_T \times r_{S_k}$, where
   \begin{align*}
     I_k[i,j] = \begin{cases}
@@ -288,7 +288,7 @@ To translate the normalized matrix to how it is used in ML algorithms, we first 
 
 
 \subsection{Factorized Linear Algebra}
-In the previous section, we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML \cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how (most of) these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
+In the previous section, we have shown the properties of the Normalized matrix. This section will show how commonly used Linear Algebra operators are rewritten for the Normalized matrix for the purpose of performing factorized ML~\cite{morpheus}. We will show how to perform element-wise operations, reduction operations, dot-product operations, and a running example of right matrix multiplication (RMM) on the Normalized matrix. The goal is to show how (most of) these operations can be performed without materializing the join between the source tables, and how the Normalized matrix allows us to do so.
 
 
 \subsubsection{Element-wise Scalar Operations}
@@ -300,7 +300,7 @@ This group of operators perform an operation on every element of a matrix indepe
   f(T)        & \rightarrow [f(S), I, M]
 \end{alignat*}
 
-These operations all return a normalized matrix and can thus be performed without materializing the join between the source tables. In the used implementation \cite{amalur_tkde24}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
+These operations all return a normalized matrix and can thus be performed without materializing the join between the source tables. In the used implementation~\cite{amalur_tkde24}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
 \begin{alignat*}{2}
   f(T^T) & \rightarrow [f(S), I, M]^T
 \end{alignat*}
@@ -387,12 +387,12 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 \endgroup
 
 \subsection{Machine Learning Models}
-We use the same machine learning models as Morpheus \cite{morpheus} and \cite{amalur_tkde24}. These models consist of Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. Having demonstrated the transformation rules for the relevant Linear Algebra operations, we are now able to illustrate how these models can be adapted for the Normalized matrix. This adaptation enables us to execute these machine learning models without materializing the join between the source tables. The algorithms are detailed in the next sections, with the factorized operators used highlighted in red. Within the algorithms, we use the following conventions: $X$ represents the matrix of independent variables, which in our scenario corresponds to the normalized matrix. The dependent variable is denoted as $y$, the weight vector as $w$, the learning rate as $\gamma$, and $n$ represents the number of iterations.
+We use the same machine learning models as Morpheus~\cite{morpheus} and~\cite{amalur_tkde24}. These models consist of Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. Having demonstrated the transformation rules for the relevant Linear Algebra operations, we are now able to illustrate how these models can be adapted for the Normalized matrix. This adaptation enables us to execute these machine learning models without materializing the join between the source tables. The algorithms are detailed in the next sections, with the factorized operators used highlighted in red. Within the algorithms, we use the following conventions: $X$ represents the matrix of independent variables, which in our scenario corresponds to the normalized matrix. The dependent variable is denoted as $y$, the weight vector as $w$, the learning rate as $\gamma$, and $n$ represents the number of iterations.
 
 \subsubsection{Linear Regression}
 \begin{algorithm}[ht!]
   \caption[Linear regression]{Linear regression using Gradient Descent
-    \cite{morpheus}}\label{alg:linear-regression}
+    ~\cite{morpheus}}\label{alg:linear-regression}
   \begin{algorithmic}
     \Require $X, y , w, \gamma$
     \For{$i \in 1:n$}
@@ -407,7 +407,7 @@ Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linea
 
 \begin{algorithm}[ht]
   \caption[Linear regression]{Logistic regression using Gradient Descent
-    \cite{morpheus}}\label{alg:logistic-regression}
+    ~\cite{morpheus}}\label{alg:logistic-regression}
   \begin{algorithmic}
     \Require $X, y , w, \gamma$
     \For{$i \in 1:n$}
@@ -421,7 +421,7 @@ The regression algorithms discussed above are supervised, that is, they predict 
 
 \begin{algorithm}[ht]
   \caption[K-Means Clustering]{K-Means Clustering
-    \cite{morpheus}\\
+    ~\cite{morpheus}\\
     $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.}\label{alg:k-means}
   \begin{algorithmic}
     \Require $X, k$ (number of centroids)
@@ -442,7 +442,7 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 
 \begin{algorithm}[ht]
   \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
-    \cite{morpheus}}\label{alg:gaussian-nmf}
+    ~\cite{morpheus}}\label{alg:gaussian-nmf}
   \begin{algorithmic}
     \Require $X, r\ \text{(rank)}$
     \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}
@@ -476,7 +476,7 @@ Graphics Processing Units (GPUs) have emerged as the preferred processing units 
 
 \begin{figure}[ht]
   \includegraphics[width=.95\linewidth]{chapters/02_preliminaries/figures/CPU-vs-GPU.pdf}
-  \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive shows an algorithm performing sequential matrix multiplication where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in parallel.}
+  \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from~\cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive shows an algorithm performing sequential matrix multiplication where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in parallel.}
   \label{fig:cpu-vs-gpu}
 \end{figure}
 This section elaborates on the architecture of a GPU, emphasizing its effectiveness in performing Linear Algebra tasks. \autoref{fig:cpu-vs-gpu} illustrates the architectural differences between a CPU and a GPU and will serve as a point of reference throughout this section.
@@ -489,7 +489,7 @@ Modern CPUs can handle a scalar operation within a single clock cycle, a GPU can
 
 \subsection{Estimating Performance on GPU}
 \label{subsec:gpu-performance}
-Following the architecture overview, it is essential to grasp the performance dynamics of a GPU in the context of Machine Learning applications, specifically focusing on Linear Algebra operations. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The subsequent passages provide valuable perspectives from \cite{nvidia-gpu-performance:online}.
+Following the architecture overview, it is essential to grasp the performance dynamics of a GPU in the context of Machine Learning applications, specifically focusing on Linear Algebra operations. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The subsequent passages provide valuable perspectives from~\cite{nvidia-gpu-performance:online}.
 
 The arithmetic intensity refers to the ratio of mathematical operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance constraints. The time it takes for a function to execute on a GPU can be constrained by memory bandwidth, mathematical bandwidth, or latency. To illustrate this, imagine a function that reads the input data, performs calculations, and writes the output. In an ideal case, the time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap (because many threads are running at once). In this ideal case, the total execution time will approach $ \max(T_{mem}, T_{math})$. As will be shown in \autoref{sec:5-gpu-performance-analysis} programs on GPUs are often limited by their memory bandwidth, due to their very high computational throughput. On the contrary, for CPU operations, the total time taken is highly correlated with $T_{math}$ \autoref{sec:5-motivation}. This discrepancy introduces difficulties in creating a singular cost model that performs well on both CPU and GPU scenarios.
 

@@ -14,10 +14,10 @@ As this is an empirical study, the focus is on carried out experiments and their
 Given that this is an empirical study, the emphasis is on the experiments conducted and their respective outcomes. As such, the design of these experiments is of great importance. This process starts with a retrospective examination of the problem at hand, which allows us to define what is required to address this problem. The experiments are then structured to collect the essential data, leading us towards an appropriate solution.
 
 \subsection{Independent Variables}
-To reiterate, the objective of this thesis is to develop an accurate and generalizable cost model to determine whether factorized or materialized Machine Learning is the optimal choice for a given Machine Learning scenario. This requires understanding the factors that influence this decision. Prior research has already identified the three dimensions that impact cost: data characteristics \cite{morpheus, amalur,amalur_tkde24}, hardware characteristics \cite{orion_learning_gen_lin_models}, and model type \& hyperparameters \cite{amalur,amalur_tkde24}. In this section, we elaborate on the independent variables that are manipulated in this study.
+To reiterate, the objective of this thesis is to develop an accurate and generalizable cost model to determine whether factorized or materialized Machine Learning is the optimal choice for a given Machine Learning scenario. This requires understanding the factors that influence this decision. Prior research has already identified the three dimensions that impact cost: data characteristics~\cite{morpheus, amalur,amalur_tkde24}, hardware characteristics~\cite{orion_learning_gen_lin_models}, and model type \& hyperparameters~\cite{amalur,amalur_tkde24}. In this section, we elaborate on the independent variables that are manipulated in this study.
 
 \subsubsection{Data}
-Existing literature has recognized the impact of certain data characteristics on factorized learning. Morpheus \cite{morpheus} argues that the most significant of these factors is the relationship between the number of columns/rows in the Source tables and the Target table. The authors expand on this notion in \cite{MorpheusFI}, demonstrating that sparsity has serious implications for the factorization vs. materialization (F/M) trade-off. In this study, we incorporate the characteristics mentioned in previous research, supplemented by a new set of features. We also include a wider range of variation for each data characteristic, which allows for more insight into the relationship between these data characteristics and the training cost. The data characteristics considered in this study are detailed in \autoref{tab:4-data_chars}.
+Existing literature has recognized the impact of certain data characteristics on factorized learning. Morpheus~\cite{morpheus} argues that the most significant of these factors is the relationship between the number of columns/rows in the Source tables and the Target table. The authors expand on this notion in~\cite{MorpheusFI}, demonstrating that sparsity has serious implications for the factorization vs. materialization (F/M) trade-off. In this study, we incorporate the characteristics mentioned in previous research, supplemented by a new set of features. We also include a wider range of variation for each data characteristic, which allows for more insight into the relationship between these data characteristics and the training cost. The data characteristics considered in this study are detailed in \autoref{tab:4-data_chars}.
 
 \begingroup
 \renewcommand{\arraystretch}{1.5}
@@ -26,12 +26,12 @@ Existing literature has recognized the impact of certain data characteristics on
   \begin{tabular}{p{0.16\linewidth}p{0.09\linewidth}p{0.23\linewidth}p{0.4\linewidth}}
     \toprule
     Independent Variable       & Symbol   & Explanation                                                        & Reason for choice                                                                                               \\ \midrule \midrule
-    Sparsity                   & $e$      & Fraction of zero-valued elements                                   & Impacts the number of computation needed for sparse implementations. \cite{MorpheusFI, morpheus, amalur_tkde24} \\
-    Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & \cite{morpheus, amalur_tkde24}                                                                                  \\
-    Tuple ratio                & $\rho$   & Ratio of rows from $S_{2\cdots k}$ in $S_1$                        & Influences the number of redundant operations when computing a model\cite{morpheus, amalur_tkde24}              \\
-    Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model\cite{morpheus, amalur_tkde24}              \\
-    Join Type                  & $j_t$    & The join type used to join the source tables to the target table   & \cite{amalur_tkde24}                                                                                            \\
-    Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M \cite{MorpheusFI, amalur_tkde24}               \\
+    Sparsity                   & $e$      & Fraction of zero-valued elements                                   & Impacts the number of computation needed for sparse implementations.~\cite{MorpheusFI, morpheus, amalur_tkde24} \\
+    Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & ~\cite{morpheus, amalur_tkde24}                                                                                 \\
+    Tuple ratio                & $\rho$   & Ratio of rows from $S_{2\cdots k}$ in $S_1$                        & Influences the number of redundant operations when computing a model~\cite{morpheus, amalur_tkde24}             \\
+    Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model~\cite{morpheus, amalur_tkde24}             \\
+    Join Type                  & $j_t$    & The join type used to join the source tables to the target table   & ~\cite{amalur_tkde24}                                                                                           \\
+    Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M~\cite{MorpheusFI, amalur_tkde24}               \\
     \bottomrule
   \end{tabular}
   \caption[Overview of data related features varied in this study]{Overview of data related features varied in this study. A reference in the column 'Reason for choice' denotes this feature is either used in the cost estimation rule in that publication, or the publication has a thorough analysis showing the impact of this feature on runtime.}
@@ -66,35 +66,35 @@ In this study, the dependent variable is the cost of training a model, which is 
 
 A variety of \textbf{profiling metrics} is also gathered to quantify the cost of training a model. These metrics are used to calculate the cost associated with each operation in the training process. By conducting micro-benchmarks within a representative sub-range of our dependent variables, we discern how these variables influence the execution of computations on the GPU. The collected metrics are shown in \autoref{tab:4-profiling-metrics}. They allow us to calculate the total time taken for computation and memory ($ops:byte$), and allow us to infer how changes in the independent variables affect the utilization of GPUs and the F/M trade-off.
 
+
 \begin{table}[t]
   \begin{tabular}{lll}
     \toprule
-    Section Name                  & Metric Name                          & Metric Unit  \\
+    Section name                  & Metric name                                   & Metric unit  \\
     \midrule\midrule
-    Command line profiler metrics & \underline{dram\_\_bytes\_read.sum}  & byte         \\
-                                  & \underline{dram\_\_bytes\_write.sum} & byte         \\
-    GPU Speed Of Light Throughput & \underline{DRAM Frequency}           & cycle/second \\
-                                  & \textbf{SM Frequency}                & cycle/second \\
-                                  & \textbf{Elapsed Cycles}              & cycle        \\
-                                  & \underline{Memory Throughput}        & \%           \\
-                                  & \underline{DRAM Throughput}          & \%           \\
-                                  & Duration                             & nsecond      \\
-                                  & \underline{L1 Cache Throughput}      & \%           \\
-                                  & \underline{L2 Cache Throughput}      & \%           \\
-                                  & \textbf{SM Active Cycles}            & cycle        \\
-                                  & \textbf{Compute (SM) Throughput}     & \%           \\
-    Memory Workload Analysis      & \underline{Memory Throughput}        & byte/second  \\
-                                  & \underline{Mem Busy}                 & \%           \\
-                                  & \underline{Max Bandwidth}            & \%           \\
-                                  & \underline{L1 Hit Rate}              & \%           \\
-                                  & \underline{L2 Hit Rate}              & \%           \\
-                                  & \underline{Mem Pipes Busy}           & \%           \\
+    Command line profiler metrics & \underline{\texttt{dram\_\_bytes\_read.sum}}  & byte         \\
+                                  & \underline{\texttt{dram\_\_bytes\_write.sum}} & byte         \\
+    GPU speed of light throughput & Duration                                      & nsecond      \\
+                                  & \textbf{SM frequency}                         & cycle/second \\
+                                  & \textbf{Elapsed cycles}                       & cycle        \\
+                                  & \textbf{SM active cycles}                     & cycle        \\
+                                  & \textbf{Compute (SM) throughput}              & \%           \\
+                                  & \underline{DRAM frequency}                    & cycle/second \\
+                                  & \underline{Memory throughput}                 & \%           \\
+                                  & \underline{DRAM throughput}                   & \%           \\
+                                  & \underline{L1 cache throughput}               & \%           \\
+                                  & \underline{L2 cache throughput}               & \%           \\
+    Memory workload analysis      & \underline{Memory throughput}                 & byte/second  \\
+                                  & \underline{Mem busy}                          & \%           \\
+                                  & \underline{Max bandwidth}                     & \%           \\
+                                  & \underline{L1 hit rate}                       & \%           \\
+                                  & \underline{L2 hit rate}                       & \%           \\
+                                  & \underline{Mem pipes busy}                    & \%           \\
     \bottomrule
   \end{tabular}
   \caption[Collected profiling metrics and their explanation]{Collected profiling metrics and their explanation. The metrics related to the compute cost are \textbf{bold}, those related to the memory cost are \underline{underlined}.}
   \label{tab:4-profiling-metrics}
 \end{table}
-
 
 \section{Cost Models}
 \label{sec:4-cost-estimation}
@@ -109,7 +109,7 @@ By profiling across a broad spectrum of the selected independent variables, we c
 This model is grounded in empirical data and utilizes linear regression to predict runtime and make a decision between factorization and materialization. It takes into account various features known to influence performance, including the size of the input data, the complexity of the algorithm, and the hardware configuration. By examining the relationships between these features and the actual runtime of the algorithm, the linear regression model can make accurate and interpretable predictions about the cost of different approaches.
 
 \subsection{XGBoost}
-To evaluate whether the preceding models, such as the analytical and linear regression models, are overly simplistic, we incorporate this more intricate model. If this model markedly surpasses the performance of the other models, it suggests that more complex feature interactions occur that the other models have not been able to capture. This model is capable of modeling these complex interactions from the data and making more precise predictions about the cost of different approaches. The primary disadvantage is that this model is more expensive to train and is prone to overfitting on small training sets \cite{xgboost}.
+To evaluate whether the preceding models, such as the analytical and linear regression models, are overly simplistic, we incorporate this more intricate model. If this model markedly surpasses the performance of the other models, it suggests that more complex feature interactions occur that the other models have not been able to capture. This model is capable of modeling these complex interactions from the data and making more precise predictions about the cost of different approaches. The primary disadvantage is that this model is more expensive to train and is prone to overfitting on small training sets~\cite{xgboost}.
 
 \subsection{Hybrid}
 Finally, the insights obtained from the preceding cost models are combined and used in a hybrid model. By leveraging the strengths of multiple models, the hybrid model is able to make more accurate predictions about the cost of different approaches.

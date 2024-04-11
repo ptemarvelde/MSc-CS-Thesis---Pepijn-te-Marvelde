@@ -11,18 +11,18 @@ This section provides a comprehensive explanation of all the necessary steps to 
 
 \subsection{Software}
 \label{subsec:6-software}
-The factorized ML framework (Amalur \cite{amalur}) is implemented in Python (3.10.4) and uses SciPy (1.8.0), NumPy (1.22.4) and CuPy (12.1.1). All experiments were run in a Docker container with an image based on Nvidia's base image with CUDA 12.1.1 and Ubuntu 20.04\footnote{\href{https://hub.docker.com/layers/nvidia/cuda/12.1.1-devel-ubuntu20.04/images/sha256-5bd13c67a4479a1c13238b470d89a92937ce68ba5f21b930d50c463e3314f657?context=explore}{nvidia/cuda:12.1.1-devel-ubuntu20.04}}.
+The factorized ML framework (Amalur~\cite{amalur}) is implemented in Python (3.10.4) and uses SciPy (1.8.0), NumPy (1.22.4) and CuPy (12.1.1). All experiments were run in a Docker container with an image based on Nvidia's base image with CUDA 12.1.1 and Ubuntu 20.04\footnote{\href{https://hub.docker.com/layers/nvidia/cuda/12.1.1-devel-ubuntu20.04/images/sha256-5bd13c67a4479a1c13238b470d89a92937ce68ba5f21b930d50c463e3314f657?context=explore}{nvidia/cuda:12.1.1-devel-ubuntu20.04}}.
 
-The choice to use CuPy as the backend for the factorized ML framework was made to ensure that the experiments could run on both CPU and GPU. CuPy is a GPU-accelerated library for numerical computations that is compatible with NumPy and SciPy \cite{cupy_learningsys2017}. This allows for minimal changes to the codebase whether you are using a GPU or a CPU. To allow for exploitation of multiple cores for sparse matrix multiplication\footnote{\url{https://github.com/flatironinstitute/sparse_dot}} we use MKL (Intel Math Kernel Library) \cite{intel-mkl} as NumPy's backend for the CPU experiments.
+The choice to use CuPy as the backend for the factorized ML framework was made to ensure that the experiments could run on both CPU and GPU. CuPy is a GPU-accelerated library for numerical computations that is compatible with NumPy and SciPy~\cite{cupy_learningsys2017}. This allows for minimal changes to the codebase whether you are using a GPU or a CPU. To allow for exploitation of multiple cores for sparse matrix multiplication\footnote{\url{https://github.com/flatironinstitute/sparse_dot}} we use MKL (Intel Math Kernel Library)~\cite{intel-mkl} as NumPy's backend for the CPU experiments.
 
-For collecting the GPU metrics, we use NVIDIA's Nsight Compute (ncu)\footnote{\url{https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html}} which is a command-line profiling tool that collects detailed performance metrics from the GPU. The metrics are collected in a CSV file for downstream analysis, detailed in \autoref{sec:5-feature-engineering}. The cost models were created using Scikit-learn \cite{scikit-learn}.
+For collecting the GPU metrics, we use NVIDIA's Nsight Compute (ncu)\footnote{\url{https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html}} which is a command-line profiling tool that collects detailed performance metrics from the GPU. The metrics are collected in a CSV file for downstream analysis, detailed in \autoref{sec:5-feature-engineering}. The cost models were created using Scikit-learn~\cite{scikit-learn}.
 
 \subsection{Datasets}
 \label{subsec:6-datasets}
 The datasets used in the experiments are a mix of synthetic and real-world datasets. The synthetic datasets are used to generate a training set to train the cost models on. The real-world datasets are used to validate the cost models on unseen data.
 
 \subsubsection{Synthetic Datasets}
-To create the synthetic datasets with a wide variety of data characteristics the data generator from \cite{amalur_tkde24} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from \cite{valentine-data-generator}. In total, we generate $2415$ datasets, each being a two-table join. All other parameters were varied; the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
+To create the synthetic datasets with a wide variety of data characteristics the data generator from~\cite{amalur_tkde24} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from~\cite{valentine-data-generator}. In total, we generate $2415$ datasets, each being a two-table join. All other parameters were varied; the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
 
 \begin{table}[ht]
   \centering
@@ -58,8 +58,8 @@ The data is organized in a star schema. $S_1$ is the Entity (transactional) tabl
 \subsubsection{Real-world Datasets}
 The synthetic datasets are convenient for testing and training purposes. However, in order to assess whether the cost models are generalizable to real-world data, we use real-world datasets for validation.
 
-\paragraph{Project Hamlet \cite{2016-hamlet-sigmod}}
-The Hamlet datasets are extensively used in the relevant literature \cite{2016-hamlet-sigmod, amalur, morpheus,orion_learning_gen_lin_models}. Comprising a collection of seven datasets, the Hamlet datasets are tailored to simulate data integration scenarios within a machine learning workflow. Initially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types. The data attributes of these datasets are detailed in \autoref{tab:6-hamlet-characteristics}.
+\paragraph{Project Hamlet~\cite{2016-hamlet-sigmod}}
+The Hamlet datasets are extensively used in the relevant literature~\cite{2016-hamlet-sigmod, amalur, morpheus,orion_learning_gen_lin_models}. Comprising a collection of seven datasets, the Hamlet datasets are tailored to simulate data integration scenarios within a machine learning workflow. Initially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types. The data attributes of these datasets are detailed in \autoref{tab:6-hamlet-characteristics}.
 
 \begin{table}[ht]
   \centering
@@ -84,7 +84,7 @@ The Hamlet datasets are extensively used in the relevant literature \cite{2016-h
   \label{tab:6-hamlet-characteristics}
 \end{table}
 
-\paragraph{TPCx-AI \cite{tpcx-ai}} We also assess a more practical scenario than what the Hamlet datasets provide, which is derived from a real-world benchmark employed for assessing end-to-end ML platforms. Since this aspect is not the primary focus of this study, we utilize only two out of the ten use cases, specifically the first and the tenth. This benchmark includes a data generator with the ability to scale generation by adjusting scale factors ranging from $0.01$ to $0.5$, leading to the creation of $18$ datasets for each use case. Details regarding the data characteristics of these datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
+\paragraph{TPCx-AI~\cite{tpcx-ai}} We also assess a more practical scenario than what the Hamlet datasets provide, which is derived from a real-world benchmark employed for assessing end-to-end ML platforms. Since this aspect is not the primary focus of this study, we utilize only two out of the ten use cases, specifically the first and the tenth. This benchmark includes a data generator with the ability to scale generation by adjusting scale factors ranging from $0.01$ to $0.5$, leading to the creation of $18$ datasets for each use case. Details regarding the data characteristics of these datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
 
 \begin{figure}
   \centering
@@ -108,7 +108,7 @@ The experiments were conducted on a diverse range of machines to test various ha
 \end{table}
 
 \subsection{Experiment Setting}
-To guarantee the reliability of the training data, each experiment was run with a repetition count of $30$. The profiling experiments, on the other hand, were not replicated, as NCU guarantees consistent and actionable results by replaying kernel launches \cite{nsight_compute}. All experiments were carried out in a containerized setting to ensure reproducibility. The profiling experiments used the same image as the runtime experiments to maintain consistency in the environment. Docker\footnote{\url{https://www.docker.com/}} served as the container runtime, except on the DAIC cluster, where the usage of Apptainer\footnote{\url{https://apptainer.org/}} images was mandated.
+To guarantee the reliability of the training data, each experiment was run with a repetition count of $30$. The profiling experiments, on the other hand, were not replicated, as NCU guarantees consistent and actionable results by replaying kernel launches~\cite{nsight_compute}. All experiments were carried out in a containerized setting to ensure reproducibility. The profiling experiments used the same image as the runtime experiments to maintain consistency in the environment. Docker\footnote{\url{https://www.docker.com/}} served as the container runtime, except on the DAIC cluster, where the usage of Apptainer\footnote{\url{https://apptainer.org/}} images was mandated.
 
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
@@ -128,7 +128,7 @@ We first illustrate the comparison of the cost models with the state-of-the-art 
 \label{subsec:6-sota-comparison}
 We compare the two best performing cost models from each type with the SOTA. Using the test set described previously, which includes real datasets and new hardware configurations, we evaluate the performance of the cost models. \autoref{fig:6-sota-comparison} presents the results of this comparative assessment. The plot on the left shows the precision, accuracy, f1 score and recall score of the cost models. The right plot quantifies the total time saved by the cost models across the set of scenarios.
 
-From the figure we can infer how each model behaves with regard to the precision/recall trade-off. The SOTA cost models show diminished precision, yet augmented recall, indicative of favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI \cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus \cite{orion_learning_gen_lin_models} presents a lesser time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur \cite{amalur} shows a total time loss of roughly $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost model introduced in this thesis has a net time savings of $\mathbf{1350}$ seconds, with an accuracy of $\mathbf{95\%}$, which is a significant improvement over the SOTA.
+From the figure we can infer how each model behaves with regard to the precision/recall trade-off. The SOTA cost models show diminished precision, yet augmented recall, indicative of favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI~\cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus~\cite{orion_learning_gen_lin_models} presents a lesser time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur~\cite{amalur} shows a total time loss of roughly $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost model introduced in this thesis has a net time savings of $\mathbf{1350}$ seconds, with an accuracy of $\mathbf{95\%}$, which is a significant improvement over the SOTA.
 
 \begin{figure}[ht]
   \centering
