@@ -7,7 +7,7 @@ The field of Machine Learning (ML) has gained massive traction over the last few
 
 In a typical machine learning scenario, the first step for a data scientist aiming to train a model is gathering the necessary data for the training process. Often this data comes from disparate sources. Therefore, they first need to join these sources to create a single dataset to use as input for an ML model. This is achieved through a process called Data Integration (DI). The act of executing the join between these tables is called materialization~\cite{rel_db_glossary}. Factorized learning eliminates this prerequisite to the training process by learning directly from the source datasets, without first joining them. \autoref{fig:running-example-fac-vs-mat} illustrates the difference between factorized learning and learning over materialized data. The reason factorized learning can be more efficient is that the values in the materialized data (orange cells in $T$ in the figure) do not lead to redundant computations during training. However, the source datasets can also have redundant values, and this redundancy is not the only factor that affects the efficiency of factorized learning. Apart from the data-characteristics (which include redundancy), model parameters and hardware characteristics can also influence the choice between factorized learning and materialization.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=0.95\linewidth]{chapters/01_introduction/figures/running-example-intro.pdf}
   \caption[Running Example: Source tables $S$ and target table $T$]{\textbf{Running Example: Source tables $S$ and target table $T$}. \\ Illustration of input data used for factorized Learning vs. Learning over Materialized data, schema from TPCx-AI~\cite{tpcx-ai} use case 1 (unused columns not shown). Target redundancy avoided by factorization shown in orange.}
@@ -18,14 +18,21 @@ Thus, because factorization does not always increase efficiency, there is a need
 
 However, solving this problem is challenging because the optimization space is exceptionally large and may be hardware dependent. Previous solutions, such as Morpheus~\cite{morpheus} and Amalur's cost estimation~\cite{amalur_tkde24}, have focused on theoretical cost or simple heuristics without considering the hardware dimension.
 
-\begin{figure}[h]
+\autoref{fig:ml-pipeline} shows the applicability of the cost model we propose. For an ML practitioner aiming to optimize their training processes with the use of factorized learning, the data preparation and preprocessing steps do not change. The need to gather source datasets and define how to e.g., join and clean them does not change. After finishing pre-processing, formalizing how the datasets should be joined, and having decided what model they want to train, the cost model predicts the optimal training method. Using such a cost model to decide whether to materialize or factorize can result in considerable time savings. Particularly in scenarios where the total training time is high,  such as hyperparameter tuning or training complex models. This is shown in \autoref{sec:5-motivation}.
+
+\begin{figure}[ht]
   \centering
   \includegraphics[width=0.95\linewidth]{chapters/01_introduction/figures/ML-Pipeline.pdf}
   \caption{Function of this thesis' cost model in an ML pipeline.}
   \label{fig:ml-pipeline}
 \end{figure}
 
-\autoref{fig:ml-pipeline} shows the applicability of the cost model we propose. For an ML practitioner aiming to optimize their training processes with the use of factorized learning, the data preparation and preprocessing steps do not change. The need to gather source datasets and define how to e.g., join and clean them does not change. After finishing pre-processing, formalizing how the datasets should be joined, and having decided what model they want to train, the cost model predicts the optimal training method. Using such a cost model to decide whether to materialize or factorize can result in considerable time savings. Particularly in scenarios where the total training time is high,  such as hyperparameter tuning or training complex models. This is shown in \autoref{sec:5-motivation}.
+\section{Running Example}
+Throughout this thesis we use a running example, based on TPCx-AI~\cite{tpcx-ai} use case 1, to explain various concepts. The scenario is that of a data scientist working for an ecommerce firm, who is tasked with creating a data science pipeline to perform customer segmentation. Three tables are joined to create a single table, which is then used as input in a K-Means clustering model. The schema of the tables and the joined table are shown in \autoref{fig:running-example-fac-vs-mat}.
+
+The three tables that need to be joined are the \textbf{Orders} table ($S_1$), the \textbf{Lineitem} table ($S_2$), and the \textbf{Order returns} table ($S_3$). The \textbf{Orders} table contains information about orders made by customers, the schema of this table is $S_1(order\_id$, $customer\_sk$, $\ date)$. The \textbf{Lineitem} table contains information about the items in each order, its schema is $S_2(order\_id$, $product\_id$, $quantity$,  $price)$. The \textbf{Order returns} table, having schema $S_3(order\_id$, $product\_id$, $return\_quantity)$, contains information about the returns made by customers.
+
+The joined table contains all the columns from the three source tables, and is used as input for the K-Means clustering model. It is created by first left joining $S2$ with $S1$ on shared columns $order\_id$ and $product\_id$, then joining the result of this with $S1$ on $order\_id$. After this we have $T(order\_id$, $customer\_sk$, $date$, $product\_id$, $quantity$, $price$, $return\_quantity)$.
 
 \section{Research Questions \& Contributions}
 This thesis focuses on facilitating the adoption of factorized machine learning by developing a model that can accurately decide the optimal approach (from factorized and materialized computation) for training a machine learning model, considering the data, model, and hardware dimensions.
@@ -44,15 +51,8 @@ The Research Questions are answered by providing the following contributions:
   \item A cost model that predicts whether factorized or materialized learning is faster, capable of accurate predictions regardless of dataset, model hyperparameters, or hardware used. This cost model is the result of a detailed study that compares multiple cost calculation strategies.
 \end{enumerate}
 
-\section{Running Example}
-Throughout this thesis we use a running example, based on TPCx-AI~\cite{tpcx-ai} use case 1, to explain various concepts. The scenario is that of a data scientist working for an ecommerce firm, who is tasked with creating a data science pipeline to perform customer segmentation. Three tables are joined to create a single table, which is then used as input in a K-Means clustering model. The schema of the tables and the joined table are shown in \autoref{fig:running-example-fac-vs-mat}.
-
-The three tables that need to be joined are the \textbf{Orders} table ($S_1$), the \textbf{Lineitem} table ($S_2$), and the \textbf{Order returns} table ($S_3$). The \textbf{Orders} table contains information about orders made by customers, the schema of this table is $S_1(order\_id$, $customer\_sk$, $\ date)$. The \textbf{Lineitem} table contains information about the items in each order, its schema is $S_2(order\_id$, $product\_id$, $quantity$,  $price)$. The \textbf{Order returns} table, having schema $S_3(order\_id$, $product\_id$, $return\_quantity)$, contains information about the returns made by customers.
-
-The joined table contains all the columns from the three source tables, and is used as input for the K-Means clustering model. It is created by first left joining $S2$ with $S1$ on shared columns $order\_id$ and $product\_id$, then joining the result of this with $S1$ on $order\_id$. After this we have $T(order\_id$, $customer\_sk$, $date$, $product\_id$, $quantity$, $price$, $return\_quantity)$.
-
 \section{Cost Estimation for Factorized Machine Learning}
-To develop a cost model that can accurately predict whether factorized or materialized learning is faster for a given ML task, we capture the runtime of training types for a set of scenarios. We vary the data used, the models trained, and the hardware settings. These collected results are then used as training data to create several types of cost models.
+To develop a cost model capable of accurately predicting whether factorized or materialized learning is faster, we capture the runtime of training types for a set of scenarios. We vary the data used, the models trained, and the hardware settings. These collected results are then used as training data to create several types of cost models.
 
 Evaluation on real-world datasets show that our models outperform the state-of-the-art (SOTA), specifically the \textbf{Hybrid} model, which combines a Linear Regression and an XGBoost model, performs well. It outclasses the SOTA in scenarios with real-world datasets, reaching \textbf{80\%} of the maximum achievable time saved. This cost model also generalizes, only losing \textbf{18\%} of its predictive power in scenarios with novel hardware settings and datasets.
 
