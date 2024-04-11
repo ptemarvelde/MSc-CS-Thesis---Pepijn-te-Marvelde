@@ -12,21 +12,21 @@ This section illustrates the need for precise cost estimation when deciding betw
 
 \subsection{Benefit of factorization}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
-    \vspace*{-5mm}
-    \caption[Performance ratio with factorization on real datasets]{Average Performance ratio of ML models for positive cases ($\text{Time}_M > \text{Time}_F$), split per tested real dataset and compute type. }
-    \label{fig:5-real-perf-ratio}
+  \centering
+  \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
+  \vspace*{-5mm}
+  \caption[Performance ratio with factorization on real datasets]{Average Performance ratio of ML models for positive cases ($\text{Time}_M > \text{Time}_F$), split per tested real dataset and compute type. }
+  \label{fig:5-real-perf-ratio}
 \end{figure}
 
 The aim of factorized machine learning is to minimize unnecessary operations during model training, thereby enhancing efficiency and speed. The comparative performance of factorization versus materialization on actual datasets is depicted in \autoref{fig:5-real-perf-ratio}. The exploration of factorization proves advantageous; it is observed that in $18\%$ of the instances tested on real datasets, factorization is faster, yielding an average acceleration $5.1\times$. In the most extreme cases, training time is reduced over $20$ seconds, a $27$-fold reduction. Particularly in situations where training is recurrent, such as during hyperparameter tuning or online learning, this efficiency can translate into substantial time savings.
 
 \subsection{Data \& Model Characteristics}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_perf_ratio_vs_data_chars.pdf}
-    \caption[Performance ratio for various data characteristics]{Performance ratio against independent variables. Broken down by compute type (CPU/GPU). $99\%$ confidence interval shown as shaded area. The sparsity ratio is defined as the sparsity of the source tables $S_k, k\in[1,n]$ divided by the sparsity of target table $T$. Sparsity of $S$ is defined as the total non-zero values in the base tables divided by the total number of cells in the base tables, $\frac{\sum_{k=1}^{n} nnz(S_k)}{\sum_{k=1}^{n} r_{S_k} \times c_{S_k}}$. High sparsity ratio means the target table is relatively denser than the source tables.}
-    \label{fig:5-complexity-ratio-vs-data-chars}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_perf_ratio_vs_data_chars.pdf}
+  \caption[Performance ratio for various data characteristics]{Performance ratio against independent variables. Broken down by compute type (CPU/GPU). $99\%$ confidence interval shown as shaded area. The sparsity ratio is defined as the sparsity of the source tables $S_k, k\in[1,n]$ divided by the sparsity of target table $T$. Sparsity of $S$ is defined as the total non-zero values in the base tables divided by the total number of cells in the base tables, $\frac{\sum_{k=1}^{n} nnz(S_k)}{\sum_{k=1}^{n} r_{S_k} \times c_{S_k}}$. High sparsity ratio means the target table is relatively denser than the source tables.}
+  \label{fig:5-complexity-ratio-vs-data-chars}
 \end{figure}
 We show the influence of different data related independent variables on the performance ratio, as depicted in \autoref{fig:5-complexity-ratio-vs-data-chars}. The data reveals a modest inverse relationship between the performance ratio and the sparsity of the target table ($T$). Further analysis, shown in the second column, delves deeper into the connection between performance and sparsity. A lower sparsity ratio —meaning ($T$) has a higher count of zero values compared to the base tables ($S_k$)— generally results in factorization being less efficient than materialization. The plots on the far right suggest that a greater complexity ratio ($\frac{FLOP_M}{FLOP_F}$) tends to favor factorization as the optimal training approach. This aligns with the logical premise that factorization is advantageous when it eliminates redundant operations.
 
@@ -34,18 +34,18 @@ It is crucial to note that the relationship between these data characteristics a
 
 \subsection{Hardware Characteristics}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_per_operator_per_gpu.pdf}
-    \caption[Box plots showing performance ratio against hardware]{Box plots showing performance ratio, of various operators on synthetic data, against independent hardware variables. The performance ratio is shown to be affected by hardware choice.}
-    \label{fig:5-gpu-characteristics}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_per_operator_per_gpu.pdf}
+  \caption[Box plots showing performance ratio against hardware]{Box plots showing performance ratio, of various operators on synthetic data, against independent hardware variables. The performance ratio is shown to be affected by hardware choice.}
+  \label{fig:5-gpu-characteristics}
 \end{figure}
 The hardware used for computation not only affects a program's runtime, but also influences the F/M trade-off. Different processing units (i.e., CPU or GPU type) have unique thresholds at which factorization becomes more advantageous than materialization. This phenomenon is illustrated in \autoref{fig:5-gpu-characteristics}. The impact on the performance ratio varies with the hardware and the specific operation performed. For example, the average performance ratio for transposed Left Matrix Multiplication on the P100 GPU is $3.03\pm2.70$, in contrast to a marginally lower $2.32\pm2.21$. On the contrary, for left (scalar) multiplication, the V100 GPU exhibits a higher performance ratio of $0.21\pm0.04$, compared to the P100 $0.19\pm0.05$.
 
 \begin{table}[ht]
-    \centering
-    \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
-    \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where factorization is preferred over materialization (speedup > 1). This shows hardware choice is a large factor in when to choose factorization over materialization.}
-    \label{tab:5-speedup-per-gpu}
+  \centering
+  \input{chapters/05_cost_estimation/figures/speedup_per_gpu.tex}
+  \caption[Performance ratio of ML models for cases where factorization has positive impact.]{Mean performance ratio of ML models for cases where factorization is preferred over materialization (speedup > 1). This shows hardware choice is a large factor in when to choose factorization over materialization.}
+  \label{tab:5-speedup-per-gpu}
 \end{table}
 
 In instances where factorization is favored over materialization (when $\text{Time}_M > \text{Time}_F$), the performance varies between different GPUs. Both the average performance ratio and the number of instances where factorization outperforms materialization differ, as indicated in \autoref{tab:5-speedup-per-gpu}. This variation underscores the importance of hardware selection in the factorization versus materialization decision. However, the variation among GPU models is less pronounced than the disparity between CPUs and GPUs. Consequently, it may be more beneficial to consider the type of computation —CPU or GPU— as an independent variable in the cost models rather than focusing on specific GPU models.
@@ -53,10 +53,10 @@ In instances where factorization is favored over materialization (when $\text{Ti
 When comparing the performance ratio against the complexity ratio for different hardware settings, an interesting pattern emerges. As outlined in \autoref{sec:3-cost-estimation-for-factorized-ml}, the complexity ratio is the ratio of the number of floating-point operations (FLOPs) needed for the factorized case over the materialized case. According to previous research, a higher complexity ratio typically indicates that factorization is more advantageous. However, our experiments reveal that while this is generally true for CPU operations, it does not always apply to GPU computations. This pattern is illustrated in \autoref{fig:5-complexity-ratio-vs-performance-ratio}, and the reasons behind it are explored further in the following section.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_complexity_ratio.pdf}
-    \caption[Performance ratio plotted against complexity ratio]{Performance ratio, of various operators on synthetic data, against complexity ratio, broken down by CPU and GPU. 95\% Confidence interval shown as shaded area. Where a lot of operators show clear correlation between the complexity ratio and the performance ratio on CPU, this is not the case for GPU.}
-    \label{fig:5-complexity-ratio-vs-performance-ratio}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/motivation_speedup_complexity_ratio.pdf}
+  \caption[Performance ratio plotted against complexity ratio]{Performance ratio, of various operators on synthetic data, against complexity ratio, broken down by CPU and GPU. 95\% Confidence interval shown as shaded area. Where a lot of operators show clear correlation between the complexity ratio and the performance ratio on CPU, this is not the case for GPU.}
+  \label{fig:5-complexity-ratio-vs-performance-ratio}
 \end{figure}
 
 
@@ -65,24 +65,24 @@ When comparing the performance ratio against the complexity ratio for different 
 An essential preliminary step in creating a precise cost model is understanding the performance attributes of the scenarios under examination. This section analyzes the profiling metrics collected during the experiments to understand the influence of hardware selection on the factorization versus materialization trade-off. The first analysis involves comparing the memory cost and the math cost in the profiled scenarios. According to NVIDIA, an effective method to predict the execution time of a GPU program is to calculate $max(T_{mem}, T_{math})$. In this formula $T_{mem}$ is the time required to transfer data to and from the GPU memory, while $T_{math}$ denotes the time needed for actual computations. This approach is in line with the inherently parallel architecture of GPUs. Should the data transfer to the GPU prove insufficiently fast, the GPU's Streaming Multiprocessors will remain idle, awaiting data. This indicates a memory-bound program. Conversely, if $T_{math} > T_{mem}$, the program is deemed compute-bound. This section elaborates which scenario applies to our experiments and details how this knowledge can be harnessed to estimate the runtime for machine learning training scenarios.
 
 \begin{figure}[ht]
-    \centering
-    \begin{minipage}{0.50\textwidth}
-        \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute-materialized.pdf}
-    \end{minipage}\hfill
-    \begin{minipage}{0.50\textwidth}
-        \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute-factorized.pdf}
-    \end{minipage}
-    \caption[Memory cost vs math cost of profiled scenarios]{Memory cost ($T_{mem}$) vs compute cost ($T_{math}$) of profiled scenarios. The memory cost is computed as the total number of bytes read and written to memory divided by the measured average memory bandwidth. The math cost is the number of cycles the Streaming Multiprocessors were active divided by the measured average SM frequency.}
-    \label{fig:5-profiling-mem-vs-compute}
+  \centering
+  \begin{minipage}{0.50\textwidth}
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute-materialized.pdf}
+  \end{minipage}\hfill
+  \begin{minipage}{0.50\textwidth}
+    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/profiling-mem-vs-compute-factorized.pdf}
+  \end{minipage}
+  \caption[Memory cost vs math cost of profiled scenarios]{Memory cost ($T_{mem}$) vs compute cost ($T_{math}$) of profiled scenarios. The memory cost is computed as the total number of bytes read and written to memory divided by the measured average memory bandwidth. The math cost is the number of cycles the Streaming Multiprocessors were active divided by the measured average SM frequency.}
+  \label{fig:5-profiling-mem-vs-compute}
 \end{figure}
 
 \autoref{fig:5-profiling-mem-vs-compute} shows the relationship between memory time $T_{mem}$ and computation time $T_{math}$, revealing a strong correlation ($\rho = 0.99$). The data predominantly shows that the memory cost exceeds the computational cost, as most points lie below the $y=x$ line, indicating that the operations are memory-bound. This observation suggests that memory cost prediction should be prioritized in our cost estimation efforts. A notable distinction between factorization and materialization emerges when examining their correlation values; materialized cases exhibit a correlation of $\rho = 0.99$, while factorized cases show a significantly lower correlation of $\rho = 0.40$. This discrepancy arises because materialization typically involves handling a single matrix, or two in the case of matrix multiplication. On the contrary, the factorized case on the normalized matrix involves multiple matrices ($S_k,I_k,M_k, k \in \{1 \ldots n\}$), each contributing to different computations. Although this diversity lowers both the memory and the computation costs on average, it also results in a deviation from the $T_{mem} = T_{math}$ equilibrium, due to the sequential execution of computations on these matrices within the GPU.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-plot.pdf}
-    \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPS/byte) axes. Similar GPU types have similar distributions.}
-    \label{fig:5-roofline-plot}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-plot.pdf}
+  \caption[Roofline chart comparing F/M, per GPU]{Roofline chart showing where the performance of the GPUs lies in the memory-bound vs compute-bound spectrum. The subplots on top and right side of each figure show the distribution along the performance (GFLOPs) and operational intensity (FLOPS/byte) axes. Similar GPU types have similar distributions.}
+  \label{fig:5-roofline-plot}
 \end{figure}
 
 \subsubsection*{Roofline Model}
@@ -93,10 +93,10 @@ The roofline charts depicted in \autoref{fig:5-roofline-plot} validate that most
 The divergence between factorization and materialization highlighted in these graphs is insightful. Materialized operators exhibit lower arithmetic complexity than their factorized counterparts, as indicated in the top density plots. This suggests that factorized operators, on average, are less constrained by memory, allowing them to better leverage the computational resources of the GPU. However, the significant variability in performance achieved by factorized operators, as shown in the right density plots, is due to the sequential execution of operations on different matrix segments. There is potential for optimization here, which could allow these operators to more effectively utilize the GPU’s computational power.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-operators.pdf}
-    \caption[Roofline chart per operator]{Roofline chart comparing factorization and materialization for Left Matrix Multiplication, Left Scalar Multiplication and Row Summation Transpose. Metrics from NVIDIA A40.}
-    \label{fig:5-roofline-operators}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/roofline-operators.pdf}
+  \caption[Roofline chart per operator]{Roofline chart comparing factorization and materialization for Left Matrix Multiplication, Left Scalar Multiplication and Row Summation Transpose. Metrics from NVIDIA A40.}
+  \label{fig:5-roofline-operators}
 \end{figure}
 
 The roofline chart in \autoref{fig:5-roofline-operators} provides a detailed comparison of different operators, highlighting the distinctions between factorization and materialization. For Left Matrix Multiplication (LMM), the factorized approach exhibits large variance in performance, aligning with the previously mentioned use of a normalized matrix. Despite this variance, factorization generally appears to be advantageous for LMM, as indicated by the profiling metrics that suggest a more complete utilization of GPU resources. In contrast, the difference in performance between factorized and materialized cases for Left Scalar Multiplication is less pronounced. This is expected, since the factorized operation is simpler and involves only the multiplication of source matrices by a scalar. The right-most plot reveals a clear under utilization of GPU capabilities for Transpose Row Summation in the factorized form, compared to the materialized one. This suggests that while factorization can be beneficial for certain operations, it may not always be the most efficient use of GPU resources. For a comprehensive view of all operators, the full suite of roofline plots is available in \autoref{appendix:analysis-additional-figures}, providing insight into the performance dynamics of each operator.
@@ -109,31 +109,31 @@ This dataset, gathered through our comprehensive experiments, has a sample for e
 
 \subsection{Preprocessing Profiling Metrics}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/feature-engineering.pdf}
-    \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}. Description for the aggregation process (“1”) is in \autoref{sec:5-feature-engineering}.}
-    \label{fig:5-feature-enrichment}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/feature-engineering.pdf}
+  \caption[Feature enrichment workflow]{Workflow of enriching the collected data with additional features from the profiling experiments. Items related to these profiling experiments are \textbf{bolded}, while the features from the data, model \& hardware characteristics are \textit{italicized}. Description for the aggregation process (“1”) is in \autoref{sec:5-feature-engineering}.}
+  \label{fig:5-feature-enrichment}
 \end{figure}
 The feature engineering process begins with the integration of the profiling metrics into the dataset. This process, however, presents two significant challenges. The first challenge arises from the fact that these metrics are gathered at the kernel level, while our focus is on operator performance. To address this, we aggregate kernel-level metrics to reflect the performance of the entire scenario. The second challenge is the incomplete coverage of metrics, as they were collected for a subset of scenarios. The strategy for overcoming these obstacles is depicted in \autoref{fig:5-feature-enrichment} and is further detailed below.
 
 The procedure for aggregating kernel-level metrics to operator-level metrics is outlined as follows, and is also depicted in \autoref{fig:5-feature-enrichment}, marked by the “1”. For each scenario, we compute the sum of the metrics that are totals, i.e., the metrics with units of nanoseconds, bytes, or cycles (refer to \autoref{tab:4-profiling-metrics} for applicable metrics). The remaining metrics are either percentages or measures per second. For these metrics, we calculate the weighted average, where the weight is the kernel’s runtime. This ensures that the metrics accurately represent the total runtime of the scenario. This procedure yields precise operator-level metrics for each scenario.
 
 \begin{table}[ht]
-    \centering
-    \begin{tabular}{p{0.19\linewidth}p{0.37\linewidth}>{\footnotesize}p{0.35\linewidth}}
-        \toprule
-        Feature                                   & Formula                                                                                                 & Description                                                                                                                                       \\
-        \midrule\midrule
-        \texttt{dram\_bytes\_sum}                 & $\texttt{dram\_bytes\_read\_sum} + \texttt{dram\_bytes\_write\_sum}$                                    & Total number of bytes read and written to DRAM.                                                                                                   \\
-        $T_{mem}$                                 & $\frac{\texttt{dram\_bytes\_sum}}{\texttt{memory\_throughput\_byte\_weighted\_mean}}$                   & Total memory bytes divided by the achieved memory throughput. Gives the cost of the involved memory operators in seconds.                         \\
-        $T_{math}$                                & $\frac{\texttt{sm\_active\_cycles\_sum}}{\texttt{sm\_frequency\_weighted\_mean}}$                       & Total active cycles divided by the achieved frequency of the Streaming Multiprocessors. Gives the cost of the involved math operators in seconds. \\
-        \texttt{FLOPs}                            & $\frac{\texttt{compute\_throughput\_weighted\_mean}}{100} \times \text{\small{gpu\_processing\_power}}$ & Total number of FLOPs executed in the scenario. Processing power is for double precision.                                                         \\
-        \texttt{arithmetic\_-} \texttt{intensity} & $\frac{\texttt{FLOPs} \times \texttt{duration}}{\texttt{dram\_bytes\_sum}}$                             & The number of FLOPs executed per byte read or written to memory.                                                                                  \\
+  \centering
+  \begin{tabular}{p{0.19\linewidth}p{0.37\linewidth}>{\footnotesize}p{0.35\linewidth}}
+    \toprule
+    Feature                                   & Formula                                                                                                 & Description                                                                                                                                       \\
+    \midrule\midrule
+    \texttt{dram\_bytes\_sum}                 & $\texttt{dram\_bytes\_read\_sum} + \texttt{dram\_bytes\_write\_sum}$                                    & Total number of bytes read and written to DRAM.                                                                                                   \\
+    $T_{mem}$                                 & $\frac{\texttt{dram\_bytes\_sum}}{\texttt{memory\_throughput\_byte\_weighted\_mean}}$                   & Total memory bytes divided by the achieved memory throughput. Gives the cost of the involved memory operators in seconds.                         \\
+    $T_{math}$                                & $\frac{\texttt{sm\_active\_cycles\_sum}}{\texttt{sm\_frequency\_weighted\_mean}}$                       & Total active cycles divided by the achieved frequency of the Streaming Multiprocessors. Gives the cost of the involved math operators in seconds. \\
+    \texttt{FLOPs}                            & $\frac{\texttt{compute\_throughput\_weighted\_mean}}{100} \times \text{\small{gpu\_processing\_power}}$ & Total number of FLOPs executed in the scenario. Processing power is for double precision.                                                         \\
+    \texttt{arithmetic\_-} \texttt{intensity} & $\frac{\texttt{FLOPs} \times \texttt{duration}}{\texttt{dram\_bytes\_sum}}$                             & The number of FLOPs executed per byte read or written to memory.                                                                                  \\
 
-        \bottomrule
-    \end{tabular}
-    \caption[Derived features]{Overview of features computed from the profiling metrics. Features starting with "gpu" are constants for the specific GPU used.}
-    \label{tab:5-derived-features}
+    \bottomrule
+  \end{tabular}
+  \caption[Derived features]{Overview of features computed from the profiling metrics. Features starting with "gpu" are constants for the specific GPU used.}
+  \label{tab:5-derived-features}
 \end{table}
 
 The second issue relates to the fact that metrics are not collected for all scenarios. This is addressed by fitting a statistical model to the collected metrics and employing this model to predict the missing metrics. The model, denoted as $OperatorCost$ in \autoref{fig:5-feature-enrichment}, is an ensemble of linear regressors. It uses aggregated metrics, hardware characteristics, and data characteristics as features, with memory cost $T_{mem}$ as the target variable. Each combination of operator and training type (F/M) has its own linear regression model.
@@ -141,10 +141,10 @@ To enhance the model, we engineer an additional set of features derived from the
 The model is trained on a subset of the metrics collected and tested on the remaining metrics. Subsequently, the model is used to predict the missing metrics. This process is crucial to ensure that we have metrics for all scenarios, as the cost models require a complete dataset for training. The true versus predicted values of this model are depicted in \autoref{fig:5-analytical-regressor-fit}.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/analytical-regressor-fit.pdf}
-    \caption[Analytical model memory cost prediction vs. true values]{True $T_{mem}$ vs. predicted $T_{mem}$ for the analytical model's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
-    \label{fig:5-analytical-regressor-fit}
+  \centering
+  \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/analytical-regressor-fit.pdf}
+  \caption[Analytical model memory cost prediction vs. true values]{True $T_{mem}$ vs. predicted $T_{mem}$ for the analytical model's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
+  \label{fig:5-analytical-regressor-fit}
 \end{figure}
 
 \subsection{Model-level Math and Memory cost}
@@ -156,9 +156,9 @@ The complexity of an operator or model, as previously detailed, is equal to the 
 A subset of these features is presented in \autoref{tab:5-feature-subset}. The complete set of features is displayed in \autoref{appendix:features}. These features are used to train the cost models, as will be detailed in the subsequent section.
 
 \begin{table}[ht]
-    \input{chapters/05_cost_estimation/auto-generated/feature-table-subset.tex}
-    \caption[Feature table]{Table showing a subset of the base, and derived/engineered features used for training the cost models}
-    \label{tab:5-feature-subset}
+  \input{chapters/05_cost_estimation/auto-generated/feature-table-subset.tex}
+  \caption[Feature table]{Table showing a subset of the base, and derived/engineered features used for training the cost models}
+  \label{tab:5-feature-subset}
 \end{table}
 
 \section{Cost Models}
@@ -170,24 +170,24 @@ This section details the process of developing four different types of cost mode
 The decision whether to opt for factorization or materialization is a binary classification challenge. However, it is more important to accurately predict scenarios that save more time. Thus, we use regression models instead of classification models. This approach enables us to define the decision boundary, allowing greater flexibility in prioritizing scenarios with larger performance benefits.
 
 \subsubsection{Metrics to Assess Cost Model Performance}
-To assess the effectiveness of the cost models, we use a variety of metrics that offer insights into both the accuracy and efficiency of the models. Previous work \cite{schijndel_cost_estimation,orion_learning_gen_lin_models,MorpheusFI} predominantly uses the accuracy and speedup (performance ratio) to evaluate the efficacy of their cost estimation methods. However, due to the imbalanced nature of the dataset, where most scenarios lean toward materialization, accuracy is not an appropriate measure. Similarly, the performance ratio has its limitations since averaging the ratio of multiple scenarios into a single value may lead to information being lost, such as the amount of time saved, which is a more informative metric to evaluate the performance of cost models across various scenarios.
+To assess the effectiveness of the cost models, we use a variety of metrics that offer insights into both the accuracy and efficiency of the models. Previous work \cite{amalur_tkde24,orion_learning_gen_lin_models,MorpheusFI} predominantly uses the accuracy and speedup (performance ratio) to evaluate the efficacy of their cost estimation methods. However, due to the imbalanced nature of the dataset, where most scenarios lean toward materialization, accuracy is not an appropriate measure. Similarly, the performance ratio has its limitations since averaging the ratio of multiple scenarios into a single value may lead to information being lost, such as the amount of time saved, which is a more informative metric to evaluate the performance of cost models across various scenarios.
 
 \begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.5}
-    \resizebox{\textwidth}{!}{%
-        \begin{tabular}{p{0.2\linewidth}p{0.35\linewidth}p{0.4\linewidth}}
-            \toprule
-            Metric                      & Formula                                                                                       & Description                                                                           \\
-            \midrule\midrule
-            Time Saved                  & $\sum\text{Time}_M - \sum \text{Time}_F$ where Factorization is predicted to be faster        & The sum of the time saved for all positively predicted scenarios.                     \\
-            Maximum Possible Time Saved & $\sum \text{Time}_M - \sum \text{Time}_F$ where Factorization is faster                       & The maximum possible time that could be saved.                                        \\
-            Weighted Performance Ratio  & $\frac{\sum \text{Time}_M}{\sum \text{Time}_F}$ where Factorization is predicted to be faster & The ratio of the total materialization time to the total factorization time.          \\
-            Utility                     & $U = \frac{\text{Time Saved}}{\text{Max. Time Saved}}$                                        & The fraction of time saved when using this model, relative to the maximum time saved. \\
-            \bottomrule
-        \end{tabular}}
-    \caption{Metrics to Assess Cost Model Performance}
-    \label{tab:metrics}
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{p{0.2\linewidth}p{0.35\linewidth}p{0.4\linewidth}}
+      \toprule
+      Metric                      & Formula                                                                                       & Description                                                                           \\
+      \midrule\midrule
+      Time Saved                  & $\sum\text{Time}_M - \sum \text{Time}_F$ where Factorization is predicted to be faster        & The sum of the time saved for all positively predicted scenarios.                     \\
+      Maximum Possible Time Saved & $\sum \text{Time}_M - \sum \text{Time}_F$ where Factorization is faster                       & The maximum possible time that could be saved.                                        \\
+      Weighted Performance Ratio  & $\frac{\sum \text{Time}_M}{\sum \text{Time}_F}$ where Factorization is predicted to be faster & The ratio of the total materialization time to the total factorization time.          \\
+      Utility                     & $U = \frac{\text{Time Saved}}{\text{Max. Time Saved}}$                                        & The fraction of time saved when using this model, relative to the maximum time saved. \\
+      \bottomrule
+    \end{tabular}}
+  \caption{Metrics to Assess Cost Model Performance}
+  \label{tab:metrics}
 \end{table}
 
 
@@ -196,10 +196,10 @@ Consequently, we introduce a new metric, It is the difference between the sum of
 \subsection{Analytical}
 \label{subsec:5-analytical}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
-    \caption[Analytical model Architecture]{Architecture of the Analytical model. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function defined in \autoref{fig:5-feature-enrichment}.}
-    \label{fig:5-analytical-architecture}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/analytical-architecture.pdf}
+  \caption[Analytical model Architecture]{Architecture of the Analytical model. Shows the control flow of inputs to a final decision on whether to use factorization or materialization. $OperatorCost$ is the function defined in \autoref{fig:5-feature-enrichment}.}
+  \label{fig:5-analytical-architecture}
 \end{figure}
 
 As demonstrated in \autoref{sec:5-gpu-performance-analysis}, the runtime of the evaluated Machine Learning scenarios is primarily determined by the time required to read and write to memory. Consequently, to generate an accurate prediction of the execution time of a scenario, we can use the memory cost as a proxy measure, an approach adopted by this analytical model.
@@ -224,10 +224,10 @@ The evaluation results are presented in \autoref{fig:5-analytical-model-evaluati
 Both models save approximately $250$ seconds of the total $1670$ seconds of the validation set. When we break down the positively predicted cases by compute type, we find that a significant amount of time ($147$ seconds and $136$ seconds, respectively, as shown in \autoref{fig:5-model-cpu-gpu}) is lost due to false positives in CPU scenarios. So, these models are more accurate for GPU scenarios than for CPU scenarios, which aligns with our expectation, as we use memory cost as a model for runtime. We have demonstrated this to be a valid strategy for GPUs, but for CPUs, the runtime is predominantly determined by the number of Floating Point Operations Per Second (FLOPs) executed.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/analytical-models-compare.pdf}
-    \caption[Analytical Model Confusion Matrix]{Confusion matrix of the analytical models' performance on the test set (CPU and GPU on synthetic data). Decision boundaries set at $1.7$ and $10.0$ respectively. Adding time difference of the false positive cases and the true positive cases gives the total time saved by the model. For ANLY.1 this is 256s, for ANLY.2 it is 257s. }
-    \label{fig:5-analytical-model-evaluation}
+  \centering
+  \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/analytical-models-compare.pdf}
+  \caption[Analytical Model Confusion Matrix]{Confusion matrix of the analytical models' performance on the test set (CPU and GPU on synthetic data). Decision boundaries set at $1.7$ and $10.0$ respectively. Adding time difference of the false positive cases and the true positive cases gives the total time saved by the model. For ANLY.1 this is 256s, for ANLY.2 it is 257s. }
+  \label{fig:5-analytical-model-evaluation}
 \end{figure}
 
 
@@ -240,10 +240,10 @@ The architecture of each of the linear regression models is shown in \autoref{fi
 The architecture of each of the linear regression models is depicted in \autoref{fig:5-linear-regression-architecture}. In short, before training, the dataset is partitioned according to several categorical variables (operator type, hardware type, or F/M), or by filtering a portion of the dataset. Each final model comprises a set of Linear Regression models, each fit to a subset of the training data. For example, for LINR.3, we train two regressors: one for the factorization scenarios and the other for the materialization scenarios. During inference, each regressor is used to predict the runtime of the scenario under test. The output is the difference between the predicted materialized time and the predicted factorized time, which is used to estimate the time saved by opting for factorization over materialization. If a categorical variable is not used to divide the dataset, it is incorporated as a feature in the model.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/statistical-architecture.pdf}
-    \caption[Linear Regression model Architecture]{Architecture of the Linear Regression models. Shows how the data, and models, are split for each model. The final split-level belonging to each respective model is colored in the same color. For LINR.5 we show the linear regression ensemble fit to the data. For clarity, we leave this out for the other models. Each box represents a regression model, the same-colored boxes, connected via dotted lines, are combined into an ensemble to end up with the linear regression cost models.}
-    \label{fig:5-linear-regression-architecture}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/statistical-architecture.pdf}
+  \caption[Linear Regression model Architecture]{Architecture of the Linear Regression models. Shows how the data, and models, are split for each model. The final split-level belonging to each respective model is colored in the same color. For LINR.5 we show the linear regression ensemble fit to the data. For clarity, we leave this out for the other models. Each box represents a regression model, the same-colored boxes, connected via dotted lines, are combined into an ensemble to end up with the linear regression cost models.}
+  \label{fig:5-linear-regression-architecture}
 \end{figure}
 
 \subsubsection*{LINR.1 Linear Regressor Fit to Full Training Set}
@@ -270,10 +270,10 @@ The final, most granular, ensemble is one that has a distinct regressor for each
 
 \subsubsection{Linear Regression Model Evaluation}
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
-    \caption[Linear Regression Model Evaluation]{Evaluation of the linear regression models on the validation set (synthetic data, only models). The plots show statistics of those scenarios where the model predicts factorization to be faster. The plot on the left shows $\sum \text{Time}_M - \sum \text{Time}_F$, the total time saved across positively predicted scenarios. The right plots show $\frac{\text{Time}_M}{\text{Time}_F}$ highlighting that conservative models can result in high performance ratio's with a low amount of time saved, for example LINR.7.}
-    \label{fig:5-linear-regression-model-evaluation}
+  \centering
+  \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/stat-models-compare.pdf}
+  \caption[Linear Regression Model Evaluation]{Evaluation of the linear regression models on the validation set (synthetic data, only models). The plots show statistics of those scenarios where the model predicts factorization to be faster. The plot on the left shows $\sum \text{Time}_M - \sum \text{Time}_F$, the total time saved across positively predicted scenarios. The right plots show $\frac{\text{Time}_M}{\text{Time}_F}$ highlighting that conservative models can result in high performance ratio's with a low amount of time saved, for example LINR.7.}
+  \label{fig:5-linear-regression-model-evaluation}
 \end{figure}
 
 A performance comparison for the linear regression models is shown in \autoref{fig:5-linear-regression-model-evaluation}. We choose to highlight the cases where the model predicts factorization to be faster and evaluate the saved time in these cases. Overall, models that fit more distinct regressors perform better, showing that each of the chosen categorical variables impacts the F/M trade-off.
@@ -289,21 +289,21 @@ The third model type we evaluate is XGBoost \cite{xgboost}, specifically an \tex
 The third type of model we evaluate is XGBoost \cite{xgboost}, specifically an \texttt{XGBRegressor}\footnote{\url{https://xgboost.readthedocs.io/en/stable/python/python_api.html\#xgboost.XGBRegressor}}. This model is a gradient-boosting algorithm, an ensemble learning method that utilizes a series of decision trees. We employ XGBoost due to its demonstrated excellent performance in related cost prediction scenarios \cite{tvm}, as well as its excellent ability to handle unbalanced datasets \cite{xgboost_imbalanced_data}. The model is trained on a dataset identical to the linear regression models and employs the same features.
 
 \begin{table}[ht]
-    \centering
-    \begin{tabular}{llll}
-        \toprule
-        Model & Target     & Pruning       & Decision Boundary            \\
-        \midrule \midrule
-        XGB.1 & Runtime    & All operators & $Time_M > Time_F$            \\
-        XGB.2 & Runtime    & Only models   &                              \\
-        XGB.3 & Speedup    & All operators & $\texttt{speedup} > 1.0$     \\
-        XGB.4 & Speedup    & Only model    &                              \\
-        XGB.5 & Time saved & All operators & $\texttt{time\_saved} > 0.0$ \\
-        XGB.6 & Time saved & Only models   &                              \\
-        \bottomrule
-    \end{tabular}
-    \caption[XGBoost configurations]{Overview of the different configurations for the XGBoost models.}
-    \label{tab:5-xgboost-configurations}
+  \centering
+  \begin{tabular}{llll}
+    \toprule
+    Model & Target     & Pruning       & Decision Boundary            \\
+    \midrule \midrule
+    XGB.1 & Runtime    & All operators & $Time_M > Time_F$            \\
+    XGB.2 & Runtime    & Only models   &                              \\
+    XGB.3 & Speedup    & All operators & $\texttt{speedup} > 1.0$     \\
+    XGB.4 & Speedup    & Only model    &                              \\
+    XGB.5 & Time saved & All operators & $\texttt{time\_saved} > 0.0$ \\
+    XGB.6 & Time saved & Only models   &                              \\
+    \bottomrule
+  \end{tabular}
+  \caption[XGBoost configurations]{Overview of the different configurations for the XGBoost models.}
+  \label{tab:5-xgboost-configurations}
 \end{table}
 
 We explore a number of different configurations for this model. The models differ along two axes: their target variable, and whether all operators are included, or just the model operators, in the training dataset. The target variable can be the runtime of the scenario (one target for factorization, one for materialization), the speedup of a scenario, or the time saved by choosing factorization over materialization. The dataset can be pruned by only keeping training samples where the operator is one of the model types (K-Means, Logistic Regression, Linear Regression, or GNMF), or keeping all samples. By evaluating multiple models with different configurations, we aim to find the model that best captures the relationships between independent variables and the F/M trade-off. The overview of which model uses which configuration, and how the decision to materialize or factorize is made based on the predicted value(s), is shown in \autoref{tab:5-xgboost-configurations}.
@@ -311,10 +311,10 @@ We explore a number of different configurations for this model. The models diffe
 We explore a variety of configurations for this model, varying along two dimensions: their target variable, and whether all operators are included, or just the model operators, in the training dataset. The target variable is either the runtime of the scenario (with separate targets for factorized and materialized), the speedup of a scenario, or the time saved by opting for factorization over materialization. The dataset can be pruned to retain only training samples, where the operator is one of the model types (K-Means, Logistic Regression, Linear Regression, or GNMF), or all samples can be retained. By evaluating multiple models with different configurations, we aim to identify the model that best captures the relationships between independent variables and the factorization/materialization (F/M) trade-off. An overview of which model uses which configuration and how the decision to materialize or factorize is made based on the predicted value(s), is presented in \autoref{tab:5-xgboost-configurations}.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
-    \caption[XGBoost model Comparison]{Evaluation of the XGBoost models on the validation set.}
-    \label{fig:5-xgboost-evaluation}
+  \centering
+  \includegraphics[width=\linewidth]{chapters/05_cost_estimation/figures/xgb-models-compare.pdf}
+  \caption[XGBoost model Comparison]{Evaluation of the XGBoost models on the validation set.}
+  \label{fig:5-xgboost-evaluation}
 \end{figure}
 
 A comparative evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, these models, being more complex, outperform the linear regression models. Among the XGB models, there is minimal variation in performance on the validation set. There are no significant differences in performance based on the target variable used or whether all operators are included in the training set. XGB.3, which predicts the speedup of factorization over materialization, marginally exceeds the other models, accurately predicting 98\% of the validation scenarios.
@@ -326,10 +326,10 @@ The performance of the two most effective models for each type is illustrated in
 Interestingly, when we dissect the performance by compute type, the XGBoost models perform significantly better on GPU scenarios than on CPU scenarios, whereas LINR.5 performs better on CPU scenarios. This can be attributed to the fact that LINR.5 comprises two separate regressors, one for the CPU and one for the GPU, enabling it to capture the differences in the relationships between independent variables and runtime for each compute type. The process of combining these models to create a more accurate hybrid model is discussed in the following section.
 
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/compare_gpu_vs_cpu.pdf}
-    \caption[Cost Model Comparison Broken Down by Compute Type]{Comparison of the best models, broken down by compute type. Evaluated on the test set.}
-    \label{fig:5-model-cpu-gpu}
+  \centering
+  \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/compare_gpu_vs_cpu.pdf}
+  \caption[Cost Model Comparison Broken Down by Compute Type]{Comparison of the best models, broken down by compute type. Evaluated on the test set.}
+  \label{fig:5-model-cpu-gpu}
 \end{figure}
 
 \subsubsection{Combining Cost Models}
@@ -350,20 +350,20 @@ Arguably, the most crucial factor other than performance, is inference speed, as
 The final aspect is performance, which was discussed in the previous section.
 
 \begin{table}[ht]
-    \centering
-    \begin{tabular}{lllll}
-        \toprule
-        Model             & Training time & Extensibility & Inference Speed & Performance \\
-        \midrule
-        Analytical 1      & Slow          & Easy          & Slow            & Bad         \\
-        Analytical 2      & --            & Easy          & Quick           & Bad         \\
-        Linear Regression & Fast          & Difficult     & Quick           & Bad         \\
-        XGBoost           & Medium        & Difficult     & Medium          & Mediocre    \\
-        Hybrid            & Medium        & Difficult     & Medium          & Good        \\
-        \bottomrule
-    \end{tabular}
-    \caption{Qualitative comparison of the different models.}
-    \label{tab:5-meta-results}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Model             & Training time & Extensibility & Inference Speed & Performance \\
+    \midrule
+    Analytical 1      & Slow          & Easy          & Slow            & Bad         \\
+    Analytical 2      & --            & Easy          & Quick           & Bad         \\
+    Linear Regression & Fast          & Difficult     & Quick           & Bad         \\
+    XGBoost           & Medium        & Difficult     & Medium          & Mediocre    \\
+    Hybrid            & Medium        & Difficult     & Medium          & Good        \\
+    \bottomrule
+  \end{tabular}
+  \caption{Qualitative comparison of the different models.}
+  \label{tab:5-meta-results}
 \end{table}
 
 \subsection{Evaluating Feature Importance}
@@ -372,10 +372,10 @@ To determine which characteristics are most influential in the factorization/mat
 
 We present the gain of the ten most influential features of the XGBoost model in \autoref{fig:5-gpu-feature-importance}. The gain quantifies the impact of a feature based on its contribution to reducing training error in the underlying decision trees. It can be interpreted as a measure of the influence a feature exerts on the model's prediction, which is insightful, as we are interested in identifying which features most significantly impact the F/M trade-off.
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgboost-feat-importance.pdf}
-    \caption[Feature importances of the hybrid model]{Feature importances of the Hybrid model, XGBoost (GPU) leg.}
-    \label{fig:5-gpu-feature-importance}
+  \centering
+  \includegraphics[width=0.75\linewidth]{chapters/05_cost_estimation/figures/xgboost-feat-importance.pdf}
+  \caption[Feature importances of the hybrid model]{Feature importances of the Hybrid model, XGBoost (GPU) leg.}
+  \label{fig:5-gpu-feature-importance}
 \end{figure}
 
 From the figure we can deduce that the model type is the most impactful. This aligns with the results shown in \autoref{sec:5-motivation}, where we demonstrate that the choice of model significantly influences the F/M trade-off. Due to the operators used in each model, the speedup varies considerably between models, even when applied to the same dataset. For instance, factorized Gaussian training is beneficial twice as often compared to factorized KMeans. Other important features include data characteristics such as the number of rows in tables ($r_{S_1}, r_T$), features related to the number of zeros in a table ($e_T, nnz(S)$), or features related to the differences between the materialized and factorized case ($\rho, \frac{FLOP_M}{FLOP_F}$). We observe that although the relationship between complexity and speedup was not as clear in \autoref{sec:5-motivation}, features related to the number of operations are important, even when considering only GPUs. This is evident from the relatively high gain of the materialized and scalar complexity. This is logical, as scalar operations have high speed-ups compared to other operators.

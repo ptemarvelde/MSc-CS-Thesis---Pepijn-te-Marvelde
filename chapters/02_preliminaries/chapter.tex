@@ -13,10 +13,10 @@ In order to comprehend the significance and complexities of Factorized Machine L
 However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges \cite{data-management-in-ML-kumar-2017}.
 
 \begin{enumerate}
-    \item \textbf{Extra storage}\\ The joined dataset will take extra space to store.
-    \item \textbf{Computational redundancy} \\ Joining tables can introduce duplication of values in the materialized data (shown in orange in \autoref{fig:running-example-fac-vs-mat}). These values are included in any computations made during the training of an ML model in this dataset, resulting in duplicate computations.
-    \item \textbf{Join time} \\For complex scenarios, joining datasets can take a significant amount of time.
-    \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
+  \item \textbf{Extra storage}\\ The joined dataset will take extra space to store.
+  \item \textbf{Computational redundancy} \\ Joining tables can introduce duplication of values in the materialized data (shown in orange in \autoref{fig:running-example-fac-vs-mat}). These values are included in any computations made during the training of an ML model in this dataset, resulting in duplicate computations.
+  \item \textbf{Join time} \\For complex scenarios, joining datasets can take a significant amount of time.
+  \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
 Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins'' \cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
@@ -26,16 +26,16 @@ Schema mapping is an integral step in the Data Integration process and thus to F
 
 For the running example the schema mapping is as follows:
 \begin{alignat*}{2}
-    \intertext{Given source datasets, with abbreviated column names:}
-     & o=order\_id, c=customer\_id, d=date,                           \\
-     & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity   \\
-     & S_1(o, c, d)                                                   \\
-     & S_2(o, p_{id} , q,  p)                                         \\
-     & S_3(o, p_{id}, rq)                                           & \\
-    \intertext{The mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$ on $S_{2}.o=S_{3}.o$ and $S_{2}.p_{id}=S_{3}.p_{id}$ to get an intermediate table with schema:}
-     & T(o, p_{id}, q, p, rq)                                         \\
-    \intertext{Next, we inner join this with $S_1$ to get the final table $T$:}
-     & T(o, c, d, p_{id}, q, p, rq)                                   \\
+  \intertext{Given source datasets, with abbreviated column names:}
+   & o=order\_id, c=customer\_id, d=date,                           \\
+   & p_{id}=product\_id, q=quantity, p=price, rq=return\_quantity   \\
+   & S_1(o, c, d)                                                   \\
+   & S_2(o, p_{id} , q,  p)                                         \\
+   & S_3(o, p_{id}, rq)                                           & \\
+  \intertext{The mapping to target table $T$ can be specified as follows. First, we left join $S_2$ with $S_3$ on $S_{2}.o=S_{3}.o$ and $S_{2}.p_{id}=S_{3}.p_{id}$ to get an intermediate table with schema:}
+   & T(o, p_{id}, q, p, rq)                                         \\
+  \intertext{Next, we inner join this with $S_1$ to get the final table $T$:}
+   & T(o, c, d, p_{id}, q, p, rq)                                   \\
 \end{alignat*}
 
 
@@ -70,13 +70,13 @@ The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent
 The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how source columns map to target columns. A value of 1 in this matrix indicates that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
 
 \begin{definition}[\textit{Mapping matrix} \cite{amalur}]
-    Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
-    \begin{align*}
-        M_k[i,j] = \begin{cases}
-                       1, & \text{if $j$-th column of $S_k$ is mapped to the $i$-th column of $T$} \\
-                       0, & \text{otherwise}
-                   \end{cases}
-    \end{align*}
+  Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
+  \begin{align*}
+    M_k[i,j] = \begin{cases}
+                 1, & \text{if $j$-th column of $S_k$ is mapped to the $i$-th column of $T$} \\
+                 0, & \text{otherwise}
+               \end{cases}
+  \end{align*}
 \end{definition}
 
 Note that in the case that there is no column overlap between source tables this Mapping Matrix is redundant. This affects the materialization step, as shown in \autoref{def:materialization}.
@@ -86,203 +86,203 @@ Note that in the case that there is no column overlap between source tables this
 Now that we have defined how to map the columns from the source tables to the target table, we need to do the same for the rows. This is done with the \textbf{Indicator} matrix.
 
 \begin{definition}[\textit{Indicator matrix} \cite{morpheus}]
-    Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape $r_T \times r_{S_k}$, where
-    \begin{align*}
-        I_k[i,j] = \begin{cases}
-                       1, & \text{if $i$-th row of $S_k$ is mapped to the $j$-th row of $T$} \\
-                       0, & \text{otherwise}
-                   \end{cases}
-    \end{align*}
+  Each source table $S_k$ has a corresponding binary Indicator matrix $I$ of shape $r_T \times r_{S_k}$, where
+  \begin{align*}
+    I_k[i,j] = \begin{cases}
+                 1, & \text{if $i$-th row of $S_k$ is mapped to the $j$-th row of $T$} \\
+                 0, & \text{otherwise}
+               \end{cases}
+  \end{align*}
 \end{definition}
 
 \subsubsection{Materialization}
 Using the normalized matrix, we can now \textbf{materialize} the join to obtain the target matrix $T$:
 
 \begin{definition}[\textit{Materializing the Normalized Matrix to obtain Target matrix $T$}]
-    \begin{itemize}
-        \item[]
-        \item[] Given
-        \item[$k$] Table id $k \in [1,n]$
-        \item[$S_k$] Source tables
-        \item[$M_k$] Mapping matrices
-        \item[$I_k$] Indicator matrices
-    \end{itemize}
-    \[
-        T = \begin{cases}
-            \sum_{k=1}^n  I_k S_k M^T_k,  & \text{if there is column overlap between source tables} \\
-            \begin{bNiceMatrix}
-                \vdots  & \vdots & \vdots  \\
-                I_1 S_1 & \cdots & I_n S_n \\
-                \vdots  & \vdots & \vdots  \\
-            \end{bNiceMatrix}, & \text{otherwise}
-        \end{cases}
-    \]
-    \label{def:materialization}
+  \begin{itemize}
+    \item[]
+    \item[] Given
+    \item[$k$] Table id $k \in [1,n]$
+    \item[$S_k$] Source tables
+    \item[$M_k$] Mapping matrices
+    \item[$I_k$] Indicator matrices
+  \end{itemize}
+  \[
+    T = \begin{cases}
+      \sum_{k=1}^n  I_k S_k M^T_k,  & \text{if there is column overlap between source tables} \\
+      \begin{bNiceMatrix}
+        \vdots  & \vdots & \vdots  \\
+        I_1 S_1 & \cdots & I_n S_n \\
+        \vdots  & \vdots & \vdots  \\
+      \end{bNiceMatrix}, & \text{otherwise}
+    \end{cases}
+  \]
+  \label{def:materialization}
 
 \end{definition}
 
 The materialization case when there is no column overlap is a horizontal concatenation of each source matrix $S_k$ multiplied by $I_k$: $I_k S_k, k \in [1,n]$. Intuitively the materialization process can be seen as:
 \begin{algorithmic}
-    \ForEach {$k \in [1,n]$} \Comment{For each source table}
-    \State $rows_k \gets I_k S_k$ \Comment{Map the source table rows to the target table}
-    \State $T_k \gets rows_k M^T_k$ \Comment{Map the source table columns to the target table}
-    \EndFor
-    \State $T \gets \sum_{k=1}^{n} T_k$ \Comment{Sum the results}
+  \ForEach {$k \in [1,n]$} \Comment{For each source table}
+  \State $rows_k \gets I_k S_k$ \Comment{Map the source table rows to the target table}
+  \State $T_k \gets rows_k M^T_k$ \Comment{Map the source table columns to the target table}
+  \EndFor
+  \State $T \gets \sum_{k=1}^{n} T_k$ \Comment{Sum the results}
 \end{algorithmic}
 
 \subsubsection{Running Example: Normalized Matrix}
 \label{subsubsec:2-fac-ml-example}
 To translate the normalized matrix to how it is used in ML algorithms, we first show the full normalized matrix of the running example, followed by the materialized Target table $T$. The goal is to show how the matrices interact to allow computation with all information without necessarily materializing the join. For completeness, we show the calculations with the Mapping matrices $M_k$ included, but as highlighted before, this is not needed due to this scenario having no column overlap. However, it is insightful to show as it gives an idea of how this process looks when there is column overlap.
 \begin{alignat*}{6}
-    \intertext{
-        These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
-    }
-                                                            & S_1 &     & =
-    \begin{bNiceMatrix}[first-row,last-col]
-        0 & 1  & 2    &     \\
-        1 & 11 & 2024 & 0,1 \\
-        2 & 12 & 2024 & 2   \\
-        3 & 11 & 2024 & 3   \\
-    \end{bNiceMatrix}   \quad                 &     & S_2 &   & =
-    \begin{bNiceMatrix}[first-row,last-col]
-        3 & 4  & 5  &   \\
-        2 & 20 & 40 & 0 \\
-        1 & 25 & 25 & 1 \\
-        3 & 13 & 39 & 2 \\
-        1 & 10 & 10 & 3 \\
-    \end{bNiceMatrix}           \quad                 &     & S_3 &   & =
-    \begin{bNiceMatrix}[first-row,last-col]
-        6 &   \\
-        1 & 3 \\
-    \end{bNiceMatrix}                                  \\
-    \intertext{
-        The Indicator matrices denote how rows from $S$ map to rows in $T$. The column number denotes the row in $S$, the row number denotes the row in $T$. The \textcolor{RoyalBlue}{blue} annotations show more clearly how this works in the form \textcolor{RoyalBlue}{row number in $S_k \rightarrow$ row number in $T$}.
-    }
-                                                            & I_1 &     & =
-    \begin{bNiceMatrix}[last-col]
-        1 & 0 & 0 & 0 \rightarrow 0 \\
-        1 & 0 & 0 & 0 \rightarrow 1 \\
-        0 & 1 & 0 & 1 \rightarrow 2 \\
-        0 & 0 & 1 & 2 \rightarrow 3 \\
-    \end{bNiceMatrix}   \quad                          &     & I_2 &   & =
-    \begin{bNiceMatrix}[last-col]
-        1 & 0 & 0 & 0 & 0 \rightarrow 0 \\
-        0 & 1 & 0 & 0 & 1 \rightarrow 1 \\
-        0 & 0 & 1 & 0 & 2 \rightarrow 2 \\
-        0 & 0 & 0 & 1 & 3 \rightarrow 3 \\
-    \end{bNiceMatrix}     \quad                      &     & I_3 &   & =
-    \begin{bNiceMatrix}[last-col]
-        0 & \rightarrow 0   \\
-        0 & \rightarrow 1   \\
-        0 & \rightarrow 2   \\
-        1 & 0 \rightarrow 3 \\
-    \end{bNiceMatrix}                                            \\
-    \intertext{
-        The Mapping matrices denote how columns from $S$ map to columns in $T$. The row number denotes the column in $T$, the column number denotes the column in $S$. The \textcolor{BurntOrange}{orange} annotations show this in the form: \textcolor{BurntOrange}{column number in $S_k \rightarrow$ column number in $T$}.
-    }
-                                                            & M_1 &     & =
-    \begin{bNiceMatrix}[last-col]
-        1 & 0 & 0 & \textcolor{BurntOrange}{0 \rightarrow 0} \\
-        0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 1} \\
-        0 & 0 & 1 & \textcolor{BurntOrange}{2 \rightarrow 2} \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 3}   \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 4}   \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 5}   \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
-    \end{bNiceMatrix}   \quad &     & M_2 &   & =
-    \begin{bNiceMatrix}[last-col]
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 2}   \\
-        1 & 0 & 0 & \textcolor{BurntOrange}{0 \rightarrow 3} \\
-        0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 4} \\
-        0 & 0 & 1 & \textcolor{BurntOrange}{2 \rightarrow 5} \\
-        0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
-    \end{bNiceMatrix} \quad &     & M_3 &   & =
-    \begin{bNiceMatrix}[last-col]
-        0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
-        0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
-        0 & \textcolor{BurntOrange}{\rightarrow 2}   \\
-        0 & \textcolor{BurntOrange}{\rightarrow 3}   \\
-        0 & \textcolor{BurntOrange}{\rightarrow 4}   \\
-        0 & \textcolor{BurntOrange}{\rightarrow 5}   \\
-        1 & \textcolor{BurntOrange}{0 \rightarrow 6} \\
-    \end{bNiceMatrix}
+  \intertext{
+    These are the corresponding Source matrices $S_{1..3}$ for the source tables shown in \autoref{fig:running-example-fac-vs-mat}. The \textcolor{BurntOrange}{orange} numbers over the columns denote in which column of $T$ they will end up. The \textcolor{RoyalBlue}{blue} numbers at the end of each row illustrate to which target table rows they are mapped.
+  }
+                                                          & S_1 &     & =
+  \begin{bNiceMatrix}[first-row,last-col]
+    0 & 1  & 2    &     \\
+    1 & 11 & 2024 & 0,1 \\
+    2 & 12 & 2024 & 2   \\
+    3 & 11 & 2024 & 3   \\
+  \end{bNiceMatrix}   \quad                 &     & S_2 &   & =
+  \begin{bNiceMatrix}[first-row,last-col]
+    3 & 4  & 5  &   \\
+    2 & 20 & 40 & 0 \\
+    1 & 25 & 25 & 1 \\
+    3 & 13 & 39 & 2 \\
+    1 & 10 & 10 & 3 \\
+  \end{bNiceMatrix}           \quad                 &     & S_3 &   & =
+  \begin{bNiceMatrix}[first-row,last-col]
+    6 &   \\
+    1 & 3 \\
+  \end{bNiceMatrix}                                  \\
+  \intertext{
+    The Indicator matrices denote how rows from $S$ map to rows in $T$. The column number denotes the row in $S$, the row number denotes the row in $T$. The \textcolor{RoyalBlue}{blue} annotations show more clearly how this works in the form \textcolor{RoyalBlue}{row number in $S_k \rightarrow$ row number in $T$}.
+  }
+                                                          & I_1 &     & =
+  \begin{bNiceMatrix}[last-col]
+    1 & 0 & 0 & 0 \rightarrow 0 \\
+    1 & 0 & 0 & 0 \rightarrow 1 \\
+    0 & 1 & 0 & 1 \rightarrow 2 \\
+    0 & 0 & 1 & 2 \rightarrow 3 \\
+  \end{bNiceMatrix}   \quad                          &     & I_2 &   & =
+  \begin{bNiceMatrix}[last-col]
+    1 & 0 & 0 & 0 & 0 \rightarrow 0 \\
+    0 & 1 & 0 & 0 & 1 \rightarrow 1 \\
+    0 & 0 & 1 & 0 & 2 \rightarrow 2 \\
+    0 & 0 & 0 & 1 & 3 \rightarrow 3 \\
+  \end{bNiceMatrix}     \quad                      &     & I_3 &   & =
+  \begin{bNiceMatrix}[last-col]
+    0 & \rightarrow 0   \\
+    0 & \rightarrow 1   \\
+    0 & \rightarrow 2   \\
+    1 & 0 \rightarrow 3 \\
+  \end{bNiceMatrix}                                            \\
+  \intertext{
+    The Mapping matrices denote how columns from $S$ map to columns in $T$. The row number denotes the column in $T$, the column number denotes the column in $S$. The \textcolor{BurntOrange}{orange} annotations show this in the form: \textcolor{BurntOrange}{column number in $S_k \rightarrow$ column number in $T$}.
+  }
+                                                          & M_1 &     & =
+  \begin{bNiceMatrix}[last-col]
+    1 & 0 & 0 & \textcolor{BurntOrange}{0 \rightarrow 0} \\
+    0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 1} \\
+    0 & 0 & 1 & \textcolor{BurntOrange}{2 \rightarrow 2} \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 3}   \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 4}   \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 5}   \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
+  \end{bNiceMatrix}   \quad &     & M_2 &   & =
+  \begin{bNiceMatrix}[last-col]
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 2}   \\
+    1 & 0 & 0 & \textcolor{BurntOrange}{0 \rightarrow 3} \\
+    0 & 1 & 0 & \textcolor{BurntOrange}{1 \rightarrow 4} \\
+    0 & 0 & 1 & \textcolor{BurntOrange}{2 \rightarrow 5} \\
+    0 & 0 & 0 & \textcolor{BurntOrange}{\rightarrow 6}   \\
+  \end{bNiceMatrix} \quad &     & M_3 &   & =
+  \begin{bNiceMatrix}[last-col]
+    0 & \textcolor{BurntOrange}{\rightarrow 0}   \\
+    0 & \textcolor{BurntOrange}{\rightarrow 1}   \\
+    0 & \textcolor{BurntOrange}{\rightarrow 2}   \\
+    0 & \textcolor{BurntOrange}{\rightarrow 3}   \\
+    0 & \textcolor{BurntOrange}{\rightarrow 4}   \\
+    0 & \textcolor{BurntOrange}{\rightarrow 5}   \\
+    1 & \textcolor{BurntOrange}{0 \rightarrow 6} \\
+  \end{bNiceMatrix}
 \end{alignat*}
 \begin{gather*}
-    \begin{alignat*}{4}
-        \intertext{For conciseness we show the calculation of one of the sub-target tables $T_1$.}
-                            & T_1 &       & = I_1                 &  & S_1 &  & M_1^T                   \\
-                            & T_1 &       & = \begin{bNiceMatrix}
-                                                  1 & 0 & 0 \\
-                                                  1 & 0 & 0 \\
-                                                  0 & 1 & 0 \\
-                                                  0 & 0 & 1 \\
-                                              \end{bNiceMatrix} &  &
-        \begin{bNiceMatrix}
-            1 & 11 & 2024 \\
-            2 & 12 & 2024 \\
-            3 & 11 & 2024 \\
-        \end{bNiceMatrix} &     & M_1^T                                                                 \\
-                            & T_1 &       & = \begin{bNiceMatrix}
-                                                  1 & 11 & 2024 \\
-                                                  1 & 11 & 2024 \\
-                                                  2 & 12 & 2024 \\
-                                                  3 & 11 & 2023 \\
-                                              \end{bNiceMatrix} &  &     &  & \begin{bNiceMatrix}
-                                                                                  1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                                                                                  0 & 1 & 0 & 0 & 0 & 0 & 0 \\
-                                                                                  0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-                                                                              \end{bNiceMatrix} \\
-    \end{alignat*}\\
-    \hspace{-4cm}
-    T_1  = \begin{bNiceMatrix}
-        \Block[fill=red!15,rounded-corners]{4-3}{}
-        1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
-        1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
-        2 & 12 & 2024 & 0 & 0 & 0 & 0 \\
-        3 & 11 & 2023 & 0 & 0 & 0 & 0 \\
-    \end{bNiceMatrix}
+  \begin{alignat*}{4}
+    \intertext{For conciseness we show the calculation of one of the sub-target tables $T_1$.}
+                        & T_1 &       & = I_1                 &  & S_1 &  & M_1^T                   \\
+                        & T_1 &       & = \begin{bNiceMatrix}
+                                            1 & 0 & 0 \\
+                                            1 & 0 & 0 \\
+                                            0 & 1 & 0 \\
+                                            0 & 0 & 1 \\
+                                          \end{bNiceMatrix} &  &
+    \begin{bNiceMatrix}
+      1 & 11 & 2024 \\
+      2 & 12 & 2024 \\
+      3 & 11 & 2024 \\
+    \end{bNiceMatrix} &     & M_1^T                                                                 \\
+                        & T_1 &       & = \begin{bNiceMatrix}
+                                            1 & 11 & 2024 \\
+                                            1 & 11 & 2024 \\
+                                            2 & 12 & 2024 \\
+                                            3 & 11 & 2023 \\
+                                          \end{bNiceMatrix} &  &     &  & \begin{bNiceMatrix}
+                                                                            1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+                                                                            0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+                                                                            0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+                                                                          \end{bNiceMatrix} \\
+  \end{alignat*}\\
+  \hspace{-4cm}
+  T_1  = \begin{bNiceMatrix}
+    \Block[fill=red!15,rounded-corners]{4-3}{}
+    1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
+    1 & 11 & 2024 & 0 & 0 & 0 & 0 \\
+    2 & 12 & 2024 & 0 & 0 & 0 & 0 \\
+    3 & 11 & 2023 & 0 & 0 & 0 & 0 \\
+  \end{bNiceMatrix}
 \end{gather*}
 
 \begingroup
 \setlength{\arraycolsep}{4.5pt}
 \begin{alignat*}{2}
-    \intertext{
-        The materialized Target table $T$ is the element wise sum of the dot product of each tuple of Indicator, Source, and Mapping matrices. For each source table $S_k$ the intermittent result is shown as $T_k$. For clarity the cells from each source table are colored in the same color in the intermittent result and in Target table $T$.
-    }
-     & T_1= I_1 S_1 M_1^T &  & = \begin{bNiceMatrix}[first-row]
-                                     0 & 1  & 2    & 3 & \cdots & 6 \\
-                                     \Block[fill=red!15,rounded-corners]{4-3}{}
-                                     1 & 11 & 2024 & 0 & \cdots & 0 \\
-                                     1 & 11 & 2024 & 0 & \cdots & 0 \\
-                                     2 & 12 & 2024 & 0 & \cdots & 0 \\
-                                     3 & 11 & 2023 & 0 & \cdots & 0 \\
-                                 \end{bNiceMatrix}
-    T_2= I_2 S_2 M_2^T= \begin{bNiceMatrix}[first-row]
-                            0 & 1 & 2 & 3                                             & 4  & 5  & 6 \\
-                            0 & 0 & 0 & \Block[fill=blue!15,rounded-corners]{4-3}{} 2 & 20 & 40 & 0 \\
-                            0 & 0 & 0 & 1                                             & 25 & 25 & 0 \\
-                            0 & 0 & 0 & 3                                             & 13 & 39 & 0 \\
-                            0 & 0 & 0 & 1                                             & 10 & 10 & 0 \\
-                        \end{bNiceMatrix}
-    \\
-     & T_3= I_3 S_3 M_3^T &  & = \begin{bNiceMatrix}[first-row]
-                                     0 & \cdots & 5 & 6                                              \\
-                                     0 & \cdots & 0 & 0                                              \\
-                                     0 & \cdots & 0 & 0                                              \\
-                                     0 & \cdots & 0 & 0                                              \\
-                                     0 & \cdots & 0 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 \\
-                                 \end{bNiceMatrix}
-    T  = \sum_{k=1}^{3} I_k S_k M^T_k =  \begin{bNiceMatrix}[first-row,last-col]
-                                             0 & 1  & 2    & 3                                           & 4  & 5  & 6                                                  \\
-                                             \Block[fill=red!15,rounded-corners]{4-3}{}
-                                             1 & 11 & 2024 & \Block[fill=blue!15,rounded-corners]{4-3}{}
-                                             2 & 20 & 40   & 0                                           & 0                                                            \\
-                                             1 & 11 & 2024 & 1                                           & 25 & 25 & 0                                              & 1 \\
-                                             2 & 12 & 2024 & 3                                           & 13 & 39 & 0                                              & 2 \\
-                                             3 & 11 & 2024 & 1                                           & 10 & 10 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 & 3 \\
-                                         \end{bNiceMatrix}
+  \intertext{
+    The materialized Target table $T$ is the element wise sum of the dot product of each tuple of Indicator, Source, and Mapping matrices. For each source table $S_k$ the intermittent result is shown as $T_k$. For clarity the cells from each source table are colored in the same color in the intermittent result and in Target table $T$.
+  }
+   & T_1= I_1 S_1 M_1^T &  & = \begin{bNiceMatrix}[first-row]
+                                 0 & 1  & 2    & 3 & \cdots & 6 \\
+                                 \Block[fill=red!15,rounded-corners]{4-3}{}
+                                 1 & 11 & 2024 & 0 & \cdots & 0 \\
+                                 1 & 11 & 2024 & 0 & \cdots & 0 \\
+                                 2 & 12 & 2024 & 0 & \cdots & 0 \\
+                                 3 & 11 & 2023 & 0 & \cdots & 0 \\
+                               \end{bNiceMatrix}
+  T_2= I_2 S_2 M_2^T= \begin{bNiceMatrix}[first-row]
+                        0 & 1 & 2 & 3                                             & 4  & 5  & 6 \\
+                        0 & 0 & 0 & \Block[fill=blue!15,rounded-corners]{4-3}{} 2 & 20 & 40 & 0 \\
+                        0 & 0 & 0 & 1                                             & 25 & 25 & 0 \\
+                        0 & 0 & 0 & 3                                             & 13 & 39 & 0 \\
+                        0 & 0 & 0 & 1                                             & 10 & 10 & 0 \\
+                      \end{bNiceMatrix}
+  \\
+   & T_3= I_3 S_3 M_3^T &  & = \begin{bNiceMatrix}[first-row]
+                                 0 & \cdots & 5 & 6                                              \\
+                                 0 & \cdots & 0 & 0                                              \\
+                                 0 & \cdots & 0 & 0                                              \\
+                                 0 & \cdots & 0 & 0                                              \\
+                                 0 & \cdots & 0 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 \\
+                               \end{bNiceMatrix}
+  T  = \sum_{k=1}^{3} I_k S_k M^T_k =  \begin{bNiceMatrix}[first-row,last-col]
+                                         0 & 1  & 2    & 3                                           & 4  & 5  & 6                                                  \\
+                                         \Block[fill=red!15,rounded-corners]{4-3}{}
+                                         1 & 11 & 2024 & \Block[fill=blue!15,rounded-corners]{4-3}{}
+                                         2 & 20 & 40   & 0                                           & 0                                                            \\
+                                         1 & 11 & 2024 & 1                                           & 25 & 25 & 0                                              & 1 \\
+                                         2 & 12 & 2024 & 3                                           & 13 & 39 & 0                                              & 2 \\
+                                         3 & 11 & 2024 & 1                                           & 10 & 10 & \Block[fill=orange!15,rounded-corners]{1-1}{}1 & 3 \\
+                                       \end{bNiceMatrix}
 \end{alignat*}
 \endgroup
 
@@ -294,42 +294,42 @@ In the previous section, we have shown the properties of the Normalized matrix. 
 \subsubsection{Element-wise Scalar Operations}
 This group of operators perform an operation on every element of a matrix independently of each other. The arithmetic operations are: $+$, $-$, $\times$, $\div$ and $ ^\wedge $ (these operators are denoted by $\oslash$). This can be seen as a scalar function $f$ applied to each element of a matrix $T$. The rewrite rule therefore is very simple for these arithmetic operators, as well as for any other scalar function (e.g., $log$, $round$) $f$:
 \begin{alignat*}{2}
-    x \oslash T & \rightarrow [x \oslash S, I, M] \\
-    T \oslash x & \rightarrow [S \oslash x, I, M]
-    \intertext{or more generally:}
-    f(T)        & \rightarrow [f(S), I, M]
+  x \oslash T & \rightarrow [x \oslash S, I, M] \\
+  T \oslash x & \rightarrow [S \oslash x, I, M]
+  \intertext{or more generally:}
+  f(T)        & \rightarrow [f(S), I, M]
 \end{alignat*}
 
-These operations all return a normalized matrix and can thus be performed without materializing the join between the source tables. In the used implementation \cite{schijndel_cost_estimation}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
+These operations all return a normalized matrix and can thus be performed without materializing the join between the source tables. In the used implementation \cite{amalur_tkde24}, when a normalized matrix is transposed, the actual computation is not carried out, but the transpose is simply added as a flag. Then, for any downstream operators, the transpose flag is checked, and the computation is performed accordingly. For these element-wise operations the transposed rewrite is:
 \begin{alignat*}{2}
-    f(T^T) & \rightarrow [f(S), I, M]^T
+  f(T^T) & \rightarrow [f(S), I, M]^T
 \end{alignat*}
 
 \subsubsection{Aggregation}
 The supported aggregation operators are row-wise and column-wise summation, respectively abbreviated to rowSums and colSums. For the factorized rowSums case we sum each source table separately, then multiply with the indicator matrices and sum the results, the mapping matrix is irrelevant. This operation produces a single (column) vector of size $r_T \times 1$. For the transposed case, it is equal to a column summation. These rewrite rules are:
 \begin{alignat*}{2}
-    \text{rowSums}(T)   & \rightarrow \sum_{k=1}^n I_k \text{rowSums}(S_k) \\
-    \text{rowSums}(T^T) & \rightarrow \text{colSums}(T)
+  \text{rowSums}(T)   & \rightarrow \sum_{k=1}^n I_k \text{rowSums}(S_k) \\
+  \text{rowSums}(T^T) & \rightarrow \text{colSums}(T)
 \end{alignat*}
 
 Summing column-wise gives a row vector of shape $1 \times c_T$. It is equal to first summing the indicator tables column-wise, then materializing with these aggregated indicator matrices.  The rewrite rule for the factorized case is:
 \begin{alignat*}{2}
-    \text{colSums}(T)   & \rightarrow \sum_{k=1}^n \text{colSums}(I_k) S_k M_k^T \\
-    \text{colSums}(T^T) & \rightarrow \text{rowSums}(T)
+  \text{colSums}(T)   & \rightarrow \sum_{k=1}^n \text{colSums}(I_k) S_k M_k^T \\
+  \text{colSums}(T^T) & \rightarrow \text{rowSums}(T)
 \end{alignat*}
 As these operations do not create normalized matrices, and in fact materialize (part of) the join the benefit of factorized computation is smaller.
 
 \subsubsection{Multiplication}
 As matrix multiplication is not commutative, there are different rewrite rules for left- and right-matrix multiplication. The rewrite rule for left matrix multiplication (LMM) with another matrix $X$ is:
 \begin{alignat*}{2}
-    TX   & \rightarrow \sum_{k=1}^n I_k S_k M_k^T X \\
-    T^TX & \rightarrow (X^TT)^T
+  TX   & \rightarrow \sum_{k=1}^n I_k S_k M_k^T X \\
+  T^TX & \rightarrow (X^TT)^T
 \end{alignat*}
 
 For right matrix multiplication (RMM) the rule is the same, we still essentially materialize the join, but with $X$ on the left-hand side:
 \begin{alignat*}{2}
-    XT   & \rightarrow \sum_{k=1}^n X I_k S_k M_k^T \\
-    XT^T & \rightarrow (TX^T)^T
+  XT   & \rightarrow \sum_{k=1}^n X I_k S_k M_k^T \\
+  XT^T & \rightarrow (TX^T)^T
 \end{alignat*}
 
 \subsubsection{Running Example: Right Matrix Multiplication}
@@ -337,68 +337,68 @@ For right matrix multiplication (RMM) the rule is the same, we still essentially
 \begingroup
 \setlength{\arraycolsep}{3.0pt}
 \begin{alignat*}{1}
-    \intertext{We showcase right RMM and its rewrite rule by multiplying with $X$. First for the materialized Target table $T$:}
-    X T & = \begin{bNiceMatrix}
-                1 & 1 & 2 & 3 \\
-            \end{bNiceMatrix}
-    \begin{bNiceMatrix}
-        1 & 11 & 2024 & 2 & 20 & 40 & 0 \\
-        1 & 11 & 2024 & 1 & 25 & 25 & 0 \\
-        2 & 12 & 2024 & 3 & 13 & 39 & 0 \\
-        3 & 11 & 2023 & 1 & 10 & 10 & 1 \\
-    \end{bNiceMatrix}                                                         \\
-        & =\begin{bNiceMatrix}
-               15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
-           \end{bNiceMatrix}                                             \\
-    \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
-    X T & = \sum_{k=1}^{n} X I_k S_k M^T_k
-    \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the subcalculations for $T_{1,2}$.}
-        & = X T_0 + X T_1 + X T_2                                                           \\
-        & = \begin{bNiceMatrix}
-                1 & 1 & 2 & 3 \\
-            \end{bNiceMatrix} \begin{bNiceMatrix}
-                                  1 & 11 & 2024 & 0 & \cdots & 0 \\
-                                  1 & 11 & 2024 & 0 & \cdots & 0 \\
-                                  2 & 12 & 2024 & 0 & \cdots & 0 \\
-                                  3 & 11 & 2023 & 0 & \cdots & 0 \\
-                              \end{bNiceMatrix} + X \begin{bNiceMatrix}
-                                                        0 & 0 & 0 & 2 & 20 & 40 & 0 \\
-                                                        0 & 0 & 0 & 1 & 25 & 25 & 0 \\
-                                                        0 & 0 & 0 & 3 & 13 & 39 & 0 \\
-                                                        0 & 0 & 0 & 1 & 10 & 10 & 0 \\
-                                                    \end{bNiceMatrix} + X\begin{bNiceMatrix}
-                                                                             0 & \cdots & 0 & 0 \\
-                                                                             0 & \cdots & 0 & 0 \\
-                                                                             0 & \cdots & 0 & 0 \\
-                                                                             0 & \cdots & 0 & 1 \\
-                                                                         \end{bNiceMatrix} \\
-        & =\begin{bNiceMatrix}
-               15 & 79 & 14165 & 0 & 0 & 0 & 0 \\
-           \end{bNiceMatrix} +
-    \begin{bNiceMatrix}
-        0 & 0 & 0 & 12 & 101 & 173 & 0 \\
-    \end{bNiceMatrix}+
-    \begin{bNiceMatrix}
-        0 & 0 & 0 & 0 & 0 & 0 & 3 \\
-    \end{bNiceMatrix}                                                               \\& =\begin{bNiceMatrix}
-        15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
-    \end{bNiceMatrix}
+  \intertext{We showcase right RMM and its rewrite rule by multiplying with $X$. First for the materialized Target table $T$:}
+  X T & = \begin{bNiceMatrix}
+            1 & 1 & 2 & 3 \\
+          \end{bNiceMatrix}
+  \begin{bNiceMatrix}
+    1 & 11 & 2024 & 2 & 20 & 40 & 0 \\
+    1 & 11 & 2024 & 1 & 25 & 25 & 0 \\
+    2 & 12 & 2024 & 3 & 13 & 39 & 0 \\
+    3 & 11 & 2023 & 1 & 10 & 10 & 1 \\
+  \end{bNiceMatrix}                                                         \\
+      & =\begin{bNiceMatrix}
+           15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
+         \end{bNiceMatrix}                                             \\
+  \intertext{Now for the Normalized matrix, recall the rewrite rule for RMM:}
+  X T & = \sum_{k=1}^{n} X I_k S_k M^T_k
+  \intertext{For conciseness we refer back to sub results $T_{0\cdots2}$ and use them directly here. We also leave out $X$ in the subcalculations for $T_{1,2}$.}
+      & = X T_0 + X T_1 + X T_2                                                           \\
+      & = \begin{bNiceMatrix}
+            1 & 1 & 2 & 3 \\
+          \end{bNiceMatrix} \begin{bNiceMatrix}
+                              1 & 11 & 2024 & 0 & \cdots & 0 \\
+                              1 & 11 & 2024 & 0 & \cdots & 0 \\
+                              2 & 12 & 2024 & 0 & \cdots & 0 \\
+                              3 & 11 & 2023 & 0 & \cdots & 0 \\
+                            \end{bNiceMatrix} + X \begin{bNiceMatrix}
+                                                    0 & 0 & 0 & 2 & 20 & 40 & 0 \\
+                                                    0 & 0 & 0 & 1 & 25 & 25 & 0 \\
+                                                    0 & 0 & 0 & 3 & 13 & 39 & 0 \\
+                                                    0 & 0 & 0 & 1 & 10 & 10 & 0 \\
+                                                  \end{bNiceMatrix} + X\begin{bNiceMatrix}
+                                                                         0 & \cdots & 0 & 0 \\
+                                                                         0 & \cdots & 0 & 0 \\
+                                                                         0 & \cdots & 0 & 0 \\
+                                                                         0 & \cdots & 0 & 1 \\
+                                                                       \end{bNiceMatrix} \\
+      & =\begin{bNiceMatrix}
+           15 & 79 & 14165 & 0 & 0 & 0 & 0 \\
+         \end{bNiceMatrix} +
+  \begin{bNiceMatrix}
+    0 & 0 & 0 & 12 & 101 & 173 & 0 \\
+  \end{bNiceMatrix}+
+  \begin{bNiceMatrix}
+    0 & 0 & 0 & 0 & 0 & 0 & 3 \\
+  \end{bNiceMatrix}                                                               \\& =\begin{bNiceMatrix}
+    15 & 79 & 14165 & 12 & 101 & 173 & 3 \\
+  \end{bNiceMatrix}
 \end{alignat*}
 \endgroup
 
 \subsection{Machine Learning Models}
-We use the same machine learning models as Morpheus \cite{morpheus} and \cite{schijndel_cost_estimation}. These models consist of Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. Having demonstrated the transformation rules for the relevant Linear Algebra operations, we are now able to illustrate how these models can be adapted for the Normalized matrix. This adaptation enables us to execute these machine learning models without materializing the join between the source tables. The algorithms are detailed in the next sections, with the factorized operators used highlighted in red. Within the algorithms, we use the following conventions: $X$ represents the matrix of independent variables, which in our scenario corresponds to the normalized matrix. The dependent variable is denoted as $y$, the weight vector as $w$, the learning rate as $\gamma$, and $n$ represents the number of iterations.
+We use the same machine learning models as Morpheus \cite{morpheus} and \cite{amalur_tkde24}. These models consist of Linear Regression, Logistic Regression, K-means clustering, and Gaussian NMF. Having demonstrated the transformation rules for the relevant Linear Algebra operations, we are now able to illustrate how these models can be adapted for the Normalized matrix. This adaptation enables us to execute these machine learning models without materializing the join between the source tables. The algorithms are detailed in the next sections, with the factorized operators used highlighted in red. Within the algorithms, we use the following conventions: $X$ represents the matrix of independent variables, which in our scenario corresponds to the normalized matrix. The dependent variable is denoted as $y$, the weight vector as $w$, the learning rate as $\gamma$, and $n$ represents the number of iterations.
 
 \subsubsection{Linear Regression}
 \begin{algorithm}[ht!]
-    \caption[Linear regression]{Linear regression using Gradient Descent
-        \cite{morpheus}}\label{alg:linear-regression}
-    \begin{algorithmic}
-        \Require $X, y , w, \gamma$
-        \For{$i \in 1:n$}
-        \State $w = w - \gamma (\text{\red{$X^T$}}((\text{\red{$X w$}}) - y))$
-        \EndFor
-    \end{algorithmic}
+  \caption[Linear regression]{Linear regression using Gradient Descent
+    \cite{morpheus}}\label{alg:linear-regression}
+  \begin{algorithmic}
+    \Require $X, y , w, \gamma$
+    \For{$i \in 1:n$}
+    \State $w = w - \gamma (\text{\red{$X^T$}}((\text{\red{$X w$}}) - y))$
+    \EndFor
+  \end{algorithmic}
 \end{algorithm}
 Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit to find linear relationships between independent variables and a dependent variable. The algorithm utilizes gradient descent to iteratively converge towards the best solution. The LA operators performed on the normalized matrix $T$ are Transpose $T^T$, and Left Matrix Multiplication $TX$.
 
@@ -406,52 +406,52 @@ Linear Regression (\autoref{alg:linear-regression}) is an ML technique fit to fi
 Logistic Regression (\autoref{alg:logistic-regression}) is very similar to Linear Regression, but instead of predicting a continuous value, it predicts a binary value. The rewrite rule for Logistic Regression uses the same operators as Linear Regression: Transpose and Left Matrix Multiplication.
 
 \begin{algorithm}[ht]
-    \caption[Linear regression]{Logistic regression using Gradient Descent
-        \cite{morpheus}}\label{alg:logistic-regression}
-    \begin{algorithmic}
-        \Require $X, y , w, \gamma$
-        \For{$i \in 1:n$}
-        \State $w = w - \gamma \left(\text{\red{$X^T$}} \frac{y}{1+e^{\text{\red{$X w$}}}}\right)$
-        \EndFor
-    \end{algorithmic}
+  \caption[Linear regression]{Logistic regression using Gradient Descent
+    \cite{morpheus}}\label{alg:logistic-regression}
+  \begin{algorithmic}
+    \Require $X, y , w, \gamma$
+    \For{$i \in 1:n$}
+    \State $w = w - \gamma \left(\text{\red{$X^T$}} \frac{y}{1+e^{\text{\red{$X w$}}}}\right)$
+    \EndFor
+  \end{algorithmic}
 \end{algorithm}
 
 \subsubsection{K-means Clustering}
 The regression algorithms discussed above are supervised, that is, they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm that groups data points into a predefined number of clusters based on their similarity. The operators used to calculate the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation, and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
 
 \begin{algorithm}[ht]
-    \caption[K-Means Clustering]{K-Means Clustering
-        \cite{morpheus}\\
-        $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.}\label{alg:k-means}
-    \begin{algorithmic}
-        \Require $X, k$ (number of centroids)
-        \State $C = \text{rand}(r_X \times k)$ \Comment{Randomly initialize centroids matrix $C$}
-        \State $D_X = \text{\red{rowSums($X^2$)}} \times \mathbf{1}_{1 \times k}$ \Comment{Compute the $l^2$-norm of points for distances}
-        \State $T_2 = \text{\red{$2 \times X$}}$
+  \caption[K-Means Clustering]{K-Means Clustering
+    \cite{morpheus}\\
+    $\mathbf{1}_{r \times c}$ denotes a matrix of size $r \times c$ filled with ones, this is used to repeat a vector to a matrix, either row- or column-wise.}\label{alg:k-means}
+  \begin{algorithmic}
+    \Require $X, k$ (number of centroids)
+    \State $C = \text{rand}(r_X \times k)$ \Comment{Randomly initialize centroids matrix $C$}
+    \State $D_X = \text{\red{rowSums($X^2$)}} \times \mathbf{1}_{1 \times k}$ \Comment{Compute the $l^2$-norm of points for distances}
+    \State $T_2 = \text{\red{$2 \times X$}}$
 
-        \For{$i \in 1:n$}
-        \State $D = D_X - T_2C + \left( \mathbf{1}_{r_X\times 1} \times \text{colSums}(C^2) \right)$ \Comment{Compute distances}
-        \State $A = (D == \text{rowMin}(D) \times \mathbf{1}_{1 \times k})$ \Comment{Assign points to the closest centroid}
-        \State $C =\frac{\text{\red{$X^T A$}}}{\mathbf{1}_{c_X \times 1} \times \text{colSums}(A)}$ \Comment{Update centroids}
-        \EndFor
-    \end{algorithmic}
+    \For{$i \in 1:n$}
+    \State $D = D_X - T_2C + \left( \mathbf{1}_{r_X\times 1} \times \text{colSums}(C^2) \right)$ \Comment{Compute distances}
+    \State $A = (D == \text{rowMin}(D) \times \mathbf{1}_{1 \times k})$ \Comment{Assign points to the closest centroid}
+    \State $C =\frac{\text{\red{$X^T A$}}}{\mathbf{1}_{c_X \times 1} \times \text{colSums}(A)}$ \Comment{Update centroids}
+    \EndFor
+  \end{algorithmic}
 \end{algorithm}
 
 \subsubsection{Gaussian Non-negative Matrix Factorization}
 Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two smaller nonnegative matrices. It is used for feature extraction from data and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
 
 \begin{algorithm}[ht]
-    \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
-        \cite{morpheus}}\label{alg:gaussian-nmf}
-    \begin{algorithmic}
-        \Require $X, r\ \text{(rank)}$
-        \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}
-        \State $H = \text{rand}(r \times c_X)$ \Comment{Randomly initialize $H$}
-        \For{$i \in 1:n$}
-        \State $H = H \times \left(\frac{\text{\red{$W^T X$}}}{W^T W H}\right)$
-        \State $W = W \times \left(\frac{\text{\red{$X H^T$}}}{W(H H^T)}\right)$
-        \EndFor
-    \end{algorithmic}
+  \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
+    \cite{morpheus}}\label{alg:gaussian-nmf}
+  \begin{algorithmic}
+    \Require $X, r\ \text{(rank)}$
+    \State $W = \text{rand}(r_X \times r)$ \Comment{Randomly initialize $W$}
+    \State $H = \text{rand}(r \times c_X)$ \Comment{Randomly initialize $H$}
+    \For{$i \in 1:n$}
+    \State $H = H \times \left(\frac{\text{\red{$W^T X$}}}{W^T W H}\right)$
+    \State $W = W \times \left(\frac{\text{\red{$X H^T$}}}{W(H H^T)}\right)$
+    \EndFor
+  \end{algorithmic}
 \end{algorithm}
 
 
@@ -460,11 +460,11 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 In this section we have presented the rewrite rules for the Normalized matrix, for commonly used Linear Algebra operators, and how these are used in the training of Machine Learning models without the need to explicitly compute the join between the source tables. \autoref{tab:factorized-ml-operators-overview}  provides a summary of the operators discussed, with the final column describing the specific operators employed for each ML model. This underscores the importance of a robust cost model in factorized ML, since various models leverage a range of operators in distinct ways when benefiting from factorized computation.
 
 \begin{table}[ht]
-    \small
-    \resizebox{\textwidth}{!}{%
-        \input{chapters/02_preliminaries/auto-generated/operators}}
-    \caption{Overview of factorized ML operators.}
-    \label{tab:factorized-ml-operators-overview}
+  \small
+  \resizebox{\textwidth}{!}{%
+    \input{chapters/02_preliminaries/auto-generated/operators}}
+  \caption{Overview of factorized ML operators.}
+  \label{tab:factorized-ml-operators-overview}
 \end{table}
 
 \section{Machine Learning on GPUs}
@@ -475,9 +475,9 @@ Graphics Processing Units (GPUs) have emerged as the preferred processing units 
 \label{subsec:gpu-architecture}
 
 \begin{figure}[ht]
-    \includegraphics[width=.95\linewidth]{chapters/02_preliminaries/figures/CPU-vs-GPU.pdf}
-    \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive shows an algorithm performing sequential matrix multiplication where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in parallel.}
-    \label{fig:cpu-vs-gpu}
+  \includegraphics[width=.95\linewidth]{chapters/02_preliminaries/figures/CPU-vs-GPU.pdf}
+  \caption[Simplified view of the difference in architecture between a CPU and a GPU.]{ Simplified view of the difference in architecture between a CPU and a GPU. Compute cores are blue, control units green and L1 Cache is marked in yellow. Figure based on visualizations from \cite{gpu-in-ml-survey, cuda-programming-guide, tvm}. Compute Primitive shows an algorithm performing sequential matrix multiplication where a scalar operation is processed at a time, and a SIMD algorithm were a vector operation is computed in parallel.}
+  \label{fig:cpu-vs-gpu}
 \end{figure}
 This section elaborates on the architecture of a GPU, emphasizing its effectiveness in performing Linear Algebra tasks. \autoref{fig:cpu-vs-gpu} illustrates the architectural differences between a CPU and a GPU and will serve as a point of reference throughout this section.
 
