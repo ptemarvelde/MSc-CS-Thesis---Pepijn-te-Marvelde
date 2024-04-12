@@ -10,7 +10,7 @@ In this chapter, we present the results of our experimental work and explain the
 
 This section illustrates the need for precise cost estimation when deciding between factorization and materialization strategies. We structure this motivation in three stages. First, we demonstrate the advantages of factorization. Next, we examine how the characteristics of the data and models affect the outcome. By visualizing the performance ratio ($\frac{\text{Time}_M}{\text{Time}_F}$) against various independent variables, we identify initial trends that affect the F/M trade-off. Finally, we highlight the significance of GPUs in this context. All figures and values presented in this section are based on data from experiments conducted on synthetic datasets, unless stated otherwise.
 
-\subsection{Benefit of factorization}
+\subsection{Benefit of Factorization}
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.9\linewidth]{chapters/05_cost_estimation/figures/real_datasets_speedup.pdf}
@@ -143,11 +143,11 @@ The model is trained on a subset of the metrics collected and tested on the rema
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\linewidth]{chapters/05_cost_estimation/figures/analytical-regressor-fit.pdf}
-  \caption[Analytical model memory cost prediction vs. true values]{True $T_{mem}$ vs. predicted $T_{mem}$ for the analytical model's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
+  \caption[Analytical model memory cost prediction vs true values]{True $T_{mem}$ vs predicted $T_{mem}$ for the analytical model's $OperatorCost$ function. Tested on samples not used for training. MSE: $0.0295$.}
   \label{fig:5-analytical-regressor-fit}
 \end{figure}
 
-\subsection{Model-level Math and Memory cost}
+\subsection{Model-level Math- and Memory-cost}
 \label{subsec:5-model-level-cost}
 In this section, we describe the process of calculating the memory and mathematical costs for each scenario. Contrary to the previous section, which estimated the memory cost as perceived by the GPU, we now compute the theoretical costs. Memory cost is determined by dividing the total number of bytes read and written to memory by memory throughput. The mathematical cost is computed as the total number of FLOPs required for a computation. These definitions align with those used in the profiling experiments. However, in this context, we derive them from the available data and model characteristics, rather than predicting them using a regressor, as was explained in the preceding section.
 
@@ -186,7 +186,7 @@ To assess the effectiveness of the cost models, we use a variety of metrics that
       Utility                     & $U = \frac{\text{Time Saved}}{\text{Max. Time Saved}}$                                        & The fraction of time saved when using this model, relative to the maximum time saved. \\
       \bottomrule
     \end{tabular}}
-  \caption{Metrics to Assess Cost Model Performance}
+  \caption{Metrics to assess cost model performance}
   \label{tab:metrics}
 \end{table}
 
@@ -319,9 +319,9 @@ We explore a variety of configurations for this model, varying along two dimensi
 
 A comparative evaluation of the XGB models is shown in \autoref{fig:5-xgboost-evaluation}. As expected, these models, being more complex, outperform the linear regression models. Among the XGB models, there is minimal variation in performance on the validation set. There are no significant differences in performance based on the target variable used or whether all operators are included in the training set. XGB.3, which predicts the speedup of factorization over materialization, marginally exceeds the other models, accurately predicting 98\% of the validation scenarios.
 
-\subsection{Comparing Performance Using Real-world Data}
+\subsection{Quantitative Comparison Using Real-world Data}
 \label{subsec:5-comparing-performance}
-The performance of the two most effective models for each type is illustrated in \autoref{fig:5-model-cpu-gpu}. We plot the total time saved on the test scenarios, which includes the scenarios on the Hamlet and TPCx-AI datasets. As expected, the most complex and least explainable XGBoost models perform best. Specifically, XGB.3 and XGB.5 save $600$ and $700$ seconds, respectively, of the total $1670$ seconds. The linear regression model performs the worst, likely due to overfitting to the synthetic data in the training set.
+The performance of the two most effective models for each type is illustrated in \autoref{fig:5-model-cpu-gpu}. We plot the total time saved on the test scenarios, which includes the scenarios on the Hamlet and TPCx-AI datasets. As expected, the most complex XGBoost models perform best. Specifically, XGB.3 and XGB.5 save $600$ and $700$ seconds, respectively, of the total $1670$ seconds. The linear regression model performs the worst, likely due to overfitting to the synthetic data in the training set.
 
 Interestingly, when we dissect the performance by compute type, the XGBoost models perform significantly better on GPU scenarios than on CPU scenarios, whereas LINR.5 performs better on CPU scenarios. This can be attributed to the fact that LINR.5 comprises two separate regressors, one for the CPU and one for the GPU, enabling it to capture the differences in the relationships between independent variables and runtime for each compute type. The process of combining these models to create a more accurate hybrid model is discussed in the following section.
 
@@ -338,7 +338,7 @@ To create the final cost model we combine the best of the models. We use the XGB
 
 To construct the final cost model, we combine the best-performing models. We employ the XGB.3 model for GPU scenarios and the LINR.5 model for CPU scenarios. This approach is adopted to capture the differences in the relationships between independent variables and runtime for each compute type. The final model is evaluated on the test set, and the results are presented in \autoref{fig:5-model-cpu-gpu}. The model achieves $80\%$ of the performance of an ideal cost model, saving $1344$ seconds of the total $1670$ seconds. This represents a significant improvement over the best individual models, which achieved a maximum of $47\%$ of theoretical performance.
 
-\subsubsection{Meta-results}
+\subsubsection{Qualitative Comparison}
 In the Machine Learning (ML) framework proposed in~\cite{amalur}, for which this thesis develops a cost model, the decision between factorization and materialization is made at runtime. Consequently, this should not introduce any overhead to the training process. We briefly touch upon the overhead introduced by the cost of inference of the models, as well as other factors that could influence the choice between cost models. An overview of all aspects is presented in \autoref{tab:5-meta-results}.
 
 The first aspect we examine is training time. For linear regression models, this is fast, but it is slower for the XGBoost model. The outliers in this case are the analytical models. ANLY.1 is notably slow as it requires fitting a large set of regressors, one for each combination of operator and F/M. In contrast, ANLY.2 does not have a traditional training time as it employs a handcrafted formula.
@@ -351,15 +351,15 @@ The final aspect is performance, which was discussed in the previous section.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{lllll}
+  \begin{tabular}{llllll}
     \toprule
-    Model             & Training time & Extensibility & Inference Speed & Performance \\
+    Model             & Training time & Extensibility & Inference Speed & Performance & Explainability \\
     \midrule
-    Analytical 1      & Slow          & Easy          & Slow            & Bad         \\
-    Analytical 2      & --            & Easy          & Quick           & Bad         \\
-    Linear Regression & Fast          & Difficult     & Quick           & Bad         \\
-    XGBoost           & Medium        & Difficult     & Medium          & Mediocre    \\
-    Hybrid            & Medium        & Difficult     & Medium          & Good        \\
+    Analytical 1      & Slow          & Easy          & Slow            & Bad         & High           \\
+    Analytical 2      & --            & Easy          & Quick           & Bad         & Low            \\
+    Linear Regression & Fast          & Difficult     & Quick           & Bad         & Medium         \\
+    XGBoost           & Medium        & Difficult     & Medium          & Mediocre    & Low            \\
+    Hybrid            & Medium        & Difficult     & Medium          & Good        & Medium         \\
     \bottomrule
   \end{tabular}
   \caption{Qualitative comparison of the different models.}

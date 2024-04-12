@@ -6,12 +6,11 @@
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
     \textbf{(G)NMF} & (\textbf{G}aussian)-\textbf{N}on-negative \textbf{M}atrix \textbf{F}actorization\\
-    \textbf{ANLY} & \textbf{AN}a\textbf{ly}tical\\
     \textbf{CPU} & \textbf{C}entral \textbf{P}rocessing \textbf{U}nit\\
     \textbf{DI} &  \textbf{D}ata \textbf{I}ntegration\\
     \textbf{F/M} & \textbf{F}actorized/\textbf{M}aterialized\\
     \textbf{FK} & \textbf{F}oreign \textbf{K}ey\\
-    \textbf{FK} & \textbf{P}rimary \textbf{K}ey\\
+    \textbf{PK} & \textbf{P}rimary \textbf{K}ey\\
     \textbf{FLOP} & \textbf{FL}oating-point \textbf{OP}eration\\
     \textbf{GPU} & \textbf{G}raphics \textbf{P}rocessing \textbf{U}nit\\
     \textbf{LA} & \textbf{L}inear \textbf{A}lgebra\\
@@ -19,6 +18,10 @@
     \textbf{NCU} & \textbf{N}sight \textbf{C}omp\textbf{u}te\\
     \textbf{SM} & \textbf{S}treaming \textbf{M}ultiprocessor\\
     \textbf{SOTA} & \textbf{S}tate \textbf{O}f \textbf{T}he \textbf{A}rt\\
+
+    \\
+    \textit{Introduced cost model types}&\\
+    \textbf{ANLY} & \textbf{AN}a\textbf{LY}tical\\
     \textbf{LINR} & \textbf{LIN}ear \textbf{R}egression\\
     \textbf{XGB} & \textbf{X}treme \textbf{G}radient \textbf{B}oosting\\
 
@@ -47,14 +50,15 @@
 
     % \addlinespace % Gap to separate the Roman symbols from the Greek
 
-    $\rho$       & Feature ratio ($\frac{c_{S_1}}{\sum_{k=2}^n c_k} $)\\
-    $\tau$       & Tuple ratio ($\frac{\sum_{k=2}^n c_k}{c_{S_1}}$)                                             &\\
+
     $\sigma$     & Selectivity                                              &\\
     $r_t$     & Number of rows (samples/tuples) in table $t$                  &\\
     $c_t$     & Number of columns (features) in table $t$               &\\
     $e_t$ & Sparsity (fraction of $0$ values) of table $t$                                   &\\
     $j_t$        & Join type $t$                                           &\\
     $n$          & Number of base tables                                    &\\
+    $\rho$       & Feature ratio ($\frac{c_{S_1}}{\sum_{k=2}^n c_k} $)\\
+    $\tau$       & Tuple ratio ($\frac{\sum_{k=2}^n c_k}{c_{S_1}}$)      &\\
     $T$            & Target table, result of joining tables (materialization) &\\
     $S_k$          & Source matrix $k$                                            &\\
     $I_k$& Indicator matrix $k$ & \\

@@ -57,7 +57,7 @@ MorpheusFI~\cite{MorpheusFI} analyzes performance trade-offs and crossovers betw
 \begin{definition}[\textit{MorpheusFI's Decision Rule}]
   \begin{itemize}
     \item[]
-      \item[$q$]Number of base tables with sparsity $ < 5\% $
+    \item[$q$]Number of base tables with sparsity $ < 5\% $
     \item[$p$] Number of base tables
     \item[$e_k$] Sparsity of $R_k$
     \item[$r_{S_1}$] Number of samples in $S_1$
@@ -134,7 +134,7 @@ These optimizers are not directly applicable to the scenario we are creating a c
     TVM    & ~\cite{tvm}               & XGBoost                                                                              & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Memory access count \item Memory buffer reuse ratio \item Number of time kernel is called \item Touched memory size \end{itemize} \\ \midrule
     Halide & ~\cite{halide_cost_model} & Vector of handcrafted features multiplied by coefficients computed by Neural Network & \begin{itemize}[noitemsep,topsep=0pt,leftmargin=0.3cm] \item Total number of allocations made \item Total number of bytes read \item Total number of scalar instructions \end{itemize}         \\ \bottomrule
   \end{tabular}
-  \caption{Overview of discussed Machine Learning Optimizers}
+  \caption{Overview of discussed ML optimizers}
   \label{tab:optimizer_overview}
 \end{table}
 
