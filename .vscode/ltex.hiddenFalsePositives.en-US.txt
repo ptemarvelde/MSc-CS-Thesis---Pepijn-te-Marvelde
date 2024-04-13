@@ -90,3 +90,5 @@
 {"rule":"THREE_NN","sentence":"^\\QWe have explored the cost estimation landscape for factorized machine learning, with a particular focus on the performance of GPUs compared to CPUs.\\E$"}
 {"rule":"OTHER_OTHERS","sentence":"^\\QInitially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types.\\E$"}
 {"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QTime Saved\\E$"}
+{"rule":"PRP_JJ","sentence":"^\\QFirst, we left join \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q with \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q on \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q to get an intermediate table with schema: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q Next, we inner join this with \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q to get the final table \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q: \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIn \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q the collected profiling metrics are aggregated and analyzed, providing information on how the intrinsics of the GPU can affect the F/M trade-off.\\E$"}
