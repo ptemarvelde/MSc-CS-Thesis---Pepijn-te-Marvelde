@@ -150,7 +150,7 @@ The aim of this thesis is to create a cost model capable of reliably predicting 
   \label{fig:6-generalization}
 \end{figure}
 
-Significant disparities exist among the models in terms of their ability to generalize to unfamiliar situations. The XGBoost model excels in terms of relative performance on new hardware but underperform on the real-world datasets. The hybrid model combines the strong points of the XGBoost and Linear Regression models, achieving good relative performance of 82\% on the full dataset.
+Significant disparities exist among the models in terms of their ability to generalize to unfamiliar situations. The XGBoost model excels in terms of relative performance on new hardware but underperform on the real-world datasets. The hybrid model combines the strong points of the XGBoost and linear regression models, achieving good relative performance of 82\% on the full dataset.
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
@@ -163,7 +163,7 @@ To assess the generalizability of our cost model across new model types, we cond
   \label{fig:6-ablation}
 \end{figure}
 
-The results of this ablation study are illustrated in \autoref{fig:6-ablation}. The x-axis represents the relative performance compared to an ideal model. The findings indicate that our hybrid model exhibits suboptimal performance when applied to new model types. While the Gaussian Non-negative Matrix Factorization (NMF) demonstrates marginal utility, facilitating some time savings, the application of our cost model to other models, notably KMeans and Linear Regression, would lead to considerable increases in computational time. This suggests that our cost model is specifically tailored to the model types included in its training dataset. The inclusion of linear algebra operators within the training set confers additional benefits, as evidenced in Figure 5 (\autoref{fig:5-xgboost-evaluation}); however, these benefits are insufficient to achieve model independence in cost estimation.
+The results of this ablation study are illustrated in \autoref{fig:6-ablation}. The x-axis represents the relative performance compared to an ideal model. The findings indicate that our hybrid model exhibits suboptimal performance when applied to new model types. While the Gaussian Non-negative Matrix Factorization (NMF) demonstrates marginal utility, facilitating some time savings, the application of our cost model to other models, notably KMeans and linear regression, would lead to considerable increases in computational time. This suggests that our cost model is specifically tailored to the model types included in its training dataset. The inclusion of linear algebra operators within the training set confers additional benefits, as evidenced in Figure 5 (\autoref{fig:5-xgboost-evaluation}); however, these benefits are insufficient to achieve model independence in cost estimation.
 
 To mitigate this limitation, we propose two potential strategies: First, refining the feature engineering process to incorporate a broader spectrum of model-agnostic derived features, necessitating a comprehensive analysis of the factorized machine learning framework and its supported models. Second, and perhaps more effectively, expanding the training dataset to include emerging models as they are integrated into the factorized machine learning framework.
 

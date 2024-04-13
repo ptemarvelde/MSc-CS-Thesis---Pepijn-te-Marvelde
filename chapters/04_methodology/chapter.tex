@@ -11,13 +11,11 @@ This chapter outlines the methodology used to get an accurate cost prediction fo
 
 As this is an empirical study, the focus is on carried out experiments and their results. Therefore, it is extremely important to design these experiments well. This starts with a look back at the problem we are trying to solve, after which we can say precisely what is needed to solve this problem. The experiments are then designed to gather the necessary results to arrive at a fitting solution.
 
-Given that this is an empirical study, the emphasis is on the experiments conducted and their respective outcomes. As such, the design of these experiments is of great importance. This process starts with a retrospective examination of the problem at hand, which allows us to define what is required to address this problem. The experiments are then structured to collect the essential data, leading us towards an appropriate solution.
-
 \subsection{Independent Variables}
-To reiterate, the objective of this thesis is to develop an accurate and generalizable cost model to determine whether factorized or materialized Machine Learning is the optimal choice for a given Machine Learning scenario. This requires understanding the factors that influence this decision. Prior research has already identified the three dimensions that impact cost: data characteristics~\cite{morpheus, amalur,amalur_tkde24}, hardware characteristics~\cite{orion_learning_gen_lin_models}, and model type \& hyperparameters~\cite{amalur,amalur_tkde24}. In this section, we elaborate on the independent variables that are manipulated in this study.
+To reiterate, the objective of this thesis is to develop an accurate and generalizable cost model to determine whether factorized or materialized Machine Learning is the optimal choice for a given Machine Learning scenario. This requires understanding the factors that influence this decision. Prior research has already identified the three dimensions that impact cost: data characteristics~\cite{morpheus, amalur,amalur_tkde24}, hardware characteristics~\cite{orion_learning_gen_lin_models}, and model type \& hyperparameters~\cite{amalur,amalur_tkde24}. In this section, we elaborate on the independent variables that are taken into account in this study.
 
 \subsubsection{Data}
-Existing literature has recognized the impact of certain data characteristics on factorized learning. Morpheus~\cite{morpheus} argues that the most significant of these factors is the relationship between the number of columns/rows in the Source tables and the Target table. The authors expand on this notion in~\cite{MorpheusFI}, demonstrating that sparsity has serious implications for the factorization vs materialization (F/M) trade-off. In this study, we incorporate the characteristics mentioned in previous research, supplemented by a new set of features. We also include a wider range of variation for each data characteristic, which allows for more insight into the relationship between these data characteristics and the training cost. The data characteristics considered in this study are detailed in \autoref{tab:4-data_chars}.
+Existing literature has recognized the impact of certain data characteristics on factorized learning. Morpheus~\cite{morpheus} argues that the most significant of these factors is the relationship between the number of columns/rows in the Source tables and the Target table. The authors expand on this notion in~\cite{MorpheusFI}, demonstrating that sparsity has serious implications for the factorization vs materialization (F/M) trade-off. In this study, we incorporate the characteristics mentioned in previous research, supplemented by a new set of features. We also include a wider range of variation for each data characteristic, which allows for more insight into the relationship between these data characteristics and the training cost. The data considered characteristics are detailed in \autoref{tab:4-data_chars}.
 
 \begingroup
 \renewcommand{\arraystretch}{1.5}
@@ -30,7 +28,7 @@ Existing literature has recognized the impact of certain data characteristics on
     Table Size (rows/ columns) & $c/r$    & Dimensions of tables. Both Target and Source.                      & ~\cite{morpheus, amalur_tkde24}                                                                                 \\
     Tuple ratio                & $\rho$   & Ratio of rows from $S_{2\cdots k}$ in $S_1$                        & Influences the number of redundant operations when computing a model~\cite{morpheus, amalur_tkde24}             \\
     Feature ratio              & $\tau$   & Ratio of columns from $S_{2\cdots k}$ in $S_1$                     & Influences the number of redundant operations when computing a model~\cite{morpheus, amalur_tkde24}             \\
-    Join Type                  & $j_t$    & The join type used to join the source tables to the target table   & ~\cite{amalur_tkde24}                                                                                           \\
+    Join type                  & $j_t$    & The join type used to join the source tables to the target table   & ~\cite{amalur_tkde24}                                                                                           \\
     Selectivity                & $\sigma$ & The fraction of rows from $S_{1\cdots k}$ that are included in $T$ & Can be used to estimate the computational redundancy between F/M~\cite{MorpheusFI, amalur_tkde24}               \\
     \bottomrule
   \end{tabular}
@@ -55,9 +53,7 @@ The specific values for these variables, along with the exact types of GPU used,
 We intentionally chose a variety of GPU architectures to capture metrics of GPUs with different characteristics. Both older (Pascal, 2016) and newer (Ampere, 2020) architectures are incorporated with the aim of developing a cost model that is not confined to a single generation of hardware. Restricting the study to GPUs from a single generation would constrain the generalizability of the cost model, as they employ the same architecture, i.e., they utilize similar Streaming Multiprocessors and Cache layouts.
 
 \subsubsection{Model}
-The characteristics of the model are varied by selecting four distinct models: Linear Regression, Logistic Regression, Gaussian Non-negative Matrix Factorization, and K-Means Clustering. To avoid an exponential increase in the number of combinations of independent variables, we opt not to vary certain hyperparameters, such as k in K-Means or r in G-NMF. Nevertheless, we incorporate a multitude of features that encapsulate the variations that would otherwise be captured by altering these hyperparameters.
-
-Among these features is the complexity of the model, which refers to the number of operations required to train a model. The hyperparameters mentioned above are arguments for the function used to compute this feature. Therefore, we hypothesize that our cost models will still be capable of accurately predicting runtime for different hyperparameter settings, given that the complexity (ratio) has been demonstrated to be an effective predictor for the F/M trade-off. Furthermore, due to the significant emphasis on capturing the impact of the other independent variables on the cost of individual operators, we anticipate that the cost models will also exhibit good generalizability to entirely new Machine Learning models.
+The characteristics of the model are varied by selecting four distinct models: linear regression, logistic regression, Gaussian Non-negative Matrix Factorization, and K-Means Clustering. To avoid an exponential increase in the number of combinations of independent variables, we opt not to vary certain hyperparameters, such as k in K-Means or r in G-NMF. Nevertheless, we incorporate a multitude of features that encapsulate the variations that would otherwise be captured by altering these hyperparameters.
 
 One of those features is the complexity of the model, that is, the number of operations needed to train a model. The previously mentioned hyperparameters are parameters of the function to compute this feature; thus, we assume our cost models will still be able to accurately predict runtime for different hyperparameter settings, as the complexity (ratio) has already been shown to be a capable predictor for the F/M trade-off.
 
@@ -70,29 +66,29 @@ A variety of \textbf{profiling metrics} is also gathered to quantify the cost of
 \begin{table}[t]
   \begin{tabular}{lll}
     \toprule
-    Section name                  & Metric name                                   & Metric unit  \\
+    Section name                  & Metric name                                & Metric unit  \\
     \midrule\midrule
-    Command line profiler metrics & \underline{\texttt{dram\_\_bytes\_read.sum}}  & byte         \\
-                                  & \underline{\texttt{dram\_\_bytes\_write.sum}} & byte         \\
-    GPU speed of light throughput & Duration                                      & nsecond      \\
-                                  & \textbf{SM frequency}                         & cycle/second \\
-                                  & \textbf{Elapsed cycles}                       & cycle        \\
-                                  & \textbf{SM active cycles}                     & cycle        \\
-                                  & \textbf{Compute (SM) throughput}              & \%           \\
-                                  & \underline{DRAM frequency}                    & cycle/second \\
-                                  & \underline{Memory throughput}                 & \%           \\
-                                  & \underline{DRAM throughput}                   & \%           \\
-                                  & \underline{L1 cache throughput}               & \%           \\
-                                  & \underline{L2 cache throughput}               & \%           \\
-    Memory workload analysis      & \underline{Memory throughput}                 & byte/second  \\
-                                  & \underline{Mem busy}                          & \%           \\
-                                  & \underline{Max bandwidth}                     & \%           \\
-                                  & \underline{L1 hit rate}                       & \%           \\
-                                  & \underline{L2 hit rate}                       & \%           \\
-                                  & \underline{Mem pipes busy}                    & \%           \\
+    Command line profiler metrics & \textit{\texttt{dram\_\_bytes\_read.sum}}  & byte         \\
+                                  & \textit{\texttt{dram\_\_bytes\_write.sum}} & byte         \\
+    GPU speed of light throughput & Duration                                   & nsecond      \\
+                                  & \textbf{SM frequency}                      & cycle/second \\
+                                  & \textbf{Elapsed cycles}                    & cycle        \\
+                                  & \textbf{SM active cycles}                  & cycle        \\
+                                  & \textbf{Compute (SM) throughput}           & \%           \\
+                                  & \textit{DRAM frequency}                    & cycle/second \\
+                                  & \textit{Memory throughput}                 & \%           \\
+                                  & \textit{DRAM throughput}                   & \%           \\
+                                  & \textit{L1 cache throughput}               & \%           \\
+                                  & \textit{L2 cache throughput}               & \%           \\
+    Memory workload analysis      & \textit{Memory throughput}                 & byte/second  \\
+                                  & \textit{Mem busy}                          & \%           \\
+                                  & \textit{Max bandwidth}                     & \%           \\
+                                  & \textit{L1 hit rate}                       & \%           \\
+                                  & \textit{L2 hit rate}                       & \%           \\
+                                  & \textit{Mem pipes busy}                    & \%           \\
     \bottomrule
   \end{tabular}
-  \caption[Collected profiling metrics and their explanation]{Collected profiling metrics and their explanation. The metrics related to the compute cost are \textbf{bold}, those related to the memory cost are \underline{underlined}.}
+  \caption[Collected profiling metrics and their explanation]{Collected profiling metrics and their explanation. The metrics related to the compute cost are \textbf{bold}, those related to the memory cost are \textit{italicized}.}
   \label{tab:4-profiling-metrics}
 \end{table}
 
@@ -105,10 +101,10 @@ The first model, termed the analytical model, is a formula derived from the actu
 
 Including more features is straight-forward For ML-based cost models, which is why the next types are ML-based. With the first, a linear regression model, we can incorporate more features, broadening the decision space. The third model, a tree-boosting model, uses a set of regression trees for its predictions. Although it is the least explainable among the cost models, it can capture the most intricate interactions between features. It is interesting to compare these cost-based models to reason about the complexity of the problem and the generalizability of the models. If the tree-boosting model outperforms the other models, it suggests that the problem is more complex as there are non-linear feature interactions that cannot be captured in a linear model. However, if the linear models perform sufficiently well they are likely a better fit as there is less risk of overfitting to training data. Finally, we propose a hybrid model, which integrates the insights derived from the preceding cost models and leverages the strengths of the most effective models to build a superior model.
 
-\todo{short para on contributions, what is new with our solution.}
+\todo{Short para on contributions, what is new with our solution.}
 
 \subsection{Analytical}
-The analytical model is a deterministic model, constructed by examining the operations executed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. It encapsulates the critical factors of the algorithm, such as the number of matrix multiplications. For example, if an algorithm performs one addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our context, these operations are the linear algebra operations performed as part of the machine learning model training. Therefore, by capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics}, we can compute the cost of each operation in the training process. As will be demonstrated in \autoref{chapter:cost-estimation}, the memory cost of an operation is a reliable predictor for its total runtime. This is the reason we concentrate on the memory cost of an operation in the analytical model. When compared to related research, this cost model is the most like Orion's cost model~\cite{orion_learning_gen_lin_models}, which also explicitly incorporates multiple cost factors like I/O, CPU and Cache costs. However, Orion is CPU-focused, the analytical model in this study is GPU-focused, and puts more focus into the memory cost of operations.
+The analytical model is a deterministic model, constructed by examining the operations executed by the learning algorithm. This model is based on a formula derived from the actual cost of the operations. It encapsulates the critical factors of the algorithm, such as the number of matrix multiplications. For example, if an algorithm performs one addition and two multiplications, the formula for this would be $ADD + 2MULT$. The actual cost values for $ADD$ and $MULT$ are determined through micro benchmarks, and these values are then used to complete the formula and obtain the final model. In our context, these operations are the linear algebra operations performed as part of the machine learning model training. Therefore, by capturing the profiling metrics mentioned in \autoref{tab:4-profiling-metrics}, we can compute the cost of each operation in the training process. As will be demonstrated in \autoref{chapter:cost-estimation}, the memory cost of an operation is a reliable predictor for its total runtime. This is the reason we concentrate on the memory cost of an operation in the analytical model. When compared to related research, this cost model is the most like Orion's cost model~\cite{orion_learning_gen_lin_models}, which also explicitly incorporates multiple cost factors like I/O, CPU and Cache costs. However, Orion is highly specific to CPU training, whereas the analytical model in this study is GPU-focused.
 
 By profiling across a broad spectrum of the selected independent variables, we can estimate their impact on memory cost. Integrating this information into the analytical model, allows us to construct a highly interpretable model that can be utilized to estimate the cost of various approaches.
 
