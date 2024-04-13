@@ -337,13 +337,14 @@ In the Machine Learning (ML) framework proposed in~\cite{amalur}, for which this
     \toprule
     Model             & Training time & Extensibility & Inference Speed & Performance \\
     \midrule
-    Analytical 1      & Slow          & Easy          & Slow            & Bad         \\
-    Analytical 2      & --            & Easy          & Quick           & Bad         \\
-    linear regression & Fast          & Difficult     & Quick           & Bad         \\
-    XGBoost           & Medium        & Difficult     & Medium          & Mediocre    \\
-    Hybrid            & Medium        & Difficult     & Medium          & Good        \\
+    Analytical 1      & $-$           & $+$           & $-$             & $-$         \\
+    Analytical 2      &               & $+$           & $+$             & $-$         \\
+    linear regression & $+$           & $-$           & $+$             & $-$         \\
+    XGBoost           & $+/-$         & $-$           & $+/-$           & $+/-$       \\
+    Hybrid            & $+/-$         & $-$           & $+/-$           & $+$         \\
     \bottomrule
   \end{tabular}
+
   \caption{Qualitative comparison of the different models.}
   \label{tab:5-meta-results}
 \end{table}
