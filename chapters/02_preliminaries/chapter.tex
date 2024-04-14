@@ -19,7 +19,7 @@ However, when merging data sets into a unified table is essential for machine le
   \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins''~\cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
+Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins''~\cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
 
 \subsection{Schema Mapping}
 Schema mapping is an integral step in the Data Integration process and thus to factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
