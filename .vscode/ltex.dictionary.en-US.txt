@@ -33,9 +33,7 @@ ANLY
 GFLOPS
 XGBRegressor
 XGB
-KMeans
 lineitem
 math-bound
-nonnegative
 LINR
 NCU

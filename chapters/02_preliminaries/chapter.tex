@@ -3,12 +3,12 @@
 \chapter{Preliminaries: Factorized Machine Learning}
 \label{chapter:preliminary}
 
-This chapter details the preliminary theoretical concepts that form the foundation for this thesis. First, we explain Data Integration: the process of combining data from different sources, which is a crucial step in any ML workflow, in \autoref{sec:2-data-integration}. With these concepts in mind, we explore Factorized Machine Learning in detail (\autoref{sec:2-factorized-ml}). Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
+This chapter details the preliminary theoretical concepts that form the foundation for this thesis. First, we explain Data Integration: the process of combining data from different sources, which is a crucial step in any ML workflow, in \autoref{sec:2-data-integration}. With these concepts in mind, we explore factorized Machine Learning in detail (\autoref{sec:2-factorized-ml}). Finally, in \autoref{sec:2-ml-on-gpu}, we explain GPUs and how they are crucial for the ML industry. With these concepts, we provide the theoretical foundation necessary for understanding the content presented in the next chapters of this thesis.
 
 
 \section{Data Integration}
 \label{sec:2-data-integration}
-In order to comprehend the significance and complexities of Factorized Machine Learning, it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
+In order to comprehend the significance and complexities of factorized Machine Learning, it is necessary to have a grasp of the field of Data Integration (DI). In its broadest sense, DI details the relationships between datasets, enabling the merging of data from diverse sources into a unified dataset. This process is crucial for ML applications, as ML frameworks (such as Keras\footnote{\url{https://keras.io/}} and TensorFlow\footnote{\url{https://www.tensorflow.org/}}) typically require a single table as input. An example of such a DI scenario is illustrated in \autoref{fig:running-example-fac-vs-mat}.
 
 However, when merging data sets into a unified table is essential for machine learning, it may present the following significant challenges~\cite{data-management-in-ML-kumar-2017}.
 
@@ -19,10 +19,10 @@ However, when merging data sets into a unified table is essential for machine le
   \item \textbf{Maintenance headaches} \\Join query needs updating when changing input table schemas.
 \end{enumerate}
 
-Factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins''~\cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
+factorized Machine Learning seeks to address issues one through three through the concept of ``learning over joins''~\cite{orion_learning_gen_lin_models}, which involves shifting the computations required for an ML model to the individual tables.
 
 \subsection{Schema Mapping}
-Schema mapping is an integral step in the Data Integration process and thus to Factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
+Schema mapping is an integral step in the Data Integration process and thus to factorized ML. These mappings specify how the source datasets map to the target tables. Having a formal way to specify how these datasets relate is especially important for factorized ML. It allows us to convert these relationships between the source tables and the target table to a form that can be translated to linear algebra: the normalized matrix (detailed in \autoref{subsec:2-normalized-matrix}).
 
 For the running example the schema mapping is as follows:
 \begin{alignat*}{2}

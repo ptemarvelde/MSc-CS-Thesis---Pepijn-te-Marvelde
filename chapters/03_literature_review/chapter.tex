@@ -7,7 +7,7 @@ Factorized machine learning is a novel technique that allows learning over norma
 
 \section{Factorized Machine Learning}
 \label{sec:3-factorized-ml}
-The concept of Factorized Learning was proposed in~\cite{orion_learning_gen_lin_models}. The paper demonstrates that learning over joins can avoid redundancy in I/O and computation. The authors show that their Factorized Learning framework, Orion, is faster in certain tested scenarios where materializing the join introduces significant redundancy. However, its focus on two-table joins limits its applicability to real-world scenarios. The cost model proposed in this paper is based on hardware, data characteristics, and model parameters. Despite its contributions, the scope of the model is limited since it only considers buffer memory as hardware, input table dimensions as data characteristics, and the number of iterations as the only model parameter.
+The concept of factorized Learning was proposed in~\cite{orion_learning_gen_lin_models}. The paper demonstrates that learning over joins can avoid redundancy in I/O and computation. The authors show that their factorized Learning framework, Orion, is faster in certain tested scenarios where materializing the join introduces significant redundancy. However, its focus on two-table joins limits its applicability to real-world scenarios. The cost model proposed in this paper is based on hardware, data characteristics, and model parameters. Despite its contributions, the scope of the model is limited since it only considers buffer memory as hardware, input table dimensions as data characteristics, and the number of iterations as the only model parameter.
 
 Santoku~\cite{santoku_kumar_demonstration_2015}, a toolkit that implements factorized learning in R, extends Orion. The toolkit additionally supports ML models with categorical features, such as Naive Bayes, and extends the factorized approach to ML inference. However, Orion and Santoku have some limitations:
 
@@ -57,7 +57,7 @@ MorpheusFI~\cite{MorpheusFI} analyzes performance trade-offs and crossovers betw
 \begin{definition}[\textit{MorpheusFI's Decision Rule}]
   \begin{itemize}
     \item[]
-    \item[$q$]Number of base tables with sparsity $ < 5\% $
+      \item[$q$]Number of base tables with sparsity $ < 5\% $
     \item[$p$] Number of base tables
     \item[$e_k$] Sparsity of $R_k$
     \item[$r_{S_1}$] Number of samples in $S_1$

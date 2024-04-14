@@ -120,7 +120,7 @@ In this section we answer
   \item[RQ.2] How can we accurately predict the optimal choice between factorized or materialized training of a Machine Learning model, on CPU and GPU, through leveraging knowledge about model, data, and hardware characteristics?
 \end{itemize}
 
-We first illustrate the comparison of the cost models with the state-of-the-art in cost estimation for Factorized Machine Learning training. Next, we demonstrate the ability of the best performing cost models to generalize effectively to novel scenarios.
+We first illustrate the comparison of the cost models with the state-of-the-art in cost estimation for factorized Machine Learning training. Next, we demonstrate the ability of the best performing cost models to generalize effectively to novel scenarios.
 
 \subsection{Cost Model Comparison}
 \label{subsec:6-sota-comparison}
@@ -167,7 +167,7 @@ To mitigate this limitation, we propose two potential strategies: First, refinin
 
 \section{Discussion}
 \label{sec:eval-discussion}
-Our research demonstrates that the Hybrid cost model adeptly predicts the most efficient training method -factorized or materialized- for machine learning models across CPU and GPU scenarios. This model shows commendable generalizability to novel scenarios and surpasses state-of-the-art (SOTA) models in the domain of cost estimation for Factorized ML training. However, this study is not without limitations.
+Our research demonstrates that the Hybrid cost model adeptly predicts the most efficient training method -factorized or materialized- for machine learning models across CPU and GPU scenarios. This model shows commendable generalizability to novel scenarios and surpasses state-of-the-art (SOTA) models in the domain of cost estimation for factorized ML training. However, this study is not without limitations.
 
 The first important note is that the SOTA cost models lack design considerations for GPU-based training. This oversight is non-trivial, as our findings reveal a significant divergence in the factorization-materialization trade-off between CPU and GPU environments. But this still skews the comparison in favor of our models, as we do include GPU-specific features in our cost models.
 

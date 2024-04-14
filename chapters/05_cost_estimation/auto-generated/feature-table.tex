@@ -11,7 +11,7 @@
                                          & Sparsity ratio                          &                                   & $\frac{e_T}{e_S}$                       & N    &                                      \\
                                          & Tuple ratio                             & $\tau$                            & $\frac{\sum_{k=1}^p d_k}{d_S}$          & N    &                                      \\
                                          & \# Base tables                          & $n$                               &                                         & N    &                                      \\
-                                         & \# Non-zero values                      & $nnz(T)$                          & $nnz(S) = \sum_{k=1}^{n}nnz(S_k)$       & N    &                                      \\
+                                         & \# Nonzero values                       & $nnz(T)$                          & $nnz(S) = \sum_{k=1}^{n}nnz(S_k)$       & N    &                                      \\
                                          & \# Sparse base tables ($e < 0.05$)      & $q$                               & $|\{S_k \in S| e_{S_k} < 0.05\}|$       & N    & From~\cite{MorpheusFI}               \\
 
   \multirow[t]{4}{*}{Data \& Model}      & Complexity                              & $M_{FLOP}$, $F_{FLOP}$            &                                         & N    & For each operator                    \\
@@ -31,7 +31,7 @@
 
   \multirow[t]{4}{*}{Model}              & Operator                                &                                   &                                         & C    &                                      \\
                                          & Rank                                    & $r$                               &                                         & N    & GNMF                                 \\
-                                         & \# Clusters                             & $k$                               &                                         & N    & KMEans                               \\
+                                         & \# Clusters                             & $k$                               &                                         & N    & K-MEans                              \\
                                          & \# Iterations                           & $iter$                            &                                         & N    &                                      \\
 
   \multirow[t]{3}{*}{\textbf{Dependent}} & Execution Time                          &                                   & $\text{Time}_M$, $\text{Time}_F$        & N    &                                      \\
