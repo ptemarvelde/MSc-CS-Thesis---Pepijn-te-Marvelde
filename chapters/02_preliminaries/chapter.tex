@@ -54,20 +54,20 @@ For the running example the schema mapping is as follows:
 %                                                                                                                   \end{split}
 % \end{alignat*}
 
-Now that we have the schema mapping we can translate this to the normalized matrix, which we will do in the next section.
+Now that we have the schema mapping, we can translate this to the normalized matrix, which we will do in the next section.
 
 \section{Factorized Machine Learning}
 \label{sec:2-factorized-ml}
-As stated previously in this thesis, Factorized ML is the process of training Machine Learning models on multiple tables without the need to materialize the join between these tables. This section will go in-depth on how this can be achieved, continuing the running example from \autoref{fig:running-example-fac-vs-mat}.  We start with the definitions (\autoref{subsec:2-normalized-matrix}) followed by an in-depth example of the involved linear algebra (\autoref{subsubsec:2-fac-ml-example}).
+As stated previously in this thesis, factorized ML is the process of training Machine Learning models on multiple tables without the need to materialize the join between these tables. This section will go in-depth on how this can be achieved, continuing the running example from \autoref{fig:running-example-fac-vs-mat}.  We start with the definitions (\autoref{subsec:2-normalized-matrix}) followed by an in-depth example of the involved linear algebra (\autoref{subsubsec:2-fac-ml-example}).
 
 \subsection{Normalized Matrix}
 \label{subsec:2-normalized-matrix}
-As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, .i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table~\cite{amalur, morpheus}.
+As Machine Learning algorithms can be expressed in Linear Algebra (LA), we need to express the Data Integration scenario of an ML use case in terms of Linear Algebra, i.e., we need to translate the Schema Mappings of an integration scenario to Linear Algebra to allow us to achieve the goal of “pushing down” ML to the separate source tables. This is achieved through the \textbf{Normalized matrix}: A set of matrices that capture the necessary DI metadata telling us how the source tables map to the materialized Target table~\cite{amalur, morpheus}.
 
 The \textbf{Mapping matrix} and \textbf{Indicator matrix} respectively represent how the columns and rows from each source table $S_k$ map to the Target table $T$.
 
 \subsubsection{Mapping Matrix}
-The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how source columns map to target columns. A value of 1 in this matrix indicates that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
+The Mapping Matrix $M$ is a set of matrices $M_k$ for each source table $S_k$ that denotes how the source columns map to the target columns. A value of 1 in this matrix indicates that the corresponding column (via column number) in $S_k$ corresponds to the corresponding column (via column number) in $T$. The formal definition is as follows.
 
 \begin{definition}[\textit{Mapping matrix}~\cite{amalur}]
   Each source table $S_k$ has a corresponding binary Mapping matrix $M$ of shape $c_T \times c_{S_k}$, where
@@ -417,7 +417,7 @@ Logistic regression (\autoref{alg:logistic-regression}) is very similar to linea
 \end{algorithm}
 
 \subsubsection{K-means Clustering}
-The regression algorithms discussed above are supervised, that is, they predict a value based on a set of input features. K-means clustering is an unsupervised algorithm that groups data points into a predefined number of clusters based on their similarity. The operators used to calculate the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation, and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
+The regression algorithms discussed above are supervised, that is, they predict a value based on a set of input features. K-Means clustering is an unsupervised algorithm that groups data points into a predefined number of clusters based on their similarity. The operators used to calculate the clusters are $exp$ ($X^2$), Scalar Multiplication, Transposition, Row Summation, and Left Matrix Multiplication. The algorithm is shown in \autoref{alg:k-means}.
 
 \begin{algorithm}[ht]
   \caption[K-Means Clustering]{K-Means Clustering
@@ -438,7 +438,7 @@ The regression algorithms discussed above are supervised, that is, they predict 
 \end{algorithm}
 
 \subsubsection{Gaussian Non-negative Matrix Factorization}
-Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two smaller nonnegative matrices. It is used for feature extraction from data and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
+Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to decompose a matrix into two smaller non-negative matrices. It is used for feature extraction from data and is often used in image processing and text mining. The operators used in the algorithm are Transpose and Right Matrix Multiplication. The rank hyperparameter $r$ controls the size of the resulting matrices. The algorithm is shown in \autoref{alg:gaussian-nmf}.
 
 \begin{algorithm}[ht]
   \caption[Gaussian NMF]{Gaussian Non-negative Matrix Factorization
@@ -457,7 +457,7 @@ Gaussian Non-negative Matrix Factorization (Gaussian NMF) is a technique used to
 
 \subsection{Overview}
 \label{subsec:factorized-ml-summary}
-In this section we have presented the rewrite rules for the Normalized matrix, for commonly used Linear Algebra operators, and how these are used in the training of Machine Learning models without the need to explicitly compute the join between the source tables. \autoref{tab:factorized-ml-operators-overview}  provides a summary of the operators discussed, with the final column describing the specific operators employed for each ML model. This underscores the importance of a robust cost model in factorized ML, since various models leverage a range of operators in distinct ways when benefiting from factorized computation.
+In this section we have presented the rewrite rules for the Normalized matrix, for commonly used Linear Algebra operators, and how these are used in the training of Machine Learning models without the need to explicitly compute the join between the source tables. \autoref{tab:factorized-ml-operators-overview}  provides a summary of the operators discussed, with the final column describing the specific operators used for each ML model. This underscores the importance of a robust cost model in factorized ML, since various models leverage a range of operators in distinct ways when benefiting from factorized computation.
 
 \begin{table}[ht]
   \small
@@ -469,7 +469,7 @@ In this section we have presented the rewrite rules for the Normalized matrix, f
 
 \section{Machine Learning on GPUs}
 \label{sec:2-ml-on-gpu}
-Graphics Processing Units (GPUs) have emerged as the preferred processing units in the Machine Learning domain due to their significant advantages over Central Processing Units (CPUs). As CPUs are designed for diverse general-purpose applications, this is not surprising. Whereas CPUs excel in executing sequential tasks such as running an operating system, GPUs are optimized for parallel tasks. This specialization enables them to efficiently execute identical operations on multiple pieces of data simultaneously with a considerably higher degree of parallelism than CPUs, exactly what is needed for the prevalent linear algebra operations in ML.
+Graphics Processing Units (GPUs) have emerged as the preferred processing units in the Machine Learning domain due to their significant advantages over Central Processing Units (CPUs). As CPUs are designed for diverse general-purpose applications, this is not surprising. Whereas CPUs excel in executing sequential tasks, such as running an operating system, GPUs are optimized for parallel tasks. This specialization enables them to efficiently execute identical operations on multiple pieces of data simultaneously with a considerably higher degree of parallelism than CPUs, exactly what is needed for the prevalent linear algebra operations in ML.
 
 \subsection{Architecture}
 \label{subsec:gpu-architecture}
@@ -487,9 +487,9 @@ Data and code are transferred to the streaming multiprocessors (SMs) by passing 
 
 \subsection{Estimating Performance on GPU}
 \label{subsec:gpu-performance}
-Following the architecture overview, it is essential to grasp the performance dynamics of a GPU in the context of Machine Learning applications, specifically focusing on Linear Algebra operations. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The subsequent passages provide valuable perspectives from~\cite{nvidia-gpu-performance:online}.
+Following the architecture overview, it is essential to grasp the performance dynamics of a GPU in the context of Machine Learning applications, specifically focusing on Linear Algebra operations. The GPU's ability to execute thousands of threads concurrently is the basis of its computational power, particularly for tasks with high arithmetic intensity. The following passages provide valuable perspectives from~\cite{nvidia-gpu-performance:online}.
 
-The arithmetic intensity refers to the ratio of mathematical operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance constraints. The time it takes for a function to execute on a GPU can be constrained by memory bandwidth, mathematical bandwidth, or latency. To illustrate this, imagine a function that reads the input data, performs calculations, and writes the output. In an ideal case, the time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap (because many threads are running at once). In this ideal case, the total execution time will approach $ \max(T_{mem}, T_{math})$. As will be shown in \autoref{sec:5-gpu-performance-analysis} programs on GPUs are often limited by their memory bandwidth, due to their very high computational throughput. On the contrary, for CPU operations, the total time taken is highly correlated with $T_{math}$ (\autoref{sec:5-motivation}). This discrepancy introduces difficulties in creating a singular cost model that performs well on both CPU and GPU scenarios.
+The arithmetic intensity refers to the ratio of mathematical operations performed per memory operation. In the context of GPUs, it is a critical factor in determining performance constraints. The time it takes for a function to execute on a GPU can be constrained by memory bandwidth, mathematical bandwidth, or latency. To illustrate this, imagine a function that reads the input data, performs calculations, and writes the output. In an ideal case, the time spent on memory operations $ T_{mem} $ and math operations $ T_{math} $ can overlap (because many threads are running at once). In this ideal case, the total execution time will approach $ \max(T_{mem}, T_{math})$. As will be shown in \autoref{sec:5-gpu-performance-analysis} programs on GPUs are often limited by their memory bandwidth, due to their very high computational throughput. On the contrary, for CPU operations, the total time taken is highly correlated with $T_{math}$ (\autoref{sec:5-motivation}). This discrepancy introduces difficulties in creating a singular cost model that performs well on both the CPU and GPU scenarios.
 
 When the computational time $ T_{math} $ exceeds the memory access time $ T_{mem} $, a function is classified as math-bound, indicating that the GPU's computational capabilities are the limiting factor. On the contrary, if $ T_{mem} $ is higher, it is memory-bound, which means that the memory bandwidth is the restricting element. This relationship is illustrated by the inequality $ \frac{\# ops}{BW_{math}} > \frac{\# bytes}{BW_{mem}} $, which can be rearranged as $ \frac{\# ops}{\# bytes} > \frac{BW_{math}}{BW_{mem}} $. Here, the left side denotes a function's arithmetic intensity, while the right side represents the GPU's $ops:byte$ ratio, i.e., the number of Floating Point Operations (FLOPs) per byte retrieved from memory.
 

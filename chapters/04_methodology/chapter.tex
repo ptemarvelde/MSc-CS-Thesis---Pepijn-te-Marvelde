@@ -4,7 +4,7 @@
 
 \label{chapter:methodology}
 
-This chapter outlines the methodology used to get an accurate cost prediction for factorized Machine Learning. We start by introducing the problem setting in \autoref{sec:4-problem-setting}, where we explain the choices for the independent variables. Following that, we present the proposed cost estimation models in \autoref{sec:4-cost-estimation}.
+This chapter outlines the methodology used to get an accurate cost prediction for factorized Machine Learning. We start by introducing the problem setting in \autoref{sec:4-problem-setting}, where we explain the choices for the independent variables. Next, we present the proposed cost estimation models in \autoref{sec:4-cost-estimation}.
 
 \section{Problem Setting}
 \label{sec:4-problem-setting}
@@ -55,7 +55,7 @@ We intentionally chose a variety of GPU architectures to capture metrics of GPUs
 \subsubsection{Model}
 The characteristics of the model are varied by selecting four distinct models: linear regression, logistic regression, Gaussian Non-negative Matrix Factorization, and K-Means Clustering. To avoid an exponential increase in the number of combinations of independent variables, we opt not to vary certain hyperparameters, such as k in K-Means or r in G-NMF. Nevertheless, we incorporate a multitude of features that encapsulate the variations that would otherwise be captured by altering these hyperparameters.
 
-One of those features is the complexity of the model, that is, the number of operations needed to train a model. The previously mentioned hyperparameters are parameters of the function to compute this feature; thus, we assume our cost models will still be able to accurately predict runtime for different hyperparameter settings, as the complexity (ratio) has already been shown to be a capable predictor for the F/M trade-off.
+One of those features is the complexity of the model, that is, the number of operations needed to train a model. The hyperparameters mentioned above are parameters of the function to compute this feature; thus, we assume that our cost models will still be able to accurately predict runtime for different hyperparameter settings, as the complexity (ratio) has already been shown to be a capable predictor for the F/M trade-off.
 
 \subsection{Dependent Variables}
 In this study, the dependent variable is the cost of training a model, which is represented as the training time. The objective of the cost models is to identify the most efficient method for training a model, which is why we utilize training time as the dependent variable.

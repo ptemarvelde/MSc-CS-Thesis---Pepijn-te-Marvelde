@@ -3,26 +3,26 @@
 \chapter{Evaluation}
 \label{chapter:evaluation-discussion}
 This chapter presents Contribution \textbf{C.2}: A robust cost model for Amalur's factorized ML framework, and a comparison with the SOTA.
-Whereas the previous chapter described the process of developing four types of cost models, and evaluated how they compared in terms of performance. This chapter extends this evaluation by comparing our best performing cost models with the SOTA, in \autoref{sec:eval-model-evaluation}, and we add a discussion on generalizability of our best cost model, as well as a thorough analysis of the results. We finish with a critical perspective on the implications and constraints of this research in \autoref{sec:eval-discussion}. Prior to that, the methodology for collecting results is detailed in \autoref{sec:6experiment-setup}.
+The previous chapter described the process of developing four types of cost models, and evaluated how they compared in terms of performance. This chapter extends this evaluation by comparing our best performing cost models with the SOTA, in \autoref{sec:eval-model-evaluation}, and we add a discussion on the generalizability of our best cost model, as well as a thorough analysis of the results. We end with a critical perspective on the implications and constraints of this research in \autoref{sec:eval-discussion}. Prior to that, the methodology for collecting results is detailed in \autoref{sec:6experiment-setup}.
 
 \section{Experiment Setup}
 \label{sec:6experiment-setup}
-This section provides a comprehensive explanation of all the necessary steps to reproduce the results. It covers the experimental setup (\hyperref[subsec:6-software]{software}, \hyperref[subsec:6-datasets]{datasets} \& \hyperref[subsec:6-hardware]{hardware}), as well as the data processing methods employed to guarantee reliable outcomes for the cost models (\hyperref[subsec:6-validation-strategy]{validation strategy}). For further details and implementations, please consult the GitHub repository\footnote{\url{https://github.com/ptemarvelde/amalur-experiments}}.
+This section provides a comprehensive explanation of all the necessary steps to reproduce the results. It covers the experimental setup (\hyperref[subsec:6-software]{software}, \hyperref[subsec:6-datasets]{datasets} \& \hyperref[subsec:6-hardware]{hardware}), as well as the data processing methods employed to guarantee reliable results for the cost models (\hyperref[subsec:6-validation-strategy]{validation strategy}). For further details and implementations, please consult the GitHub repository\footnote{\url{https://github.com/ptemarvelde/amalur-experiments}}.
 
 \subsection{Software}
 \label{subsec:6-software}
-The factorized ML framework (Amalur~\cite{amalur}) is implemented in Python ($3.10.4$) and uses SciPy ($1.8.0$), NumPy ($1.22.4$) and CuPy ($12.1.1$). All experiments were run in a Docker container with an image based on Nvidia's base image with CUDA $12.1.1$ and Ubuntu $20.04$\footnote{\href{https://hub.docker.com/layers/nvidia/cuda/12.1.1-devel-ubuntu20.04/images/sha256-5bd13c67a4479a1c13238b470d89a92937ce68ba5f21b930d50c463e3314f657?context=explore}{nvidia/cuda:12.1.1-devel-ubuntu20.04}}.
+The factorized ML framework (Amalur~\cite{amalur}) is implemented in Python ($3.10.4$) and uses SciPy ($1.8.0$), NumPy ($1.22.4$) and CuPy ($12.1.1$). All experiments were run in a Docker container with an image based on NVIDIA's base image with CUDA $12.1.1$ and Ubuntu $20.04$\footnote{\href{https://hub.docker.com/layers/nvidia/cuda/12.1.1-devel-ubuntu20.04/images/sha256-5bd13c67a4479a1c13238b470d89a92937ce68ba5f21b930d50c463e3314f657?context=explore}{nvidia/cuda:12.1.1-devel-ubuntu20.04}}.
 
-The choice to use CuPy as the backend for the factorized ML framework was made to ensure that the experiments could run on both CPU and GPU. CuPy is a GPU-accelerated library for numerical computations that is compatible with NumPy and SciPy~\cite{cupy_learningsys2017}. This allows for minimal changes to the codebase whether you are using a GPU or a CPU. To allow for exploitation of multiple cores for sparse matrix multiplication\footnote{\url{https://github.com/flatironinstitute/sparse_dot}} we use MKL (Intel Math Kernel Library)~\cite{intel-mkl} as NumPy's backend for the CPU experiments.
+The choice to use CuPy as the backend for the factorized ML framework was made to ensure that the experiments could run on both CPU and GPU. CuPy is a GPU-accelerated library for numerical computations that is compatible with NumPy and SciPy~\cite{cupy_learningsys2017}. This allows for minimal changes to the codebase, whether you are using a GPU or a CPU. To allow for exploitation of multiple cores for sparse matrix multiplication\footnote{\url{https://github.com/flatironinstitute/sparse_dot}} we use MKL (Intel Math Kernel Library)~\cite{intel-mkl} as NumPy's backend for the CPU experiments.
 
 For collecting the GPU metrics, we use NVIDIA's Nsight Compute (\texttt{ncu})\footnote{\url{https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html}} which is a command-line profiling tool that collects detailed performance metrics from the GPU. The metrics are collected in a CSV file for downstream analysis, detailed in \autoref{sec:5-feature-engineering}. The cost models were created using Scikit-learn~\cite{scikit-learn}.
 
 \subsection{Datasets}
 \label{subsec:6-datasets}
-The datasets used in the experiments are a mix of synthetic and real-world datasets. The synthetic datasets are used to generate a training set to train the cost models on. The real-world datasets are used to validate the cost models on unseen data.
+The datasets used in the experiments are a mix of synthetic and real-world datasets. The synthetic datasets are used to generate a training set to train the cost models. The real-world datasets are used to validate the cost models on unseen data.
 
 \subsubsection{Synthetic Datasets}
-To create the synthetic datasets with a wide variety of data characteristics the data generator from~\cite{amalur_tkde24} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from~\cite{valentine-data-generator}. In total, we generate $2415$ datasets, each being a two-table join. All other parameters were varied; the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
+To create synthetic datasets with a wide variety of data characteristics, the data generator from~\cite{amalur_tkde24} was used, which in turn is an adaptation of the data generator\footnote{\url{https://github.com/delftdata/valentine-data-fabricator}} from~\cite{valentine-data-generator}. In total, we generate $2415$ datasets, each being a two-table join. All other parameters were varied; the values are shown in \autoref{tab:6-synthetic-dataset-characteristics}.
 
 \begin{table}[ht]
   \centering
@@ -56,10 +56,10 @@ The data is organized in a star schema. $S_1$ is the Entity (transactional) tabl
 \end{figure}
 
 \subsubsection{Real-world Datasets}
-The synthetic datasets are convenient for testing and training purposes. However, in order to assess whether the cost models are generalizable to real-world data, we use real-world datasets for validation.
+The synthetic datasets are convenient for testing and training purposes. However, to assess whether the cost models are generalizable to real-world data, we use real-world datasets for validation.
 
 \paragraph{Project Hamlet~\cite{2016-hamlet-sigmod}}
-The Hamlet datasets are extensively used in the relevant literature~\cite{2016-hamlet-sigmod, amalur, morpheus,orion_learning_gen_lin_models}. Comprising a collection of seven datasets, the Hamlet datasets are tailored to simulate data integration scenarios within a machine learning workflow. Initially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types. The data attributes of these datasets are detailed in \autoref{tab:6-hamlet-characteristics}.
+The Hamlet datasets are widely used in the relevant literature~\cite{2016-hamlet-sigmod, amalur, morpheus,orion_learning_gen_lin_models}. Comprising a collection of seven datasets, the Hamlet datasets are tailored to simulate data integration scenarios within a machine learning workflow. Initially developed to assess inner join scenarios, certain rows from various source tables were excluded to accommodate other join types. The data attributes of these datasets are detailed in \autoref{tab:6-hamlet-characteristics}.
 
 \begin{table}[ht]
   \centering
@@ -82,7 +82,7 @@ The Hamlet datasets are extensively used in the relevant literature~\cite{2016-h
   \label{tab:6-hamlet-characteristics}
 \end{table}
 
-\paragraph{TPCx-AI~\cite{tpcx-ai}} We also assess a more practical scenario than what the Hamlet datasets provide, which is derived from a real-world benchmark employed for assessing end-to-end ML platforms. Since this aspect is not the primary focus of this study, we utilize only two out of the ten provided use cases, specifically the first and the tenth. This benchmark includes a data generator with the ability to scale generation by adjusting scale factors ranging from $0.01$ to $0.5$, leading to the creation of $18$ datasets for each use case. Details regarding the data characteristics of these datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
+\paragraph{TPCx-AI~\cite{tpcx-ai}} We also assess a more practical scenario than what the Hamlet datasets provide, which is derived from a real-world benchmark used for evaluating end-to-end ML platforms. Since this aspect is not the primary focus of this study, we utilized only two of the ten use cases provided, specifically the first and the tenth. This benchmark includes a data generator with the ability to scale generation by adjusting scale factors ranging from $0.01$ to $0.5$, leading to the creation of $18$ datasets for each use case. Details on the data characteristics of these datasets can be found in \autoref{fig:tpcx-ai-data-chars}.
 
 \begin{figure}
   \centering
@@ -92,11 +92,11 @@ The Hamlet datasets are extensively used in the relevant literature~\cite{2016-h
 \end{figure}
 
 
-The first use case which involves a join operation among three tables has been covered in the running example. First, the lineitem table is combined with the order returns data, which is subsequently linked with the orders table. This process yields a table with $c_T=7$ columns, with each row representing a product sold in an order. In the TPCx-AI benchmark, customer segmentation is accomplished through KMeans clustering on this dataset. However, we evaluate all four machine learning models outlined in this thesis, focusing on the training procedure rather than the final classifier's effectiveness. The subsequent scenario entails a join between two tables. Here, the transaction table is merged with the customer table, resulting in a table with $c_T=5$ columns aimed at identifying fraudulent transactions. The same models utilized in the first scenario are applied in this context as well. For a complete overview of the dataset schema, including the relevant tables and columns, please refer to \autoref{fig:appendix-tpc-ai-schema}.
+The first use case, which involves a join operation among three tables, has been covered in the running example. First, the lineitem table is combined with the order returns data, which is subsequently linked with the orders table. This process yields a table with $c_T=7$ columns, each row representing a product sold in an order. In the TPCx-AI benchmark, customer segmentation is accomplished through K-Means clustering on this dataset. However, we evaluate all four machine learning models outlined in this thesis, focusing on the training procedure rather than the final classifier's effectiveness. The following scenario involves a join between two tables. Here, the transaction table is merged with the customer table, resulting in a table with $c_T=5$ columns aimed at identifying fraudulent transactions. The same models utilized in the first scenario are applied in this context as well. For a complete overview of the dataset schema, including the relevant tables and columns,  refer to \autoref{fig:appendix-tpc-ai-schema}.
 
 \subsection{Hardware}
 \label{subsec:6-hardware}
-The experiments were conducted on a diverse range of machines to test various hardware configurations. The majority of the experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}}, allowing for testing across different GPU architectures. As profiling was not feasible on this cluster, some profiling experiments were carried out on a local machine, AWS, and resources from the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. Details on which experiments were carried out on which specific machines can be found in \autoref{tab:6-hardware-overview}.
+The experiments were carried out on a wide range of machines to test various hardware configurations. Most of the experiments were run on the Delft AI Cluster\footnote{\url{https://daic.tudelft.nl/}}, allowing for testing across different GPU architectures. As profiling was not feasible on this cluster, some profiling experiments were carried out on a local machine, AWS, and resources from the Web Information Systems group\footnote{\url{https://www.wis.ewi.tudelft.nl/}}. Details of which experiments were carried out on the specific machines can be found in \autoref{tab:6-hardware-overview}.
 
 \begin{table}[ht]
   \centering
@@ -106,11 +106,11 @@ The experiments were conducted on a diverse range of machines to test various ha
 \end{table}
 
 \subsection{Experiment Setting}
-To guarantee the reliability of the training data, each experiment was run with a repetition count of $30$. The profiling experiments, on the other hand, were not replicated, as NCU guarantees consistent and actionable results by replaying kernel launches~\cite{nsight_compute}. All experiments were carried out in a containerized setting to ensure reproducibility. The profiling experiments used the same image as the runtime experiments to maintain consistency in the environment. Docker\footnote{\url{https://www.docker.com/}} served as the container runtime, except on the DAIC cluster, where the usage of Apptainer\footnote{\url{https://apptainer.org/}} images was mandated.
+To guarantee the reliability of the training data, each experiment was performed with a repetition count of $30$. The profiling experiments, on the other hand, were not replicated, as NCU guarantees consistent and actionable results by replaying kernel launches~\cite{nsight_compute}. All experiments were carried out in a containerized setting to ensure reproducibility. The profiling experiments used the same image as the runtime experiments to maintain consistency in the environment. Docker\footnote{\url{https://www.docker.com/}} served as the container runtime, except on the DAIC cluster, where the usage of Apptainer\footnote{\url{https://apptainer.org/}} images was mandated.
 
 \subsection{Validation Strategy}
 \label{subsec:6-validation-strategy}
-Given the vast range of potential data, model, and hardware features, it is crucial to have confidence in our model's ability to provide accurate predictions for new situations. To test this, we implement a rigorous train-validate-test split. $70\%$ of the data from synthetic datasets is allocated to the training set, while the remaining $30\%$ forms the validation set. The real-world datasets are exclusively reserved for testing purposes. Since these datasets are not used in training the cost models, they offer a reliable assessment of performance in novel scenarios, as discussed in \autoref{subsec:6-generalizability}. Similarly, to ensure robustness in the hardware aspect, we adopt a comparable strategy by isolating the samples of \texttt{GPU-T-5} for testing. Lastly, to explore the dimension of model characteristics, we perform an ablation study (see \autoref{subsubsec:6-ablation}) to investigate the impact of excluding various models on the cost model's performance.
+Given the vast range of potential data, model, and hardware features, it is crucial to have confidence in our model's ability to provide accurate predictions for new situations. To test this, we used a rigorous train-validate-test split. $70\%$ of the data from synthetic datasets is allocated to the training set, while the remaining $30\%$ forms the validation set. The real-world datasets are exclusively reserved for testing purposes. Since these datasets are not used in training the cost models, they offer a reliable assessment of performance in novel scenarios, as discussed in \autoref{subsec:6-generalizability}. Similarly, to ensure robustness in the hardware aspect, we adopt a comparable strategy by isolating the samples of \texttt{GPU-T-5} for testing. Lastly, to explore the dimension of model characteristics, we perform an ablation study (see \autoref{subsubsec:6-ablation}) to investigate the impact of excluding various models on the cost model's performance.
 
 \section{Cost Model Performance and Comparative Analysis}
 \label{sec:eval-model-evaluation}
@@ -126,7 +126,7 @@ We first illustrate the comparison of the cost models with the state-of-the-art 
 \label{subsec:6-sota-comparison}
 We compare our best performing cost models from each type with the SOTA. Using the test set described previously, which includes real datasets and new hardware configurations, we evaluate the performance of the cost models. \autoref{fig:6-sota-comparison} presents the results of this comparative assessment. The plot on the left shows the precision, accuracy, f1 score and recall score of the cost models. The right plot quantifies the total time saved by the cost models across the set of scenarios.
 
-From the figure we can infer how each model behaves with regard to the precision/recall trade-off. The SOTA cost models show diminished precision, yet augmented recall, showing a tendency towards favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI~\cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus~\cite{orion_learning_gen_lin_models} presents a lesser time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur~\cite{amalur} shows a total time loss of roughly $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost model introduced in this thesis has a net time savings of $\mathbf{1350}$ seconds, with an accuracy of $\mathbf{95\%}$, which is a significant improvement over the SOTA.
+From the figure we can infer how each model behaves with regard to the precision/recall trade-off. The SOTA cost models show diminished precision, yet enhanced recall, showing a tendency toward favoring predicting a positive label, which in this case means that the factorized training is faster. MorpheusFI~\cite{MorpheusFI} shows the best recall, explained by precision and accuracy, labeling all cases as positive, resulting in a total time loss of $13,000$ seconds. Morpheus~\cite{orion_learning_gen_lin_models} presents a smaller time loss of approximately $7000$ seconds, reflecting a slightly more conservative approach than MorpheusFI. Amalur~\cite{amalur} shows a total time loss of approximately $500$ seconds, outperforming Morpheus and MorpheusFI. The Hybrid cost model introduced in this thesis has a net time savings of $\mathbf{1350}$ seconds, with an accuracy of $\mathbf{95\%}$, which is a significant improvement over the SOTA.
 
 \begin{figure}[ht]
   \centering
@@ -135,7 +135,7 @@ From the figure we can infer how each model behaves with regard to the precision
   \label{fig:6-sota-comparison}
 \end{figure}
 
-We have shown stellar performance across the test set, next we will explore the generalizability of our two best cost models, XGB.5 and the Hybrid model.
+We have shown stellar performance across the test set; next we will explore the generalizability of our two best cost models, XGB.5 and the Hybrid model.
 
 \subsection{Exploring Generalizability}
 \label{subsec:6-generalizability}
@@ -148,11 +148,11 @@ The aim of this thesis is to create a cost model capable of reliably predicting 
   \label{fig:6-generalization}
 \end{figure}
 
-Significant disparities exist among the models in terms of their ability to generalize to unfamiliar situations. The XGBoost model excels in terms of relative performance on new hardware but underperform on the real-world datasets. The hybrid model combines the strong points of the XGBoost and linear regression models, achieving good relative performance of 82\% on the full dataset.
+Significant disparities exist among the models in terms of their ability to generalize to unfamiliar situations. The XGBoost model excels in terms of relative performance on new hardware, but underperforms on real-world datasets. The hybrid model combines the strengths of the XGBoost and linear regression models, achieving good relative performance of 82\% on the full dataset.
 
 \subsubsection{Ablation Study}
 \label{subsubsec:6-ablation}
-To assess the generalizability of our cost model across new model types, we conduct an ablation study. In this study, we systematically exclude individual model types and assess the model’s performance on test set scenarios exclusive to the omitted model type.
+To assess the generalizability of our cost model on new model types, we performed an ablation study. In this study, we systematically exclude individual model types and evaluate the model performance in test set scenarios exclusive to the omitted model type.
 
 \begin{figure}[ht]
   \centering
@@ -167,17 +167,17 @@ To mitigate this limitation, we propose two potential strategies: First, refinin
 
 \section{Discussion}
 \label{sec:eval-discussion}
-Our research demonstrates that the Hybrid cost model adeptly predicts the most efficient training method -factorized or materialized- for machine learning models across CPU and GPU scenarios. This model shows commendable generalizability to novel scenarios and surpasses state-of-the-art (SOTA) models in the domain of cost estimation for Factorized ML training. However, this study is not without its limitations.
+Our research demonstrates that the Hybrid cost model adeptly predicts the most efficient training method -factorized or materialized- for machine learning models across CPU and GPU scenarios. This model shows commendable generalizability to novel scenarios and surpasses state-of-the-art (SOTA) models in the domain of cost estimation for Factorized ML training. However, this study is not without limitations.
 
-The first important note is that the SOTA cost models lack design considerations for GPU-based training. This oversight is non-trivial, as our findings reveal a significant divergence in the factorization-materialization trade-off between CPU and GPU environments. But, this still skews the comparison in favor of our models, as we do include GPU-specific features in our cost models.
+The first important note is that the SOTA cost models lack design considerations for GPU-based training. This oversight is non-trivial, as our findings reveal a significant divergence in the factorization-materialization trade-off between CPU and GPU environments. But this still skews the comparison in favor of our models, as we do include GPU-specific features in our cost models.
 
-Another limitation is that the cost models were trained on synthetic data. While synthetic data generation aims to replicate real-world datasets, discrepancies with real-world scenarios are inevitable.  Our models have demonstrated proficiency with actual data; however, the potential for overfitting to synthetic data cannot be dismissed, and the robust performance observed with datasets such as Hamlet and TPCx-AI may not be entirely indicative of broader applicability. This concern extends to the hardware aspect, where the models show promising adaptability to new hardware configurations, yet the question of how representative these configurations are of real-world settings remains uncertain remains.
+Another limitation is that the cost models were trained on synthetic data. While synthetic data generation aims to replicate real-world datasets, discrepancies with real-world scenarios are inevitable.  Our models have demonstrated proficiency with actual data; however, the potential for overfitting to synthetic data cannot be dismissed, and the robust performance observed with datasets such as Hamlet and TPCx-AI may not be entirely indicative of broader applicability. This concern extends to the hardware aspect, where the models show promising adaptability to new hardware configurations, yet the question of how representative these configurations are of real-world settings remains uncertain.
 
 Despite these limitations, we believe that our contributions to cost estimation for ML training are substantial. The Hybrid cost model yields encouraging results and consistently outperforms SOTA in a multitude of scenarios. We hope that this work will inspire continued exploration in this field.
 
 \section{Conclusion}
 \label{sec:eval-conclusion}
-This chapter has presented the comprehensive evaluation of our hybrid cost model for factorized and materialized ML training. We have shown the model's ability to accurately discern the optimal training approach and its superiority over SOTA in real-world scenarios. Although the model adapts well to new hardware and data parameters, its predictive utility for scenarios involving new ML models is limited.
+This chapter has presented a comprehensive evaluation of our hybrid cost model for factorized and materialized ML training. We have shown the model's ability to accurately discern the optimal training approach and its superiority over SOTA in real-world scenarios. Although the model adapts well to new hardware and data parameters, its predictive utility for scenarios involving new ML models is limited.
 
 The next chapter will explore future work and potential improvements for our cost model.
 
